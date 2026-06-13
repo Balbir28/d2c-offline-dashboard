@@ -1295,10 +1295,192 @@
             border-top: 1px solid var(--border-color);
             margin-top: auto;
         }
+
+        /* Password Gate Styling - iOS 27 Glassmorphic lock screen */
+        #password-gate {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(21, 24, 48, 0.95), #020306);
+            backdrop-filter: blur(50px) saturate(220%);
+            -webkit-backdrop-filter: blur(50px) saturate(220%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 0.4s ease-out;
+        }
+
+        .pg-card {
+            background: rgba(255, 255, 255, 0.02) !important;
+            backdrop-filter: blur(40px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 440px;
+            width: 90%;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .pg-logo {
+            font-size: 44px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 0 12px var(--secondary-glow));
+            animation: float-icon 3s ease-in-out infinite;
+        }
+
+        @keyframes float-icon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .pg-card h2 {
+            font-family: var(--font-mono);
+            font-size: 21px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pg-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .pg-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .pg-input-wrapper input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pg-input-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        .pg-remember {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: -4px;
+        }
+
+        .pg-remember input {
+            cursor: pointer;
+        }
+
+        .pg-remember label {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        #pg-error {
+            color: var(--danger);
+            font-size: 12px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            min-height: 18px;
+            margin-top: 4px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .shake {
+            animation: shake 0.4s ease-in-out;
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 12px var(--danger-glow) !important;
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- PASSWORD GATE OVERLAY -->
+    <div id="password-gate" style="display: none;">
+        <div class="pg-card">
+            <div class="pg-logo">🔐</div>
+            <h2>D2C Command Center</h2>
+            <p>Enter the security key to gain dashboard clearance.</p>
+            <div class="pg-input-wrapper">
+                <input type="password" id="pg-pass" placeholder="Security key..." onkeydown="if(event.key==='Enter') checkPassword()">
+                <button onclick="checkPassword()" class="btn">Unlock Dashboard</button>
+            </div>
+            <div class="pg-remember">
+                <input type="checkbox" id="pg-remember-me" checked>
+                <label for="pg-remember-me">Remember this device</label>
+            </div>
+            <p id="pg-error"></p>
+        </div>
+    </div>
+
+    <script>
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function checkPassword() {
+            const pass = document.getElementById('pg-pass').value;
+            const hash = await sha256(pass);
+            const target = '0e52415e936c7142cd287052d492cf03bc6098564b8f9484ed348c59fb69e01e'; // hash of 'scaler2026'
+            
+            if (hash === target) {
+                const remember = document.getElementById('pg-remember-me').checked;
+                if (remember) {
+                    localStorage.setItem('d2c_auth', 'true');
+                } else {
+                    sessionStorage.setItem('d2c_auth', 'true');
+                }
+                const gate = document.getElementById('password-gate');
+                gate.style.opacity = '0';
+                setTimeout(() => {
+                    gate.style.display = 'none';
+                }, 400);
+            } else {
+                const err = document.getElementById('pg-error');
+                err.innerText = '❌ Invalid password. Access Denied.';
+                const input = document.getElementById('pg-pass');
+                input.classList.add('shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+            }
+        }
+
+        (function() {
+            if (localStorage.getItem('d2c_auth') === 'true' || sessionStorage.getItem('d2c_auth') === 'true') {
+                // Already authenticated
+            } else {
+                document.write('<style>#password-gate { display: flex !important; }</style>');
+            }
+        })();
+    </script>
 
     <!-- LOADER OVERLAY -->
     <div id="loader">
