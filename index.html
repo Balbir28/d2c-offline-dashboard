@@ -1377,24 +1377,7 @@
             box-shadow: 0 0 12px var(--primary-glow);
         }
 
-        .pg-remember {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: -4px;
-        }
 
-        .pg-remember input {
-            cursor: pointer;
-        }
-
-        .pg-remember label {
-            cursor: pointer;
-            user-select: none;
-        }
 
         #pg-error {
             color: var(--danger);
@@ -1422,7 +1405,7 @@
 <body>
 
     <!-- PASSWORD GATE OVERLAY -->
-    <div id="password-gate" style="display: none;">
+    <div id="password-gate">
         <div class="pg-card">
             <div class="pg-logo">🔐</div>
             <h2>D2C Command Center</h2>
@@ -1430,10 +1413,6 @@
             <div class="pg-input-wrapper">
                 <input type="password" id="pg-pass" placeholder="Security key..." onkeydown="if(event.key==='Enter') checkPassword()">
                 <button onclick="checkPassword()" class="btn">Unlock Dashboard</button>
-            </div>
-            <div class="pg-remember">
-                <input type="checkbox" id="pg-remember-me" checked>
-                <label for="pg-remember-me">Remember this device</label>
             </div>
             <p id="pg-error"></p>
         </div>
@@ -1453,12 +1432,6 @@
             const target = '0e52415e936c7142cd287052d492cf03bc6098564b8f9484ed348c59fb69e01e'; // hash of 'scaler2026'
             
             if (hash === target) {
-                const remember = document.getElementById('pg-remember-me').checked;
-                if (remember) {
-                    localStorage.setItem('d2c_auth', 'true');
-                } else {
-                    sessionStorage.setItem('d2c_auth', 'true');
-                }
                 const gate = document.getElementById('password-gate');
                 gate.style.opacity = '0';
                 setTimeout(() => {
@@ -1472,14 +1445,6 @@
                 setTimeout(() => input.classList.remove('shake'), 500);
             }
         }
-
-        (function() {
-            if (localStorage.getItem('d2c_auth') === 'true' || sessionStorage.getItem('d2c_auth') === 'true') {
-                // Already authenticated
-            } else {
-                document.write('<style>#password-gate { display: flex !important; }</style>');
-            }
-        })();
     </script>
 
     <!-- LOADER OVERLAY -->
