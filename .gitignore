@@ -31,4 +31,6 @@ brain/
 .gemini/
 *.webp
 *.png
+!d2c_app_icon.png
+!**/d2c_app_icon.png
 *.mp4
