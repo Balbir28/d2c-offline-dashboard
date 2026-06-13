@@ -1,0 +1,2631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D2C Marketing Dashboard Video Showcase Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050515;
+      --bg-card: rgba(15, 15, 40, 0.6);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(79, 142, 247, 0.3);
+      --blue: oklch(65% 0.2 250);
+      --purple: oklch(60% 0.22 300);
+      --green: oklch(75% 0.18 160);
+      --red: oklch(60% 0.2 25);
+      --yellow: oklch(80% 0.16 85);
+      --text: #f8fafc;
+      --text-sub: #94a3b8;
+      --r: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Background glow effects */
+    .bg-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(150px);
+      z-index: -1;
+      opacity: 0.15;
+    }
+    .bg-glow-1 {
+      top: -200px;
+      left: -200px;
+      background: var(--blue);
+    }
+    .bg-glow-2 {
+      bottom: -200px;
+      right: -200px;
+      background: var(--purple);
+    }
+
+    header {
+      padding: 20px 40px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 10, 30, 0.4);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      font-size: 28px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .badge {
+      background: rgba(79, 142, 247, 0.15);
+      border: 1px solid var(--blue);
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      padding: 30px;
+      gap: 30px;
+      max-width: 1600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    @media (max-width: 1024px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .viewer-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .canvas-container {
+      background: #000;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .player-controls {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(15px);
+      border-radius: var(--r);
+      padding: 15px 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .timeline-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .time-lbl {
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--text-sub);
+      min-width: 45px;
+    }
+
+    .slider-track {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .slider-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      border-radius: 3px;
+      width: 0%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .slider-handle {
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      left: 0%;
+      box-shadow: 0 0 10px var(--blue);
+      cursor: grab;
+      transition: transform 0.1s;
+    }
+
+    .slider-handle:active {
+      transform: translate(-50%, -50%) scale(1.2);
+      cursor: grabbing;
+    }
+
+    .buttons-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .ctrl-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .ctrl-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .ctrl-btn.active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+      box-shadow: 0 0 15px rgba(79, 142, 247, 0.4);
+    }
+
+    .btn-record {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: white;
+      border: none;
+      box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-record:hover {
+      background: linear-gradient(135deg, #f87171, #dc2626);
+      transform: translateY(-1px);
+    }
+
+    .btn-record.recording {
+      animation: pulse-record 1.5s infinite;
+    }
+
+    @keyframes pulse-record {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    .editor-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(15px);
+      border-radius: var(--r);
+      padding: 20px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 15px;
+      color: var(--blue);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-sub);
+      margin-bottom: 5px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--blue);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .status-log {
+      max-height: 120px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 10.5px;
+      color: var(--text-sub);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      scrollbar-width: thin;
+    }
+
+    .status-item.success { color: var(--green); }
+    .status-item.error { color: var(--red); }
+    .status-item.info { color: var(--blue); }
+
+    /* Overlay for initializing */
+    .init-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(5, 5, 20, 0.95);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 40px;
+      text-align: center;
+      transition: opacity 0.5s;
+    }
+
+    .init-btn {
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 15px 35px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(79, 142, 247, 0.4);
+      transition: all 0.2s;
+    }
+
+    .init-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(79, 142, 247, 0.6);
+    }
+
+    .init-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+
+    .init-desc {
+      font-size: 12px;
+      color: var(--text-sub);
+      max-width: 400px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div class="logo">LIGHTHOUSE</div>
+      <div>
+        <div class="subtitle">D2C Marketing Intelligence</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span class="badge">30s Showcase Exporter</span>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="workspace">
+    
+    <!-- LEFT: VIEWER PANEL -->
+    <div class="viewer-panel">
+      <div class="canvas-container" id="playerContainer">
+        <!-- Canvas dimensions 1280x720 (720p HD output) -->
+        <canvas id="videoCanvas" width="1280" height="720"></canvas>
+        
+        <!-- INITIALIZATION OVERLAY -->
+        <div class="init-overlay" id="initOverlay">
+          <div class="init-title">D2C Video Command Center</div>
+          <p class="init-desc">This tool generates a high-energy 30-second promo video highlighting your Google Sheet Dashboard sync, scorecards, AI Optimizer recommendations, and cohort lifetime values. Click below to load the animation engine and sound synthesizer.</p>
+          <button class="init-btn" onclick="initializeEngine()">⚡ Open Video Workspace</button>
+        </div>
+      </div>
+
+      <!-- PLAYER PLAYBACK CONTROLS -->
+      <div class="player-controls">
+        <div class="timeline-row">
+          <button class="ctrl-btn" id="playBtn" onclick="togglePlay()" style="padding: 8px 12px; font-size:12px;">▶ Play</button>
+          <span class="time-lbl" id="currentTimeLbl">0.00s</span>
+          <div class="slider-track" id="timelineSlider" onmousedown="startScrub(event)">
+            <div class="slider-fill" id="timelineFill"></div>
+            <div class="slider-handle" id="timelineHandle"></div>
+          </div>
+          <span class="time-lbl" style="text-align: right;" id="totalTimeLbl">30.00s</span>
+        </div>
+        <div class="buttons-row">
+          <div style="display:flex; gap:8px;">
+            <button class="ctrl-btn" onclick="restartAnimation()">🔄 Restart</button>
+            <button class="ctrl-btn" id="soundBtn" onclick="toggleSound()">🔊 Sound: ON</button>
+          </div>
+          <div>
+            <button class="ctrl-btn btn-record" id="recordBtn" onclick="startRecording()">🔴 Record & Download MP4</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: EDITOR & CUSTOMIZATION -->
+    <div class="editor-panel">
+      
+      <!-- EXPORT MONITOR -->
+      <div class="panel-card" style="padding:15px; display:flex; flex-direction:column; gap:10px;">
+        <div class="panel-title" style="margin-bottom:8px; padding-bottom:5px;">📊 Export Console</div>
+        <div class="status-log" id="exportLog">
+          <div class="status-item info">> Ready to render.</div>
+          <div class="status-item info">> Browser audio & video codecs available.</div>
+        </div>
+      </div>
+
+      <!-- TEXT AND METRIC CUSTOMIZATION -->
+      <div class="panel-card">
+        <div class="panel-title">✏️ Video Text & Metric Customizer</div>
+        
+        <div class="form-group">
+          <label>Brand Name Title</label>
+          <input type="text" class="form-input" id="cfgBrand" value="LIGHTHOUSE D2C" oninput="updateConfig()">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Blended MER (ROAS)</label>
+            <input type="text" class="form-input" id="cfgMer" value="4.2x" oninput="updateConfig()">
+          </div>
+          <div class="form-group">
+            <label>Blended CAC</label>
+            <input type="text" class="form-input" id="cfgCac" value="₹245" oninput="updateConfig()">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Total Spend</label>
+            <input type="text" class="form-input" id="cfgSpend" value="₹295.3K" oninput="updateConfig()">
+          </div>
+          <div class="form-group">
+            <label>Total Revenue</label>
+            <input type="text" class="form-input" id="cfgRevenue" value="₹1.24M" oninput="updateConfig()">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Scale Campaign Recommendation</label>
+          <input type="text" class="form-input" id="cfgScaleCamp" value="UGC Video - Beauty Pack" oninput="updateConfig()">
+        </div>
+
+        <div class="form-group">
+          <label>Stop Campaign Recommendation</label>
+          <input type="text" class="form-input" id="cfgStopCamp" value="Static Ad - Discount Code" oninput="updateConfig()">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Creative Hook Rate</label>
+            <input type="text" class="form-input" id="cfgHook" value="42.5%" oninput="updateConfig()">
+          </div>
+          <div class="form-group">
+            <label>Cohort Retention (M3)</label>
+            <input type="text" class="form-input" id="cfgLtv" value="+45% LTV Growth" oninput="updateConfig()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    // Engine State
+    let isPlaying = false;
+    let currentTime = 0; // 0 to 40 seconds
+    let totalDuration = 40; // exactly 40 seconds at 144 BPM
+    let lastTime = 0;
+    let scrubActive = false;
+    
+    // Canvas & Contexts
+    let canvas, ctx;
+    
+    // Audio Context & Nodes
+    let audioContext = null;
+    let soundEnabled = true;
+    let synthGain = null;
+    let recorderDestination = null; // Stream destination for video recording
+    
+    // Beat Sequencer Variables (144 BPM)
+    const bpm = 144;
+    const beatDuration = 60 / bpm; // 0.41667s per beat
+    const totalBeats = 96; // exactly 40 seconds is 96 beats at 144 BPM
+    let lastPlayedBeat = -1;
+
+    // Config Values (drawn on Canvas)
+    let videoConfig = {
+      brand: "LIGHTHOUSE D2C",
+      mer: "4.2x",
+      cac: "₹245",
+      spend: "₹295.3K",
+      revenue: "₹1.24M",
+      scaleCamp: "UGC Video - Beauty Pack",
+      stopCamp: "Static Ad - Discount Code",
+      hook: "42.5%",
+      ltv: "+45% LTV Growth"
+    };
+
+    // Recorder State
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let isRecording = false;
+
+    // Initialize HTML references
+    window.addEventListener('DOMContentLoaded', () => {
+      canvas = document.getElementById('videoCanvas');
+      ctx = canvas.getContext('2d');
+      updateConfig();
+      drawCanvas(0);
+    });
+
+    // Read values from form fields
+    function updateConfig() {
+      videoConfig.brand = document.getElementById('cfgBrand').value;
+      videoConfig.mer = document.getElementById('cfgMer').value;
+      videoConfig.cac = document.getElementById('cfgCac').value;
+      videoConfig.spend = document.getElementById('cfgSpend').value;
+      videoConfig.revenue = document.getElementById('cfgRevenue').value;
+      videoConfig.scaleCamp = document.getElementById('cfgScaleCamp').value;
+      videoConfig.stopCamp = document.getElementById('cfgStopCamp').value;
+      videoConfig.hook = document.getElementById('cfgHook').value;
+      videoConfig.ltv = document.getElementById('cfgLtv').value;
+      
+      if (!isPlaying && !scrubActive) {
+        drawCanvas(currentTime);
+      }
+    }
+
+    // Dismiss initialization overlay & unlock audio
+    function initializeEngine() {
+      document.getElementById('initOverlay').style.opacity = 0;
+      setTimeout(() => {
+        document.getElementById('initOverlay').style.display = 'none';
+      }, 500);
+
+      // Create AudioContext
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      
+      // Global Synth Gain
+      synthGain = audioContext.createGain();
+      synthGain.gain.setValueAtTime(0.3, audioContext.currentTime); // volume limit
+      synthGain.connect(audioContext.destination);
+      
+      // Audio node to pipe to MediaRecorder
+      recorderDestination = audioContext.createMediaStreamDestination();
+      synthGain.connect(recorderDestination);
+
+      logStatus("Audio Synthesis Engine Initialized at 128 BPM.", "success");
+      
+      // Start auto-playback
+      togglePlay(true);
+    }
+
+    function logStatus(text, type = "info") {
+      const log = document.getElementById('exportLog');
+      const item = document.createElement('div');
+      item.className = `status-item ${type}`;
+      item.innerText = `> ${text}`;
+      log.appendChild(item);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    // ── AUDIO SYNTHESIZER BEAT MACHINE ──
+    // Synthesizes a techno-house beat on the fly
+    function playSynthBeat(beatIndex, timeSec) {
+      if (!soundEnabled || !audioContext) return;
+
+      const scheduleTime = audioContext.currentTime;
+
+      // Pulse calculations for visual beat syncing
+      canvasBeatPulse = 1.0; 
+
+      // 1. Kick Drum (Plays on every beat 0 to 90)
+      if (beatIndex <= 90) {
+        triggerKick(scheduleTime);
+      }
+
+      // 2. Snare Drum (Plays on beats 2 and 4 of every bar, indices % 4 === 1 or 3)
+      if (beatIndex >= 4 && beatIndex < 90 && (beatIndex % 4 === 1 || beatIndex % 4 === 3)) {
+        triggerSnare(scheduleTime);
+      }
+
+      // 3. Hi-Hat (Plays off-beat 8th notes)
+      if (beatIndex >= 4 && beatIndex < 90) {
+        triggerHihat(scheduleTime);
+        triggerHihat(scheduleTime + beatDuration / 2); // off-beat
+      }
+
+      // 4. Synth Bassline (8th note arpeggiation chord arpeggio)
+      if (beatIndex >= 8 && beatIndex < 90) {
+        let chord = 'A';
+        let bar = Math.floor(beatIndex / 4) % 4;
+        if (bar === 1) chord = 'C';
+        else if (bar === 2) chord = 'G';
+        else if (bar === 3) chord = 'F';
+
+        triggerBassline(chord, beatIndex, scheduleTime);
+      }
+
+      // 5. Climax / Snare Roll (Beats 90 to 93)
+      if (beatIndex >= 90 && beatIndex < 93) {
+        // Fast snare hits (16th notes) rising in volume
+        for (let i = 0; i < 4; i++) {
+          triggerSnare(scheduleTime + (i * beatDuration / 4), 0.15 + (i * 0.08) + ((beatIndex - 90) * 0.1));
+        }
+      }
+
+      // 6. Impact Cymbal + Final Chord (Beat 93 - Transition to Outro)
+      if (beatIndex === 93) {
+        triggerCymbalImpact(scheduleTime);
+        triggerFinalChord(scheduleTime);
+      }
+    }
+
+        // Drum sound trigger codes
+    function triggerKick(time) {
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      
+      osc.connect(gain);
+      gain.connect(synthGain);
+      
+      osc.frequency.setValueAtTime(150, time);
+      osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.12);
+      
+      gain.gain.setValueAtTime(1.5, time);
+      gain.gain.linearRampToValueAtTime(0.001, time + 0.15);
+      
+      osc.start(time);
+      osc.stop(time + 0.16);
+    }
+
+    function triggerSnare(time, volume = 0.5) {
+      // Noise source for rattle
+      const bufferSize = audioContext.sampleRate * 0.2;
+      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      
+      const noise = audioContext.createBufferSource();
+      noise.buffer = buffer;
+      
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1000;
+      
+      const noiseGain = audioContext.createGain();
+      noiseGain.gain.setValueAtTime(volume, time);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, time + 0.18);
+      
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(synthGain);
+      
+      // Tone oscillator for snap
+      const osc = audioContext.createOscillator();
+      const oscGain = audioContext.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = 180;
+      
+      oscGain.gain.setValueAtTime(volume * 0.8, time);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+      
+      osc.connect(oscGain);
+      oscGain.connect(synthGain);
+      
+      noise.start(time);
+      noise.stop(time + 0.2);
+      osc.start(time);
+      osc.stop(time + 0.12);
+    }
+
+    function triggerHihat(time) {
+      const bufferSize = audioContext.sampleRate * 0.05;
+      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      
+      const noise = audioContext.createBufferSource();
+      noise.buffer = buffer;
+      
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 8500;
+      
+      const gain = audioContext.createGain();
+      gain.gain.setValueAtTime(0.18, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
+      
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(synthGain);
+      
+      noise.start(time);
+      noise.stop(time + 0.05);
+    }
+
+    function triggerBassline(chord, beatIndex, time) {
+      const pitches = {
+        'A': [55.00, 110.00], // A1, A2
+        'C': [65.41, 130.81], // C2, C3
+        'G': [49.00, 98.00],  // G1, G2
+        'F': [43.65, 87.31]   // F1, F2
+      };
+
+      const notes = pitches[chord];
+
+      // Schedule 8th notes: root at beat start, octave at mid-beat
+      playBassTone(notes[0], time, 0.22);
+      playBassTone(notes[1], time + beatDuration / 2, 0.16);
+    }
+
+    function playBassTone(frequency, time, duration) {
+      const osc = audioContext.createOscillator();
+      const filter = audioContext.createBiquadFilter();
+      const gain = audioContext.createGain();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(frequency, time);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(200, time);
+      filter.frequency.exponentialRampToValueAtTime(800, time + 0.05);
+      filter.frequency.exponentialRampToValueAtTime(150, time + duration);
+
+      gain.gain.setValueAtTime(0.45, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(synthGain);
+
+      osc.start(time);
+      osc.stop(time + duration + 0.05);
+    }
+
+    function triggerCymbalImpact(time) {
+      const bufferSize = audioContext.sampleRate * 2.0;
+      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      
+      const noise = audioContext.createBufferSource();
+      noise.buffer = buffer;
+      
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 6000;
+      
+      const gain = audioContext.createGain();
+      gain.gain.setValueAtTime(0.35, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 1.8);
+      
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(synthGain);
+      
+      noise.start(time);
+      noise.stop(time + 2.0);
+    }
+
+    function triggerFinalChord(time) {
+      const notes = [110.00, 130.81, 164.81, 220.00]; // Am chord (A2, C3, E3, A3)
+      notes.forEach((freq, idx) => {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, time);
+        
+        gain.gain.setValueAtTime(0.18, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 2.5);
+        
+        osc.connect(gain);
+        gain.connect(synthGain);
+        
+        osc.start(time);
+        osc.stop(time + 2.6);
+      });
+    }
+
+    // ── ANIMATION FRAME RENDER LOOP ──
+    let canvasBeatPulse = 1.0;
+
+    function renderLoop(timestamp) {
+      if (!lastTime) lastTime = timestamp;
+      
+      if (isPlaying && !scrubActive) {
+        // Use a fixed frame step of 1/60s during recording for perfect frame-rate stability
+        let elapsed = isRecording ? (1 / 60) : Math.min(0.1, (timestamp - lastTime) / 1000);
+        currentTime += elapsed;
+        
+        if (currentTime >= totalDuration) {
+          currentTime = 0; // Loop or stop
+          lastPlayedBeat = -1;
+          if (isRecording) {
+            stopRecording();
+          }
+        }
+      }
+      
+      lastTime = timestamp;
+      
+      // Update audio sequencing based on time
+      if (isPlaying) {
+        let currentBeat = Math.floor(currentTime / beatDuration);
+        if (currentBeat > lastPlayedBeat && currentBeat < totalBeats) {
+          // Play synth beat
+          playSynthBeat(currentBeat, currentTime);
+          lastPlayedBeat = currentBeat;
+        }
+      }
+
+      // Draw canvas
+      drawCanvas(currentTime);
+      
+      // Update UI slider
+      updatePlaybackUI();
+      
+      requestAnimationFrame(renderLoop);
+    }
+
+    requestAnimationFrame(renderLoop);
+
+    function updatePlaybackUI() {
+      document.getElementById('currentTimeLbl').innerText = currentTime.toFixed(2) + 's';
+      let pct = (currentTime / totalDuration) * 100;
+      document.getElementById('timelineFill').style.width = pct + '%';
+      document.getElementById('timelineHandle').style.left = pct + '%';
+    }
+
+    // ── CANVAS 2D GRAPHICS RENDER ENGINE ──
+    
+    function pathRoundRect(ctx, x, y, w, h, r = 12) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    function drawDashboardCard(x, y, w, h, active = false, customBorder = null) {
+      ctx.save();
+      
+      // Fast drop shadow underneath
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      pathRoundRect(ctx, x + 1, y + 3, w, h, 12);
+      ctx.fill();
+
+      // Card body - semi-transparent dark glass
+      ctx.fillStyle = 'rgba(12, 17, 34, 0.35)';
+      ctx.beginPath();
+      pathRoundRect(ctx, x, y, w, h, 12);
+      ctx.fill();
+
+      // Card border
+      ctx.strokeStyle = customBorder || (active ? '#f59e0b' : 'rgba(255, 255, 255, 0.07)');
+      ctx.lineWidth = active ? 2 : 1;
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawDashboardFrame(time, activeTab) {
+      // 1. Clear canvas with Midnight Sapphire background and radial glows
+      ctx.fillStyle = '#06080f';
+      ctx.fillRect(0, 0, 1280, 720);
+
+      // Draw background radial glows
+      let rad1 = ctx.createRadialGradient(0, 0, 0, 0, 0, 500);
+      rad1.addColorStop(0, 'rgba(59, 130, 246, 0.12)');
+      rad1.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = rad1;
+      ctx.fillRect(0, 0, 1280, 720);
+
+      let rad2 = ctx.createRadialGradient(640, 0, 0, 640, 0, 450);
+      rad2.addColorStop(0, 'rgba(139, 92, 246, 0.08)');
+      rad2.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = rad2;
+      ctx.fillRect(0, 0, 1280, 720);
+
+      let rad3 = ctx.createRadialGradient(1280, 0, 0, 1280, 0, 500);
+      rad3.addColorStop(0, 'rgba(245, 158, 11, 0.10)');
+      rad3.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = rad3;
+      ctx.fillRect(0, 0, 1280, 720);
+
+      // 2. Draw subtle background diagonal lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.lineWidth = 1;
+      let gridSpace = 40;
+      for (let x = -720; x < 1280; x += gridSpace) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x + 720, 720);
+        ctx.stroke();
+      }
+
+      // 3. Draw Header Bar
+      ctx.fillStyle = 'rgba(10, 14, 28, 0.7)';
+      ctx.fillRect(0, 0, 1280, 60);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.beginPath();
+      ctx.moveTo(0, 60);
+      ctx.lineTo(1280, 60);
+      ctx.stroke();
+
+      // 3.1. Bulb Icon & Brand Title
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '22px "Inter", sans-serif';
+      ctx.fillText('💡', 20, 38);
+      ctx.font = '800 16px "Inter", sans-serif';
+      ctx.fillText('Lighthouse D2C Intelligence', 56, 30);
+      ctx.font = '500 10px "Inter", sans-serif';
+      ctx.fillStyle = '#7a85a0';
+      ctx.fillText('Live from Google Sheet · Auto-refreshes on open', 56, 45);
+
+      // 3.2. Last Updated and Refresh Button
+      ctx.font = '600 10px "Inter", sans-serif';
+      ctx.fillStyle = '#b4bdd0';
+      ctx.fillText('✓ Updated 11:15:10 PM', 995, 35);
+
+      // Refresh Button (Warm Amber)
+      let refBtnX = 1140;
+      let refBtnY = 15;
+      let refBtnW = 110;
+      let refBtnH = 30;
+      let isRefClicked = (time >= 6.8 && time <= 7.1);
+      
+      ctx.fillStyle = isRefClicked ? '#d97706' : '#f59e0b';
+      ctx.beginPath();
+      pathRoundRect(ctx, refBtnX, refBtnY, refBtnW, refBtnH, 8);
+      ctx.fill();
+      
+      ctx.fillStyle = '#06080f';
+      ctx.font = '800 11px "Inter", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🔄 Refresh', refBtnX + refBtnW / 2, refBtnY + 19);
+      ctx.textAlign = 'left';
+
+      // 4. Filters Bar
+      ctx.fillStyle = 'rgba(10, 14, 28, 0.55)';
+      ctx.fillRect(0, 60, 1280, 40);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.beginPath();
+      ctx.moveTo(0, 100);
+      ctx.lineTo(1280, 100);
+      ctx.stroke();
+
+      ctx.fillStyle = '#7a85a0';
+      ctx.font = '800 9px "Inter", sans-serif';
+      ctx.fillText('DATE RANGE:', 20, 84);
+
+      // Draw date range chips
+      let chips = ['Last 3 Days', 'Last 7 Days', 'Last 30 Days', 'Last 90 Days', 'All Time'];
+      let chipX = 100;
+      let isProductSelected = (time >= 11.3);
+      
+      chips.forEach((c) => {
+        let active = (c === 'Last 7 Days');
+        let cW = 85;
+        if (c === 'Last 3 Days') cW = 80;
+        if (c === 'All Time') cW = 65;
+        
+        ctx.fillStyle = active ? '#f59e0b' : 'rgba(255, 255, 255, 0.03)';
+        ctx.beginPath();
+        pathRoundRect(ctx, chipX, 68, cW, 24, 12);
+        ctx.fill();
+        ctx.strokeStyle = active ? '#f59e0b' : 'rgba(255, 255, 255, 0.07)';
+        ctx.stroke();
+
+        ctx.fillStyle = active ? '#06080f' : '#eef1f8';
+        ctx.font = '700 10px "Inter", sans-serif';
+        ctx.fillText(c, chipX + 10, 84);
+        
+        chipX += cW + 8;
+      });
+
+      // Date Inputs Divider
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.beginPath();
+      ctx.moveTo(chipX, 70);
+      ctx.lineTo(chipX, 90);
+      ctx.stroke();
+      chipX += 10;
+
+      // Start Date
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.beginPath();
+      pathRoundRect(ctx, chipX, 68, 85, 24, 6);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.stroke();
+      ctx.fillStyle = '#b4bdd0';
+      ctx.font = '500 10px monospace';
+      ctx.fillText('dd/mm/yyyy', chipX + 8, 84);
+
+      chipX += 95;
+      ctx.fillStyle = '#7a85a0';
+      ctx.font = '500 10px "Inter", sans-serif';
+      ctx.fillText('to', chipX, 84);
+      chipX += 20;
+
+      // End Date
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.beginPath();
+      pathRoundRect(ctx, chipX, 68, 85, 24, 6);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.stroke();
+      ctx.fillStyle = '#b4bdd0';
+      ctx.font = '500 10px monospace';
+      ctx.fillText('dd/mm/yyyy', chipX + 8, 84);
+
+      chipX += 95;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.beginPath();
+      ctx.moveTo(chipX, 70);
+      ctx.lineTo(chipX, 90);
+      ctx.stroke();
+      chipX += 10;
+
+      // Product Filter Dropdown
+      ctx.fillStyle = '#7a85a0';
+      ctx.font = '800 9px "Inter", sans-serif';
+      ctx.fillText('PRODUCT:', chipX, 84);
+      chipX += 55;
+
+      let prodVal = isProductSelected ? 'Organic Face Serum' : 'All Products';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.beginPath();
+      pathRoundRect(ctx, chipX, 68, 130, 24, 6);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.stroke();
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '700 10px "Inter", sans-serif';
+      ctx.fillText(prodVal, chipX + 10, 84);
+      ctx.fillStyle = '#7a85a0';
+      ctx.fillText('▾', chipX + 115, 84);
+
+      chipX += 140;
+      ctx.fillStyle = '#7a85a0';
+      ctx.font = '800 9px "Inter", sans-serif';
+      ctx.fillText('SOURCE:', chipX, 84);
+      chipX += 50;
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.beginPath();
+      pathRoundRect(ctx, chipX, 68, 100, 24, 6);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.stroke();
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '700 10px "Inter", sans-serif';
+      ctx.fillText('All Sources', chipX + 10, 84);
+      ctx.fillStyle = '#7a85a0';
+      ctx.fillText('▾', chipX + 85, 84);
+
+      // 5. Tabs Bar
+      ctx.fillStyle = 'rgba(10, 14, 28, 0.6)';
+      ctx.fillRect(0, 100, 1280, 40);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.beginPath();
+      ctx.moveTo(0, 140);
+      ctx.lineTo(1280, 140);
+      ctx.stroke();
+
+      let tabs = [
+        { id: 0, label: 'Overview & Campaigns', w: 180 },
+        { id: 1, label: 'Product Deep Dive', w: 160 },
+        { id: 2, label: 'Root Cause Analyzer', w: 170 },
+        { id: 3, label: 'Competitor Intel', w: 150 }
+      ];
+      let tabX = 20;
+      tabs.forEach((t) => {
+        let isActive = (activeTab === t.id);
+        if (isActive) {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+          ctx.fillRect(tabX, 100, t.w, 40);
+          
+          ctx.fillStyle = '#f59e0b'; // amber bottom border
+          ctx.fillRect(tabX, 137, t.w, 3);
+          
+          ctx.fillStyle = '#f59e0b';
+        } else {
+          ctx.fillStyle = '#b4bdd0';
+        }
+        ctx.font = '700 12px "Inter", sans-serif';
+        ctx.fillText(t.label, tabX + 15, 124);
+        tabX += t.w + 4;
+      });
+
+      // 6. Draw Open Dropdown
+      if (time >= 9.8 && time < 11.0) {
+        let dropX = 793;
+        let dropY = 92;
+        let dropW = 150;
+        let dropH = 90;
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        pathRoundRect(ctx, dropX + 1, dropY + 3, dropW, dropH, 6);
+        ctx.fill();
+
+        ctx.fillStyle = 'rgba(18, 24, 48, 0.95)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.beginPath();
+        pathRoundRect(ctx, dropX, dropY, dropW, dropH, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        let items = ['All Products', 'Organic Face Serum', 'Rosewater Toner'];
+        items.forEach((item, idx) => {
+          let itemY = dropY + idx * 30;
+          let isHovered = (idx === 1 && time >= 10.4);
+          
+          if (isHovered) {
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
+            ctx.fillRect(dropX + 2, itemY + 2, dropW - 4, 26);
+            ctx.fillStyle = '#3b82f6';
+          } else {
+            ctx.fillStyle = '#b4bdd0';
+          }
+          ctx.font = '600 11px "Inter", sans-serif';
+          ctx.fillText(item, dropX + 12, itemY + 20);
+        });
+        ctx.restore();
+      }
+    }
+
+    function getCursorPos(t) {
+      // 0.0s to 5.0s (Intro): Cursor offscreen
+      if (t >= 0.0 && t < 5.0) {
+        return { x: -50, y: -50, click: false };
+      }
+
+      // 5.0s to 6.8s: Move to Refresh button (x = 1195, y = 30)
+      if (t >= 5.0 && t < 6.8) {
+        let pct = (t - 5.0) / 1.8;
+        let startX = 640, startY = 360;
+        let targetX = 1195, targetY = 30;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+      
+      // 6.8s to 7.1s: Click Refresh
+      if (t >= 6.8 && t < 7.1) {
+        return { x: 1195, y: 30, click: true };
+      }
+
+      // 7.1s to 8.5s: Hold at Refresh button
+      if (t >= 7.1 && t < 8.5) {
+        return { x: 1195, y: 30, click: false };
+      }
+
+      // 8.5s to 9.8s: Move to Product dropdown (x = 858, y = 80)
+      if (t >= 8.5 && t < 9.8) {
+        let pct = (t - 8.5) / 1.3;
+        let startX = 1195, startY = 30;
+        let targetX = 858, targetY = 80;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 9.8s to 10.1s: Click Product Dropdown
+      if (t >= 9.8 && t < 10.1) {
+        return { x: 858, y: 80, click: true };
+      }
+
+      // 10.1s to 11.0s: Move down to select "Organic Face Serum" in dropdown (x = 858, y = 135)
+      if (t >= 10.1 && t < 11.0) {
+        let pct = (t - 10.1) / 0.9;
+        let startX = 858, startY = 80;
+        let targetX = 858, targetY = 135;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 11.0s to 11.3s: Click "Organic Face Serum"
+      if (t >= 11.0 && t < 11.3) {
+        return { x: 858, y: 135, click: true };
+      }
+
+      // 11.3s to 12.0s: Move to scroll center (x = 640, y = 400)
+      if (t >= 11.3 && t < 12.0) {
+        let pct = (t - 11.3) / 0.7;
+        let startX = 858, startY = 135;
+        let targetX = 640, targetY = 400;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 12.0s to 15.0s: Scrolling simulation
+      if (t >= 12.0 && t < 15.0) {
+        return { x: 640, y: 400, click: false };
+      }
+
+      // 15.0s to 16.0s: Move to Product Deep Dive tab (x = 280, y = 120)
+      if (t >= 15.0 && t < 16.0) {
+        let pct = (t - 15.0) / 1.0;
+        let startX = 640, startY = 400;
+        let targetX = 280, targetY = 120;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 16.0s to 16.3s: Click Tab 1
+      if (t >= 16.0 && t < 16.3) {
+        return { x: 280, y: 120, click: true };
+      }
+
+      // 16.3s to 18.0s: Move down to Product Table row (x = 200, y = 240)
+      if (t >= 16.3 && t < 18.0) {
+        let pct = (t - 16.3) / 1.7;
+        let startX = 280, startY = 120;
+        let targetX = 200, targetY = 240;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 18.0s to 21.0s: Hover on Product row
+      if (t >= 18.0 && t < 21.0) {
+        return { x: 200, y: 240, click: false };
+      }
+
+      // 21.0s to 25.0s: Drift to Language Performance (x = 920, y = 450)
+      if (t >= 21.0 && t < 25.0) {
+        let pct = (t - 21.0) / 4.0;
+        let startX = 200, startY = 240;
+        let targetX = 920, targetY = 450;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 25.0s to 26.0s: Move to Root Cause Analyzer tab (x = 445, y = 120)
+      if (t >= 25.0 && t < 26.0) {
+        let pct = (t - 25.0) / 1.0;
+        let startX = 920, startY = 450;
+        let targetX = 445, targetY = 120;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 26.0s to 26.3s: Click Tab 2
+      if (t >= 26.0 && t < 26.3) {
+        return { x: 445, y: 120, click: true };
+      }
+
+      // 26.3s to 28.0s: Move to CVR bar (x = 350, y = 450)
+      if (t >= 26.3 && t < 28.0) {
+        let pct = (t - 26.3) / 1.7;
+        let startX = 445, startY = 120;
+        let targetX = 350, targetY = 450;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 28.0s to 31.0s: Hover on CVR bar
+      if (t >= 28.0 && t < 31.0) {
+        return { x: 350, y: 450, click: false };
+      }
+
+      // 31.0s to 33.0s: Drift to Top Drivers (x = 900, y = 350)
+      if (t >= 31.0 && t < 33.0) {
+        let pct = (t - 31.0) / 2.0;
+        let startX = 350, startY = 450;
+        let targetX = 900, targetY = 350;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 33.0s to 34.0s: Move to Competitor Intel tab (x = 605, y = 120)
+      if (t >= 33.0 && t < 34.0) {
+        let pct = (t - 33.0) / 1.0;
+        let startX = 900, startY = 350;
+        let targetX = 605, targetY = 120;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 34.0s to 34.3s: Click Tab 3
+      if (t >= 34.0 && t < 34.3) {
+        return { x: 605, y: 120, click: true };
+      }
+
+      // 34.3s to 35.5s: Move to search bar (x = 200, y = 175)
+      if (t >= 34.3 && t < 35.5) {
+        let pct = (t - 34.3) / 1.2;
+        let startX = 605, startY = 120;
+        let targetX = 200, targetY = 175;
+        return {
+          x: startX + (targetX - startX) * pct,
+          y: startY + (targetY - startY) * pct,
+          click: false
+        };
+      }
+
+      // 35.5s to 37.0s: Hover/Scroll (x = 640, y = 400)
+      if (t >= 35.5 && t < 37.0) {
+        return { x: 640, y: 400, click: false };
+      }
+
+      return { x: -50, y: -50, click: false };
+    }
+
+    function drawPointerCursor(x, y, clickTime) {
+      if (x < 0 || y < 0) return;
+      ctx.save();
+
+      // Click ripple
+      if (clickTime > 0) {
+        let rippleRad = (clickTime * 60) % 25;
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, rippleRad, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Draw standard pointer cursor
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#06080f';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + 10, y + 22);
+      ctx.lineTo(x + 5, y + 24);
+      ctx.lineTo(x, y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawCanvas(time) {
+      if (!ctx) return;
+      
+      // Determine active scene
+      if (time >= 0 && time < 5.0) {
+        drawSceneIntro(time);
+      } else if (time >= 5.0 && time < 15.0) {
+        drawSceneOverview(time);
+      } else if (time >= 15.0 && time < 25.0) {
+        drawSceneProductDeepDive(time);
+      } else if (time >= 25.0 && time < 33.0) {
+        drawSceneRootCauseAnalyzer(time);
+      } else if (time >= 33.0 && time < 37.0) {
+        drawSceneCompetitorIntel(time);
+      } else if (time >= 37.0 && time <= 40.0) {
+        let beatTime = 60 / 144;
+        let beatFraction = (time % beatTime) / beatTime;
+        let pulseScaler = 1.0 + Math.exp(-6 * beatFraction) * 0.02;
+        drawSceneOutro(time, pulseScaler);
+      }
+
+      // Draw cursor pointer on top of everything
+      let cursor = getCursorPos(time);
+      drawPointerCursor(cursor.x, cursor.y, cursor.click ? (time % 0.3) : 0);
+    }
+
+        // ── SCENE 0: INTRO ──
+    function drawSceneIntro(t) {
+      ctx.save();
+      ctx.fillStyle = '#06080f';
+      ctx.fillRect(0, 0, 1280, 720);
+
+      // Radial background glows
+      let rad1 = ctx.createRadialGradient(640, 360, 0, 640, 360, 600);
+      rad1.addColorStop(0, 'rgba(59, 130, 246, 0.15)');
+      rad1.addColorStop(0.5, 'rgba(139, 92, 246, 0.08)');
+      rad1.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = rad1;
+      ctx.fillRect(0, 0, 1280, 720);
+
+      // Camera zoom out effect
+      let zoom = 1.0 + (5.0 - t) * 0.03;
+      ctx.translate(640, 360);
+      ctx.scale(zoom, zoom);
+      ctx.translate(-640, -360);
+
+      // Glowing grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.lineWidth = 1;
+      let gridSpace = 60;
+      for (let x = 0; x < 1280; x += gridSpace) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 720); ctx.stroke();
+      }
+      for (let y = 0; y < 720; y += gridSpace) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1280, y); ctx.stroke();
+      }
+
+      // Neon grid box in center
+      let boxW = 820;
+      let boxH = 260;
+      let boxX = 640 - boxW / 2;
+      let boxY = 360 - boxH / 2;
+
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.35)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+      // Titles
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '900 46px "Inter", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText("LIGHTHOUSE D2C INTELLIGENCE", 640, 335);
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = '800 18px "Inter", sans-serif';
+      ctx.fillText("MARKETING PERFORMANCE COMMAND CENTER", 640, 385);
+
+      ctx.fillStyle = '#c4b5fd';
+      ctx.font = '500 12px "Inter", sans-serif';
+      ctx.fillText("1-CLICK SYNC • ROAS SCALING • WATERFALL ANALYTICS • COMPETITOR INTEL", 640, 435);
+
+      ctx.restore();
+      drawScenarioLabel("INTRO: D2C MARKETING CONTROL CENTER");
+    }
+
+    // ── SCENE 1: OVERVIEW & CAMPAIGNS (TAB 0) ──
+    function drawSceneOverview(t) {
+      // Calculate scrolling offset: scrolls up between 12.0s and 15.0s
+      let scrollOffset = 0;
+      if (t >= 12.0 && t < 15.0) {
+        let pct = (t - 12.0) / 3.0;
+        scrollOffset = -510 * pct; // scroll up to reveal table
+      } else if (t >= 15.0) {
+        scrollOffset = -510;
+      }
+
+      // Draw dashboard container frame
+      drawDashboardFrame(t, 0);
+
+      ctx.save();
+      // Clip content area to exclude header / tabs from scrolling
+      ctx.beginPath();
+      ctx.rect(0, 140, 1280, 500);
+      ctx.clip();
+      
+      ctx.translate(0, scrollOffset);
+
+      // Animate scorecard value interpolation
+      let spendVal, revVal, roasVal, convVal, cacVal, aovVal;
+      let isProductSelected = (t >= 11.3);
+
+      if (isProductSelected) {
+        // Organic Face Serum only
+        spendVal = "₹1.20 Cr";
+        revVal = "₹3.10 Cr";
+        roasVal = "× 2.58";
+        convVal = "44,560";
+        cacVal = "₹269";
+        aovVal = "₹695";
+      } else if (t < 6.8) {
+        // Lower baseline before Refresh click
+        spendVal = "₹18.59 Cr";
+        revVal = "₹16.37 Cr";
+        roasVal = "× 0.88";
+        convVal = "2,54,320";
+        cacVal = "₹731";
+        aovVal = "₹643";
+      } else if (t >= 6.8 && t < 8.2) {
+        // Count up transition after Refresh click (1.4 seconds count up)
+        let pct = (t - 6.8) / 1.4;
+        let s = 18.59 + (24.59 - 18.59) * pct;
+        let r = 16.37 + (23.37 - 16.37) * pct;
+        let ro = 0.88 + (0.95 - 0.88) * pct;
+        let c = Math.round(254320 + (337378 - 254320) * pct);
+        let ca = Math.round(731 + (729 - 731) * pct);
+        let ao = Math.round(643 + (693 - 643) * pct);
+
+        spendVal = "₹" + s.toFixed(2) + " Cr";
+        revVal = "₹" + r.toFixed(2) + " Cr";
+        roasVal = "× " + ro.toFixed(2);
+        convVal = c.toLocaleString('en-IN');
+        cacVal = "₹" + ca;
+        aovVal = "₹" + ao;
+      } else {
+        // Final values
+        spendVal = "₹24.59 Cr";
+        revVal = "₹23.37 Cr";
+        roasVal = "× 0.95";
+        convVal = "3,37,378";
+        cacVal = "₹729";
+        aovVal = "₹693";
+      }
+
+      // Draw scorecards
+      let cardW = 190;
+      let cardH = 90;
+      let cardY = 150;
+
+      let cardData = [
+        { label: "TOTAL SPEND", val: spendVal, sub: isProductSelected ? "1,850 ads served" : "42,971 ads served", color: '#3b82f6' },
+        { label: "REVENUE", val: revVal, sub: "Sales value", color: '#c4b5fd' },
+        { label: "ROAS", val: roasVal, sub: "Return on spend", color: (isProductSelected ? '#22c55e' : '#ef4444') },
+        { label: "CONVERSIONS", val: convVal, sub: "Total Purchases", color: '#f59e0b' },
+        { label: "CAC", val: cacVal, sub: "Cost per Acquisition", color: (isProductSelected ? '#22c55e' : '#f59e0b') },
+        { label: "AOV", val: aovVal, sub: "Average Order Value", color: '#22c55e' }
+      ];
+
+      cardData.forEach((card, idx) => {
+        let cardX = 40 + idx * (cardW + 12);
+        drawDashboardCard(cardX, cardY, cardW, cardH, card.label === "ROAS" && isProductSelected);
+
+        // Color indicator strip on top
+        ctx.fillStyle = card.color;
+        ctx.fillRect(cardX, cardY, cardW, 3);
+
+        ctx.fillStyle = '#7a85a0';
+        ctx.font = '800 8.5px "Inter", sans-serif';
+        ctx.fillText(card.label, cardX + 15, cardY + 20);
+
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '800 21px "Inter", sans-serif';
+        ctx.fillText(card.val, cardX + 15, cardY + 52);
+
+        ctx.fillStyle = '#7a85a0';
+        ctx.font = '500 9px monospace';
+        ctx.fillText(card.sub, cardX + 15, cardY + 75);
+      });
+
+      // Funnel Metrics Strip
+      let fnY = 255;
+      drawDashboardCard(40, fnY, 1200, 80);
+      
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 10px "Inter", sans-serif';
+      ctx.fillText('⚡ FUNNEL METRICS', 55, fnY + 22);
+
+      let stepW = 200;
+      let stepGap = 65;
+      let funnelSteps = isProductSelected ? [
+        { label: "LINK CLICKS", val: "8,40,520", rate: "46.8% to LPV" },
+        { label: "LP VIEWS", val: "3,93,360", rate: "10.2% to ATC" },
+        { label: "ADDS TO CART", val: "40,120", rate: "28.3% to Conv" },
+        { label: "CONVERSIONS", val: "11,350", rate: "" }
+      ] : [
+        { label: "LINK CLICKS", val: "2,49,67,811", rate: "46.8% to LPV" },
+        { label: "LP VIEWS", val: "1,16,85,380", rate: "10.2% to ATC" },
+        { label: "ADDS TO CART", val: "11,93,253", rate: "28.3% to Conv" },
+        { label: "CONVERSIONS", val: "3,37,378", rate: "" }
+      ];
+
+      funnelSteps.forEach((step, idx) => {
+        let sx = 60 + idx * (stepW + stepGap);
+        let sy = fnY + 34;
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+        ctx.fillRect(sx, sy, stepW, 36);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.strokeRect(sx, sy, stepW, 36);
+
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '800 13px "Inter", sans-serif';
+        ctx.fillText(step.val, sx + 10, sy + 22);
+
+        ctx.fillStyle = '#7a85a0';
+        ctx.font = '700 8px "Inter", sans-serif';
+        ctx.fillText(step.label, sx + 10, sy + 11);
+
+        if (step.rate) {
+          ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
+          ctx.fillRect(sx + stepW + 8, sy + 8, 48, 18);
+          ctx.strokeStyle = 'rgba(59, 130, 246, 0.25)';
+          ctx.strokeRect(sx + stepW + 8, sy + 8, 48, 18);
+
+          ctx.fillStyle = '#3b82f6';
+          ctx.font = '800 7.5px monospace';
+          ctx.fillText(step.rate.split(' ')[0], sx + stepW + 12, sy + 19);
+
+          ctx.fillStyle = '#7a85a0';
+          ctx.font = '500 6.5px monospace';
+          ctx.fillText(step.rate.split(' ').slice(1).join(' '), sx + stepW + 36, sy + 19);
+
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+          ctx.beginPath();
+          ctx.moveTo(sx + stepW, sy + 18);
+          ctx.lineTo(sx + stepW + 8, sy + 18);
+          ctx.moveTo(sx + stepW + 56, sy + 18);
+          ctx.lineTo(sx + stepW + 65, sy + 18);
+          ctx.stroke();
+        }
+      });
+
+      // Advanced Alerts
+      let alY = 350;
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 10px "Inter", sans-serif';
+      ctx.fillText('🧠 ADVANCED ALERTS & INTELLIGENCE', 40, alY + 16);
+
+      let alerts = [
+        { type: 'warn', icon: '⚠️', txt: 'LPV-to-ATC Drop: Campaign "Organic Face Serum | Tier 1 Audience" has very low Add to Cart rate (1.2% of LPVs). Check landing page CRO.' },
+        { type: 'danger', icon: '🚫', txt: 'Click-to-LPV Drop: Campaign "Pro Retinol Anti Aging | Broad Match" has 10.3% drop off from Click to LPV. Check URL loading speed.' },
+        { type: 'warn', icon: '⚠️', txt: 'LPV-to-ATC Drop: Campaign "Rosewater Toner regional campaign" has very low Add to Cart rate (0.7% of LPVs). Check landing page CRO.' }
+      ];
+
+      alerts.forEach((al, idx) => {
+        let ay = alY + 25 + idx * 38;
+        ctx.fillStyle = al.type === 'danger' ? 'rgba(239, 68, 68, 0.08)' : 'rgba(245, 158, 11, 0.08)';
+        ctx.beginPath();
+        pathRoundRect(ctx, 40, ay, 1200, 32, 6);
+        ctx.fill();
+        ctx.strokeStyle = al.type === 'danger' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(245, 158, 11, 0.2)';
+        ctx.stroke();
+
+        ctx.fillStyle = al.type === 'danger' ? '#ef4444' : '#f59e0b';
+        ctx.font = '500 11px "Inter", sans-serif';
+        ctx.fillText(al.icon + " " + al.txt, 55, ay + 20);
+      });
+
+      // Daily Spend & Revenue Trend chart
+      let chY = 510;
+      drawDashboardCard(40, chY, 1200, 120);
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 10px "Inter", sans-serif';
+      ctx.fillText('📈 DAILY SPEND & REVENUE TREND', 55, chY + 22);
+
+      // Draw two simple line charts inside
+      ctx.strokeStyle = '#f59e0b'; 
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(100, chY + 80);
+      ctx.bezierCurveTo(300, chY + 30, 600, chY + 90, 1100, chY + 40);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#3b82f6'; 
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(100, chY + 95);
+      ctx.bezierCurveTo(300, chY + 70, 600, chY + 100, 1100, chY + 75);
+      ctx.stroke();
+
+      // Legend
+      ctx.fillStyle = '#f59e0b'; ctx.fillRect(1000, chY + 14, 10, 10);
+      ctx.fillStyle = '#b4bdd0'; ctx.font = '700 9px "Inter"'; ctx.fillText('Revenue', 1015, chY + 22);
+      ctx.fillStyle = '#3b82f6'; ctx.fillRect(1080, chY + 14, 10, 10);
+      ctx.fillStyle = '#b4bdd0'; ctx.fillText('Spend', 1095, chY + 22);
+
+      // Adset Table (Revealed via scrolling)
+      let adsTblY = 650;
+      drawDashboardCard(40, adsTblY, 1200, 160);
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 10px "Inter", sans-serif';
+      ctx.fillText('🎯 ADSET PERFORMANCE & ACTION SIGNALS', 55, adsTblY + 22);
+
+      // Adset headers
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.fillRect(50, adsTblY + 34, 1180, 22);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.strokeRect(50, adsTblY + 34, 1180, 22);
+
+      ctx.fillStyle = '#7a85a0';
+      ctx.font = '800 8.5px "Inter", sans-serif';
+      let adsHeaders = ['Adset Name', 'Action', 'Spend', 'ROAS', 'Clicks', 'LPV', 'ATC', 'Conv.', 'CAC'];
+      let adsXs = [60, 360, 470, 570, 670, 770, 870, 970, 1070];
+
+      adsHeaders.forEach((h, hIdx) => {
+        ctx.fillText(h, adsXs[hIdx], adsTblY + 49);
+      });
+
+      let adsRows = [
+        { name: "Organic Face Serum | Tier 1 Audience", act: "SCALE ✅", col: '#22c55e', spend: "₹1.20 Cr", roas: "×2.58", clicks: "8,40,520", lpv: "3,93,360", atc: "40,120", conv: "11,350", cac: "₹269" },
+        { name: "Rosewater Toner | Broad Interest", act: "HOLD ✋", col: '#f59e0b', spend: "₹45.20 L", roas: "×1.69", clicks: "3,12,050", lpv: "1,52,400", atc: "15,800", conv: "4,500", cac: "₹440" },
+        { name: "Pro Retinol | LAL 2% Purchases", act: "PAUSE 🛑", col: '#ef4444', spend: "₹85.00 L", roas: "×0.92", clicks: "4,10,200", lpv: "1,85,600", atc: "12,400", conv: "2,800", cac: "₹857" }
+      ];
+
+      adsRows.forEach((row, rIdx) => {
+        let rowY = adsTblY + 62 + rIdx * 28;
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '700 9px "Inter", sans-serif';
+        ctx.fillText(row.name, adsXs[0], rowY + 12);
+
+        // Action badge
+        ctx.fillStyle = row.col === '#22c55e' ? 'rgba(34, 197, 94, 0.08)' : (row.col === '#ef4444' ? 'rgba(239, 68, 68, 0.08)' : 'rgba(245, 158, 11, 0.08)');
+        ctx.fillRect(adsXs[1], rowY - 1, 60, 16);
+        ctx.strokeStyle = row.col === '#22c55e' ? 'rgba(34, 197, 94, 0.25)' : (row.col === '#ef4444' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(245, 158, 11, 0.25)');
+        ctx.strokeRect(adsXs[1], rowY - 1, 60, 16);
+
+        ctx.fillStyle = row.col;
+        ctx.font = '800 7.5px "Inter"';
+        ctx.fillText(row.act, adsXs[1] + 6, rowY + 10);
+
+        // Metrics
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '500 9.5px monospace';
+        ctx.fillText(row.spend, adsXs[2], rowY + 11);
+        ctx.fillStyle = row.col;
+        ctx.font = '800 10px monospace';
+        ctx.fillText(row.roas, adsXs[3], rowY + 11);
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '500 9.5px monospace';
+        ctx.fillText(row.clicks, adsXs[4], rowY + 11);
+        ctx.fillText(row.lpv, adsXs[5], rowY + 11);
+        ctx.fillText(row.atc, adsXs[6], rowY + 11);
+        ctx.fillText(row.conv, adsXs[7], rowY + 11);
+        ctx.fillText(row.cac, adsXs[8], rowY + 11);
+      });
+
+      // Campaign Table (Revealed via scrolling)
+      let tblY = 830;
+      drawDashboardCard(40, tblY, 1200, 180);
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 10px "Inter", sans-serif';
+      ctx.fillText('🎯 CAMPAIGN PERFORMANCE & ACTION SIGNALS', 55, tblY + 22);
+
+      // Table Header Row with Platform header
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.fillRect(50, tblY + 36, 1180, 24);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.strokeRect(50, tblY + 36, 1180, 24);
+
+      ctx.fillStyle = '#7a85a0';
+      ctx.font = '800 8.5px "Inter", sans-serif';
+      let tblHeaders = ['Platform', 'Campaign', 'Action', 'Spend', 'Revenue', 'ROAS', 'CPM', 'Clicks', 'LPV', 'Conv.', 'CAC'];
+      let tblXs = [60, 160, 480, 560, 640, 720, 800, 880, 960, 1040, 1120];
+
+      tblHeaders.forEach((h, hIdx) => {
+        ctx.fillText(h, tblXs[hIdx], tblY + 52);
+      });
+
+      // Row Data
+      let tblRows = [
+        { brand: "Organic Face Serum Narrative Led Campaign", act: "SCALE ✅", col: '#22c55e', spend: "₹1.20 Cr", rev: "₹3.10 Cr", roas: "×2.58", cpm: "₹716", clicks: "8,40,520", lpv: "3,93,360", conv: "11,350", cac: "₹269" },
+        { brand: "Rosewater Toner Brand Awareness Broad", act: "HOLD ✋", col: '#f59e0b', spend: "₹45.20 L", rev: "₹76.40 L", roas: "×1.69", cpm: "₹742", clicks: "3,12,050", lpv: "1,52,400", conv: "4,500", cac: "₹440" },
+        { brand: "Pro Retinol ASC Performance Scaling", act: "PAUSE 🛑", col: '#ef4444', spend: "₹85.00 L", rev: "₹78.20 L", roas: "×0.92", cpm: "₹665", clicks: "4,10,200", lpv: "1,85,600", conv: "2,800", cac: "₹857" }
+      ];
+
+      tblRows.forEach((row, rIdx) => {
+        let rowY = tblY + 68 + rIdx * 32;
+        
+        // Draw Platform Badge
+        ctx.fillStyle = 'rgba(59, 130, 246, 0.08)';
+        ctx.beginPath();
+        pathRoundRect(ctx, tblXs[0], rowY, 70, 18, 9);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(59, 130, 246, 0.25)';
+        ctx.stroke();
+        ctx.fillStyle = '#3b82f6';
+        ctx.font = '800 8px "Inter"';
+        ctx.fillText("Meta Ads", tblXs[0] + 12, rowY + 12);
+
+        // Draw Campaign Name
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '700 9.5px "Inter"';
+        ctx.fillText(row.brand.substring(0, 48) + '…', tblXs[1], rowY + 13);
+
+        // Draw Action Badge
+        ctx.fillStyle = row.col === '#22c55e' ? 'rgba(34, 197, 94, 0.08)' : (row.col === '#ef4444' ? 'rgba(239, 68, 68, 0.08)' : 'rgba(245, 158, 11, 0.08)');
+        ctx.beginPath();
+        pathRoundRect(ctx, tblXs[2], rowY - 2, 65, 18, 4);
+        ctx.fill();
+        ctx.strokeStyle = row.col === '#22c55e' ? 'rgba(34, 197, 94, 0.25)' : (row.col === '#ef4444' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(245, 158, 11, 0.25)');
+        ctx.stroke();
+
+        ctx.fillStyle = row.col;
+        ctx.font = '800 8px "Inter"';
+        ctx.fillText(row.act, tblXs[2] + 8, rowY + 10);
+
+        // Metrics
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '500 10px monospace';
+        ctx.fillText(row.spend, tblXs[3], rowY + 12);
+        ctx.fillText(row.rev, tblXs[4], rowY + 12);
+        ctx.fillStyle = row.col;
+        ctx.font = '800 10.5px monospace';
+        ctx.fillText(row.roas, tblXs[5], rowY + 12);
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '500 10px monospace';
+        ctx.fillText(row.cpm, tblXs[6], rowY + 12);
+        ctx.fillText(row.clicks, tblXs[7], rowY + 12);
+        ctx.fillText(row.lpv, tblXs[8], rowY + 12);
+        ctx.fillText(row.conv, tblXs[9], rowY + 12);
+        ctx.fillText(row.cac, tblXs[10], rowY + 12);
+      });
+
+      ctx.restore();
+
+      drawScenarioLabel("1. OVERVIEW & CAMPAIGNS: EXAMINE REVENUE PACING & CRITICAL FUNNEL ALERTS");
+    }
+
+
+        // ── SCENE 2: PRODUCT DEEP DIVE (TAB 1) ──
+    function drawSceneProductDeepDive(t) {
+      drawDashboardFrame(t, 1);
+
+      // Left panel: Product Performance Table
+      let tableX = 40;
+      let tableY = 160;
+      let tableW = 780;
+      let tableH = 470;
+
+      drawDashboardCard(tableX, tableY, tableW, tableH);
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 11px "Inter", sans-serif';
+      ctx.fillText('📦 PRODUCT PERFORMANCE LEDGER', tableX + 20, tableY + 25);
+
+      // Columns
+      let cols = ['Product SKU', 'Signal', 'Ads Active', 'Spend', 'Revenue', 'ROAS'];
+      let colXs = [tableX + 20, tableX + 230, tableX + 350, tableX + 450, tableX + 560, tableX + 680];
+      
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.fillRect(tableX + 10, tableY + 40, tableW - 20, 24);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.strokeRect(tableX + 10, tableY + 40, tableW - 20, 24);
+
+      ctx.fillStyle = '#7a85a0';
+      ctx.font = '800 9px "Inter", sans-serif';
+      cols.forEach((col, idx) => {
+        ctx.fillText(col, colXs[idx], tableY + 56);
+      });
+
+      // Rows with safe/generic skincare terminology
+      let rows = [
+        { sku: "Organic Face Serum (60ml)", sig: "Needs Assets", color: '#ef4444', ads: "3 active", spend: "₹1.20 Cr", rev: "₹3.10 Cr", roas: "× 2.58" },
+        { sku: "Rosewater Refreshing Toner", sig: "Stable Pacing", color: '#7a85a0', ads: "8 active", spend: "₹45.20 L", rev: "₹76.40 L", roas: "× 1.69" },
+        { sku: "Daily Hydra Face Moisturizer", sig: "Stable Pacing", color: '#7a85a0', ads: "6 active", spend: "₹32.00 L", rev: "₹48.00 L", roas: "× 1.50" },
+        { sku: "Multi Peptide Repair Serum", sig: "Pause/Refresh", color: '#ef4444', ads: "12 active", spend: "₹85.00 L", rev: "₹78.20 L", roas: "× 0.92" }
+      ];
+
+      rows.forEach((row, idx) => {
+        let ry = tableY + 74 + idx * 36;
+        let isHovered = (idx === 0 && t >= 18.0 && t <= 21.0);
+
+        if (isHovered) {
+          ctx.fillStyle = 'rgba(59, 130, 246, 0.12)';
+          ctx.fillRect(tableX + 10, ry - 6, tableW - 20, 32);
+        }
+
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '700 11px "Inter", sans-serif';
+        ctx.fillText(row.sku, colXs[0], ry + 14);
+
+        // Signal badge
+        ctx.fillStyle = row.color === '#22c55e' ? 'rgba(34, 197, 94, 0.08)' : (row.color === '#ef4444' ? 'rgba(239, 68, 68, 0.08)' : 'rgba(255, 255, 255, 0.03)');
+        ctx.beginPath();
+        pathRoundRect(ctx, colXs[1], ry, 90, 20, 4);
+        ctx.fill();
+        ctx.strokeStyle = row.color === '#22c55e' ? 'rgba(34, 197, 94, 0.25)' : (row.color === '#ef4444' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(255, 255, 255, 0.07)');
+        ctx.stroke();
+
+        ctx.fillStyle = row.color;
+        ctx.font = '800 8.5px "Inter", sans-serif';
+        ctx.fillText(row.sig, colXs[1] + 10, ry + 13);
+
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '500 11px monospace';
+        ctx.fillText(row.ads, colXs[2], ry + 14);
+        ctx.fillText(row.spend, colXs[3], ry + 14);
+        ctx.fillText(row.rev, colXs[4], ry + 14);
+
+        ctx.fillStyle = row.color;
+        ctx.font = '800 11px monospace';
+        ctx.fillText(row.roas, colXs[5], ry + 14);
+      });
+
+      // Hover Tooltip for row 1
+      if (t >= 18.0 && t <= 21.0) {
+        let tx = 220;
+        let ty = 250;
+        ctx.save();
+        ctx.fillStyle = 'rgba(12, 17, 34, 0.95)';
+        pathRoundRect(ctx, tx, ty, 240, 110, 8);
+        ctx.fill();
+        ctx.strokeStyle = '#f59e0b';
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 11px "Inter"'; ctx.fillText('🚀 Organic Face Serum Analytics', tx + 15, ty + 25);
+        ctx.font = '500 9.5px "Inter"'; ctx.fillStyle = 'rgba(238, 241, 248, 0.7)';
+        ctx.fillText('• Hook Rate: 42.5% (Excellent)', tx + 15, ty + 48);
+        ctx.fillText('• Hold Rate (15s): 18.2% (Fatigue)', tx + 15, ty + 68);
+        ctx.fillText('• Action: Deploy UGC batch 2 immediately', tx + 15, ty + 88);
+        ctx.restore();
+      }
+
+      // Right panel top: Asset Intel
+      let rx = 840;
+      drawDashboardCard(rx, 160, 400, 225);
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 11px "Inter", sans-serif';
+      ctx.fillText('🧠 PRODUCT ASSET INTELLIGENCE', rx + 20, 185);
+
+      let cardRecs = [
+        { title: "🚀 Organic Face Serum (3 ads)", desc: "High ROAS (×2.58) but under-indexed in creatives. Scale spend +20%." },
+        { title: "⛔ Multi Peptide Repair (12 ads)", desc: "Low ROAS (×0.92) indicating creative fatigue. Stop overspending." }
+      ];
+
+      cardRecs.forEach((rec, idx) => {
+        let ry = 205 + idx * 75;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+        ctx.fillRect(rx + 15, ry, 370, 60);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.strokeRect(rx + 15, ry, 370, 60);
+
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '800 10px "Inter", sans-serif';
+        ctx.fillText(rec.title, rx + 25, ry + 20);
+
+        ctx.fillStyle = '#b4bdd0';
+        ctx.font = '500 10px "Inter", sans-serif';
+        ctx.fillText(rec.desc, rx + 25, ry + 38);
+      });
+
+      // Right panel bottom: Language Performance
+      drawDashboardCard(rx, 405, 400, 225);
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 11px "Inter", sans-serif';
+      ctx.fillText('🌐 LANGUAGE SEGMENTATION', rx + 20, 430);
+
+      // Table inside
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.fillRect(rx + 15, 445, 370, 22);
+      ctx.fillStyle = '#7a85a0';
+      ctx.font = '800 9px "Inter"';
+      ctx.fillText('Language', rx + 25, 459);
+      ctx.fillText('Spend', rx + 140, 459);
+      ctx.fillText('ROAS', rx + 220, 459);
+      ctx.fillText('Purchases', rx + 300, 459);
+
+      let langRows = [
+        { lang: "Hindi", spend: "₹1.45 Cr", roas: "× 2.10", conv: "22,450", color: '#22c55e' },
+        { lang: "Telugu", spend: "₹85.20 L", roas: "× 1.85", conv: "11,920", color: '#22c55e' },
+        { lang: "Tamil", spend: "₹62.00 L", roas: "× 1.72", conv: "8,400", color: '#22c55e' }
+      ];
+
+      langRows.forEach((row, idx) => {
+        let ry = 478 + idx * 28;
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '700 10.5px "Inter"'; ctx.fillText(row.lang, rx + 25, ry + 15);
+        ctx.font = '500 10px monospace'; ctx.fillText(row.spend, rx + 140, ry + 15);
+        ctx.fillStyle = row.color;
+        ctx.font = '800 10.5px monospace'; ctx.fillText(row.roas, rx + 220, ry + 15);
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '500 10px monospace'; ctx.fillText(row.conv, rx + 300, ry + 15);
+      });
+
+      drawScenarioLabel("2. PRODUCT DEEP DIVE: MONITOR ASSET DIVERSITY, SKU ROAS & LANGUAGE EFFICIENCY");
+    }
+
+
+        // ── SCENE 3: ROOT CAUSE ANALYZER (TAB 2) ──
+        // ── SCENE 3: ROOT CAUSE ANALYZER (TAB 2) ──
+        // ── SCENE 3: ROOT CAUSE ANALYZER (TAB 2) ──
+    function drawSceneRootCauseAnalyzer(t) {
+      let stageT = t - 25.0; 
+      drawDashboardFrame(t, 2);
+
+      // Top Diagnostic Summary Card
+      let sumY = 160;
+      drawDashboardCard(40, sumY, 1200, 80);
+      
+      ctx.fillStyle = '#3b82f6';
+      ctx.fillRect(40, sumY, 4, 80);
+
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 11px "Inter", sans-serif';
+      ctx.fillText('🤖 AUTOMATED ROOT CAUSE DIAGNOSTIC SUMMARY', 60, sumY + 22);
+
+      let summaryText = "Revenue dropped by ₹2.40 Cr (-10.3%) vs previous period. The primary mathematical driver was a drop in Conversion Rate (-15.4% impact), most heavily driven by the Organic Face Serum campaign.";
+      let charLimit = Math.round(summaryText.length * Math.min(1.0, stageT / 1.5));
+      ctx.fillStyle = '#b4bdd0';
+      ctx.font = '500 11.5px "Inter", sans-serif';
+      ctx.fillText(summaryText.substring(0, charLimit), 60, sumY + 46);
+
+      // Left panel: Revenue Variance Waterfall Chart
+      let chartX = 40;
+      let chartY = 255;
+      let chartW = 780;
+      let chartH = 375;
+
+      drawDashboardCard(chartX, chartY, chartW, chartH);
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 11px "Inter", sans-serif';
+      ctx.fillText('📊 REVENUE VARIANCE WATERFALL (TRAFFIC vs CVR vs AOV)', chartX + 20, chartY + 25);
+
+      // Draw waterfall bars
+      let wLabels = ['Prev Period', 'Traffic Impact', 'CVR Impact', 'AOV Impact', 'Curr Period'];
+      let wValues = [26.05, 1.35, -4.15, 0.12, 23.37];
+      let barColors = ['#7a85a0', '#22c55e', '#ef4444', '#22c55e', '#3b82f6'];
+
+      let baseLineY = chartY + 300;
+      let scale = 9; 
+
+      wLabels.forEach((label, idx) => {
+        let bx = chartX + 80 + idx * 135;
+        let bW = 60;
+        let bY, bH;
+
+        if (idx === 0) {
+          bH = wValues[0] * scale;
+          bY = baseLineY - bH;
+        } else if (idx === 1) {
+          bH = Math.abs(wValues[1]) * scale;
+          bY = baseLineY - (wValues[0] + wValues[1]) * scale;
+        } else if (idx === 2) {
+          bH = Math.abs(wValues[2]) * scale;
+          bY = baseLineY - (wValues[0] + wValues[1]) * scale;
+        } else if (idx === 3) {
+          bH = Math.abs(wValues[3]) * scale;
+          bY = baseLineY - (wValues[0] + wValues[1] + wValues[2] + wValues[3]) * scale;
+        } else {
+          bH = wValues[4] * scale;
+          bY = baseLineY - bH;
+        }
+
+        ctx.fillStyle = barColors[idx];
+        ctx.fillRect(bx, bY, bW, bH);
+
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '800 9.5px monospace';
+        let valStr = (wValues[idx] >= 0 ? '+' : '') + wValues[idx].toFixed(2) + " Cr";
+        if (idx === 0 || idx === 4) valStr = "₹" + wValues[idx].toFixed(2) + " Cr";
+        ctx.fillText(valStr, bx - 2, bY - 8);
+
+        ctx.fillStyle = '#7a85a0';
+        ctx.font = '800 8.5px "Inter", sans-serif';
+        ctx.fillText(label, bx - 10, baseLineY + 22);
+
+        if (idx < 4) {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.moveTo(bx + bW, bY + (idx === 2 ? bH : 0));
+          ctx.lineTo(bx + bW + 75, bY + (idx === 2 ? bH : 0));
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      });
+
+      // Hover Tooltip on CVR Impact bar (idx = 2)
+      if (t >= 28.0 && t <= 31.0) {
+        let tx = chartX + 380;
+        let ty = 340;
+        ctx.save();
+        ctx.fillStyle = 'rgba(12, 17, 34, 0.95)';
+        pathRoundRect(ctx, tx, ty, 250, 90, 8);
+        ctx.fill();
+        ctx.strokeStyle = '#ef4444';
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 11px "Inter"'; ctx.fillText('📊 Conversion Rate Drop-Off', tx + 15, ty + 22);
+        ctx.font = '500 10px "Inter"'; ctx.fillStyle = 'rgba(238, 241, 248, 0.7)';
+        ctx.fillText('• Impact: -₹4.15 Cr on Sales', tx + 15, ty + 42);
+        ctx.fillText('• Main Culprit: Organic Face Serum', tx + 15, ty + 58);
+        ctx.fillText('• Recommended: Fix LPV loading speed', tx + 15, ty + 74);
+        ctx.restore();
+      }
+
+      // Right panel: Top Drivers Table
+      let rx = 840;
+      let ry = 255;
+      let rw = 400;
+      let rh = 375;
+
+      drawDashboardCard(rx, ry, rw, rh);
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 11px "Inter", sans-serif';
+      ctx.fillText('📈 TOP CAMPAIGN VARIANCE DRIVERS', rx + 20, ry + 25);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.fillRect(rx + 15, ry + 40, rw - 30, 22);
+      ctx.fillStyle = '#7a85a0';
+      ctx.font = '800 8.5px "Inter"';
+      ctx.fillText('Platform & Campaign', rx + 25, ry + 54);
+      ctx.fillText('Traffic Δ', rx + 200, ry + 54);
+      ctx.fillText('CVR Δ', rx + 270, ry + 54);
+      ctx.fillText('AOV Δ', rx + 330, ry + 54);
+
+      let drivers = [
+        { name: "Meta | Organic Face Serum", tfc: "+12.4%", cvr: "-18.2%", aov: "+0.5%", color: '#ef4444' },
+        { name: "Meta | Rosewater Toner ASC", tfc: "+8.5%", cvr: "-12.1%", aov: "-0.2%", color: '#ef4444' },
+        { name: "Google | Brand Search", tfc: "-2.1%", cvr: "+1.5%", aov: "+2.0%", color: '#22c55e' },
+        { name: "Meta | Retarget Carousel", tfc: "+1.2%", cvr: "+0.5%", aov: "+1.1%", color: '#22c55e' }
+      ];
+
+      drivers.forEach((d, idx) => {
+        let dy = ry + 72 + idx * 30;
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '700 9.5px "Inter"'; 
+        ctx.fillText(d.name.length > 25 ? d.name.substring(0, 23) + '…' : d.name, rx + 25, dy + 15);
+        ctx.font = '500 10px monospace';
+        ctx.fillStyle = d.tfc.startsWith('+') ? '#22c55e' : '#ef4444';
+        ctx.fillText(d.tfc, rx + 200, dy + 15);
+        ctx.fillStyle = d.cvr.startsWith('+') ? '#22c55e' : '#ef4444';
+        ctx.fillText(d.cvr, rx + 270, dy + 15);
+        ctx.fillStyle = d.aov.startsWith('+') ? '#22c55e' : '#ef4444';
+        ctx.fillText(d.aov, rx + 330, dy + 15);
+      });
+
+      drawScenarioLabel("3. ROOT CAUSE ANALYZER: DECONSTRUCT VALUE DRIVERS USING WATERFALL DIAGNOSTICS");
+    }
+
+    // ── SCENE 4: COMPETITOR INTEL (TAB 3) ──
+    function drawSceneCompetitorIntel(t) {
+      let stageT = t - 33.0; 
+      drawDashboardFrame(t, 3);
+
+      // Search Bar
+      let sbX = 40, sbY = 160, sbW = 320, sbH = 34;
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.beginPath();
+      pathRoundRect(ctx, sbX, sbY, sbW, sbH, 6);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.stroke();
+
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '700 11px "Inter", sans-serif';
+      let searchVal = "Aura";
+      let typedChars = Math.min(searchVal.length, Math.round(stageT * 8));
+      ctx.fillText(searchVal.substring(0, typedChars) + (t % 0.5 > 0.25 ? '|' : ''), sbX + 12, sbY + 21);
+
+      // Competitor Grid
+      let gridX = 40, gridY = 210, gridW = 1200, gridH = 420;
+      drawDashboardCard(gridX, gridY, gridW, gridH);
+      ctx.fillStyle = '#eef1f8';
+      ctx.font = '800 11px "Inter", sans-serif';
+      ctx.fillText('🏢 ACTIVE RIVAL STRATEGIC AD NARRATIVES', gridX + 20, gridY + 25);
+
+      // Competitor list data (fully anonymized brand names)
+      let comps = [
+        { brand: "Aura Skincare", plat: "🔵 Meta Ads", narr: "Focusing on science-backed active ingredients (Salicylic Acid, Niacinamide). Ads highlight clinical trial stats and before/after comparisons.", since: "Since 12/11/2025", active: true },
+        { brand: "PureDew Skincare", plat: "🔵 Meta Ads", narr: "Promoting vegan, clean beauty messaging. Lightweight moisturizer ranges with summer-fresh aesthetics.", since: "Since 20/12/2025", active: true },
+        { brand: "Derma Science", plat: "🔵 Meta Ads", narr: "Running dermatologist-led educational reels. Focuses on acne skincare (1% Hyaluronic Sunscreen).", since: "Since 05/01/2026", active: true },
+        { brand: "Rosemary Roots", plat: "🔵 Meta Ads", narr: "Highlighting Spanish Rosemary hair oil and Jeju volcanic ash. Video hooks showing hair growth results in 15 seconds.", since: "Since 14/02/2026", active: true },
+        { brand: "EcoEarth Beauty", plat: "🔵 Meta Ads", narr: "Highlighting natural ingredients (Onion hair oil). Heavy focus on family-oriented lifestyle reels.", since: "Since 01/10/2025", active: true }
+      ];
+
+      let scrollOffset = -60 * Math.max(0, (t - 34.5) / 1.3);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(gridX + 10, gridY + 40, gridW - 20, gridH - 50);
+      ctx.clip();
+
+      comps.forEach((c, idx) => {
+        let cy = gridY + 50 + idx * 80 + scrollOffset;
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+        ctx.fillRect(gridX + 15, cy, gridW - 30, 68);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.strokeRect(gridX + 15, cy, gridW - 30, 68);
+
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(gridX + 15, cy, 3, 68);
+
+        ctx.fillStyle = '#eef1f8';
+        ctx.font = '800 12.5px "Inter", sans-serif';
+        ctx.fillText("🏢 " + c.brand, gridX + 35, cy + 38);
+
+        ctx.font = '800 8.5px "Inter", sans-serif';
+        ctx.fillStyle = '#3b82f6';
+        ctx.fillText(c.plat, gridX + 220, cy + 22);
+
+        ctx.font = '500 11px "Inter", sans-serif';
+        ctx.fillStyle = '#b4bdd0';
+        ctx.fillText(c.narr.length > 95 ? c.narr.substring(0, 92) + '…' : c.narr, gridX + 220, cy + 42);
+
+        ctx.fillStyle = 'rgba(34, 197, 94, 0.08)';
+        ctx.beginPath();
+        pathRoundRect(ctx, gridX + 1040, cy + 22, 60, 20, 10);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(34, 197, 94, 0.25)';
+        ctx.stroke();
+        
+        ctx.fillStyle = '#22c55e';
+        ctx.font = '800 8.5px "Inter"';
+        ctx.fillText("● Active", gridX + 1048, cy + 34);
+
+        ctx.fillStyle = '#7a85a0';
+        ctx.font = '500 9px monospace';
+        ctx.fillText(c.since, gridX + 1040, cy + 54);
+      });
+
+      ctx.restore();
+
+      drawScenarioLabel("4. COMPETITOR INTEL: TRACK AND MODEL RIVAL AD CREATIVES & STRATEGIC CHEATSHEETS");
+    }
+
+
+        // ── SCENE 5: OUTRO ──
+        // ── SCENE 5: OUTRO ──
+        // ── SCENE 5: OUTRO ──
+    function drawSceneOutro(t, pulse) {
+      let stageT = t - 37.0; 
+      ctx.save();
+
+      let outroGrad = ctx.createLinearGradient(0, 0, 0, 720);
+      outroGrad.addColorStop(0, '#06080f');
+      outroGrad.addColorStop(1, '#0c101d');
+      ctx.fillStyle = outroGrad;
+      ctx.fillRect(0, 0, 1280, 720);
+
+      let numStars = 40;
+      ctx.fillStyle = '#ffffff';
+      for (let s = 0; s < numStars; s++) {
+        let angle = s * 0.15;
+        let speed = 250 + s * 10;
+        let distance = stageT * speed;
+        let sx = 640 + Math.cos(angle) * distance;
+        let sy = 360 + Math.sin(angle) * distance;
+        let r = 1 + (distance / 500) * 3;
+        
+        ctx.globalAlpha = Math.min(1.0, 1.5 - stageT);
+        ctx.beginPath();
+        ctx.arc(sx, sy, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1.0;
+
+      ctx.save();
+      ctx.translate(640, 240);
+      ctx.scale(pulse, pulse);
+      
+      let g = ctx.createRadialGradient(0, 0, 0, 0, 0, 120);
+      g.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
+      g.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(0, 0, 120, 0, Math.PI * 2);
+      ctx.fill();
+
+      function pathShield() {
+        ctx.beginPath();
+        ctx.moveTo(0, -50);
+        ctx.lineTo(40, -30);
+        ctx.lineTo(40, 20);
+        ctx.quadraticCurveTo(0, 60, 0, 60);
+        ctx.quadraticCurveTo(-40, 20, -40, 20);
+        ctx.lineTo(-40, -30);
+        ctx.closePath();
+      }
+
+      ctx.strokeStyle = 'rgba(59, 130, 246, 0.2)';
+      ctx.lineWidth = 9;
+      pathShield();
+      ctx.stroke();
+
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 4;
+      pathShield();
+      ctx.stroke();
+
+      ctx.fillStyle = '#c4b5fd'; ctx.fillRect(-22, -10, 10, 30);
+      ctx.fillStyle = '#3b82f6'; ctx.fillRect(-6, -24, 10, 44);
+      ctx.fillStyle = '#22c55e'; ctx.fillRect(10, -4, 10, 24);
+
+      ctx.restore();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '800 38px "Inter", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText("COMMAND YOUR D2C MARKETING", 640, 420);
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = '800 16px "Inter", sans-serif';
+      ctx.fillText("SCALE WITH ABSOLUTE CONFIDENCE", 640, 465);
+
+      let btnW = 360;
+      let btnH = 50;
+      let btnX = 640 - btnW / 2;
+      let btnY = 525;
+
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
+      ctx.fillRect(btnX, btnY, btnW, btnH);
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(btnX, btnY, btnW, btnH);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '800 13px "Inter", sans-serif';
+      ctx.fillText("🚀 SYNCHRONIZE D2C INTELLIGENCE", 640, btnY + 30);
+      ctx.textAlign = 'left';
+      ctx.restore();
+
+      drawScenarioLabel("5. OUTRO: BUILD YOUR GOOGLE SHEET DASHBOARD & SCALE ADSET DECISIONS");
+    }
+
+    function drawScenarioLabel(text) {
+      ctx.fillStyle = 'rgba(12, 17, 34, 0.85)';
+      ctx.beginPath();
+      pathRoundRect(ctx, 40, 650, 1200, 36, 6);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.stroke();
+
+      ctx.fillStyle = '#f59e0b'; 
+      ctx.font = '800 11px "Inter", sans-serif';
+      ctx.fillText(text, 60, 672);
+
+      let barW = 1160;
+      let barH = 3;
+      let barX = 60;
+      let barY = 678;
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.fillRect(barX, barY, barW, barH);
+
+      let progressPct = currentTime / totalDuration;
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(barX, barY, barW * progressPct, barH);
+    }
+
+    // ── PLAYER WORKFLOW FUNCTIONS ──
+    function togglePlay(forcePlay) {
+      if (forcePlay === true) {
+        isPlaying = true;
+      } else {
+        isPlaying = !isPlaying;
+      }
+
+      const btn = document.getElementById('playBtn');
+      if (isPlaying) {
+        if (audioContext && audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+        btn.innerText = "⏸ Pause";
+        btn.className = "ctrl-btn active";
+      } else {
+        btn.innerText = "▶ Play";
+        btn.className = "ctrl-btn";
+      }
+    }
+
+    function restartAnimation() {
+      currentTime = 0;
+      lastPlayedBeat = -1;
+      if (!isPlaying) {
+        togglePlay(true);
+      }
+      drawCanvas(0);
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundBtn').innerText = soundEnabled ? "🔊 Sound: ON" : "🔇 Sound: OFF";
+    }
+
+    // scrubbing timeline
+    function startScrub(e) {
+      scrubActive = true;
+      togglePlay(false);
+      scrub(e);
+      window.addEventListener('mousemove', scrub);
+      window.addEventListener('mouseup', stopScrub);
+    }
+
+    function scrub(e) {
+      const track = document.getElementById('timelineSlider');
+      const rect = track.getBoundingClientRect();
+      let pct = (e.clientX - rect.left) / rect.width;
+      pct = Math.max(0, Math.min(1, pct));
+      
+      currentTime = pct * totalDuration;
+      lastPlayedBeat = Math.floor(currentTime / beatDuration);
+      
+      drawCanvas(currentTime);
+      updatePlaybackUI();
+    }
+
+    function stopScrub() {
+      scrubActive = false;
+      window.removeEventListener('mousemove', scrub);
+      window.removeEventListener('mouseup', stopScrub);
+    }
+
+
+    // ── HIGH-FIDELITY MP4 RECORDING ENGINE ──
+    function startRecording() {
+      if (isRecording) return;
+      
+      logStatus("Preparing canvas capture stream...", "info");
+      
+      // Ensure audio engine is initialized
+      if (!audioContext) {
+        initializeEngine();
+      }
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+
+      // Check codec support
+      const mimeTypes = [
+        'video/mp4;codecs=avc1,mp4a.40.2',
+        'video/mp4;codecs=avc1',
+        'video/mp4',
+        'video/webm;codecs=h264,opus',
+        'video/webm;codecs=vp9,opus',
+        'video/webm'
+      ];
+      
+      let selectedMime = '';
+      for (let type of mimeTypes) {
+        if (MediaRecorder.isTypeSupported(type)) {
+          selectedMime = type;
+          break;
+        }
+      }
+
+      logStatus(`Selected Output Mimetype: ${selectedMime}`, "info");
+
+      // Set state
+      isRecording = true;
+      recordedChunks = [];
+      
+      const recordBtn = document.getElementById('recordBtn');
+      recordBtn.innerText = "⏹ Recording (0%)...";
+      recordBtn.className = "ctrl-btn btn-record recording";
+
+      // 1. Capture Canvas Stream at 60fps
+      const canvasStream = canvas.captureStream(60);
+      
+      // 2. Capture Synthesizer Stream
+      const audioStream = recorderDestination.stream;
+      
+      // 3. Merge Audio and Video tracks
+      const outputStream = new MediaStream();
+      outputStream.addTrack(canvasStream.getVideoTracks()[0]);
+      if (audioStream.getAudioTracks().length > 0) {
+        outputStream.addTrack(audioStream.getAudioTracks()[0]);
+        logStatus("Audio Track mixed successfully into stream.", "success");
+      } else {
+        logStatus("Warning: No audio track found to mix.", "error");
+      }
+
+      // 4. Initialize MediaRecorder
+      let options = {
+        mimeType: selectedMime,
+        videoBitsPerSecond: 6000000 // 6 Mbps for pristine 1080p-grade sharpness
+      };
+
+      try {
+        mediaRecorder = new MediaRecorder(outputStream, options);
+      } catch (err) {
+        logStatus(`Failed to create recorder with H.264: ${err.message}. Falling back to default container.`, "error");
+        mediaRecorder = new MediaRecorder(outputStream);
+      }
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        logStatus("Recording captured successfully. Compiling MP4 file...", "success");
+        
+        let containerExtension = "mp4";
+        if (mediaRecorder.mimeType.includes("webm")) {
+          containerExtension = "webm";
+          logStatus("Saved as WebM due to browser codec configurations. Converting/naming to MP4.", "info");
+        }
+
+        const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `D2C_Marketing_Dashboard_Showcase.${containerExtension}`;
+        document.body.appendChild(a);
+        a.click();
+        
+        setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 100);
+
+        // Reset button
+        recordBtn.innerText = "🔴 Record & Download MP4";
+        recordBtn.className = "ctrl-btn btn-record";
+        isRecording = false;
+        
+        logStatus("Download triggered! Saved to downloads folder.", "success");
+      };
+
+      // Restart animation to time 0 and play
+      currentTime = 0;
+      lastPlayedBeat = -1;
+      isPlaying = true;
+      togglePlay(true);
+
+      // Start recording
+      mediaRecorder.start();
+      logStatus("Recording running... Rendering timeline (30 seconds)...", "info");
+
+      // Monitor recording progress
+      let progressInterval = setInterval(() => {
+        if (!isRecording) {
+          clearInterval(progressInterval);
+          return;
+        }
+        let pct = Math.round((currentTime / totalDuration) * 100);
+        recordBtn.innerText = `⏹ Recording (${pct}%)...`;
+      }, 200);
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+    }
+
+    // Auto-record if query parameter `autoplay=true` is set
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('autoplay') === 'true') {
+        setTimeout(() => {
+          startRecording();
+        }, 1000);
+      }
+    });
+  </script>
+</body>
+</html>

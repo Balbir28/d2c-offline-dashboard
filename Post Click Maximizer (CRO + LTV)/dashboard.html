@@ -1,0 +1,3634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D2C Scaler | Growth & Performance Command Center</title>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            /* Futuristic Cyber Palette */
+            --bg-base: #020617;
+            --bg-surface: #0a0f1d;
+            --bg-card: rgba(10, 17, 32, 0.75);
+            --border-color: rgba(99, 102, 241, 0.15);
+            --border-glow: rgba(99, 102, 241, 0.35);
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --primary: #6366f1;         /* Neon Indigo */
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --secondary: #06b6d4;       /* Neon Cyan */
+            --secondary-glow: rgba(6, 182, 212, 0.35);
+            --accent: #8b5cf6;          /* Neon Purple */
+            
+            --success: #10b981;          /* Neon Emerald */
+            --success-glow: rgba(16, 185, 129, 0.2);
+            --danger: #f43f5e;           /* Neon Rose */
+            --danger-glow: rgba(244, 63, 94, 0.2);
+            --warning: #f59e0b;          /* Neon Amber */
+            --warning-glow: rgba(245, 158, 11, 0.2);
+            
+            --font-main: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'Space Grotesk', sans-serif;
+            --glass-blur: blur(20px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(99, 102, 241, 0.3) transparent;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.04) 0%, transparent 60%);
+            background-attachment: fixed;
+        }
+
+        /* Scrollbar styles */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 6px; }
+
+        /* Loader Overlay */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-base);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            gap: 16px;
+        }
+        .spin {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(99, 102, 241, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #loaderMsg { color: var(--text-primary); font-size: 14px; font-weight: 600; font-family: var(--font-mono); }
+
+        /* Sidebar Styling */
+        aside {
+            width: 330px;
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            flex-shrink: 0;
+            z-index: 10;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo-section {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            text-align: center;
+        }
+        .logo-section h2 {
+            font-family: var(--font-mono);
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a5b4fc, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .logo-section p {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-top: 6px;
+        }
+
+        .config-card {
+            background-color: rgba(30, 41, 59, 0.25);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+        .config-card h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--secondary);
+            font-family: var(--font-mono);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 6px;
+        }
+
+        /* Ingest inputs */
+        label {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        input[type="text"], input[type="password"], input[type="number"], select, textarea, input[type="date"] {
+            width: 100%;
+            background-color: #030712;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-family: var(--font-mono);
+            outline: none;
+            transition: all 0.25s;
+        }
+        input:focus, select:focus, textarea:focus, input[type="date"]:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px var(--secondary-glow);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12.5px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font-main);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px var(--primary-glow);
+        }
+        .btn-secondary {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        .btn-secondary:hover {
+            background: rgba(30, 41, 59, 0.8);
+        }
+
+        .status-list {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 11px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        /* Main Content Styling */
+        main {
+            flex-grow: 1;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: calc(100% - 330px);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+        header h1 {
+            font-family: var(--font-mono);
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        header p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        /* Filter Panel */
+        .filter-bar {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .filter-chip {
+            background-color: rgba(99, 102, 241, 0.08);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--primary);
+            font-family: var(--font-mono);
+        }
+        .filter-chip:hover, .filter-chip.on {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 0 10px var(--primary-glow);
+            border-color: transparent;
+        }
+        .filter-sep {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .date-inputs {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .date-inputs input {
+            padding: 4px 8px;
+            font-size: 11px;
+            width: 115px;
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            background-color: rgba(10, 17, 32, 0.4);
+            border: 1px solid var(--border-color);
+            padding: 4px;
+            border-radius: 10px;
+            gap: 4px;
+            align-self: flex-start;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            font-size: 12.5px;
+            font-weight: 600;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-main);
+        }
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .tab-btn.active {
+            color: white;
+            background: var(--primary);
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* Glass Cards */
+        .card {
+            background-color: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent);
+        }
+        .card h3 {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* KPI Scorecards */
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 16px;
+        }
+        .kpi-card {
+            background: rgba(5, 8, 17, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: all 0.25s ease;
+        }
+        .kpi-card:hover {
+            border-color: var(--primary-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .kpi-card.accent {
+            border-color: rgba(6, 182, 212, 0.4);
+            background: radial-gradient(100% 100% at 100% 0%, rgba(6, 182, 212, 0.06) 0%, transparent 100%), rgba(5, 8, 17, 0.5);
+        }
+        .kpi-title {
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .kpi-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            background: linear-gradient(135deg, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .kpi-delta {
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .delta-up { color: var(--success); }
+        .delta-down { color: var(--danger); }
+        .delta-neutral { color: var(--text-muted); }
+
+        /* Visual Funnel */
+        .funnel-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5, 8, 17, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 20px;
+            overflow-x: auto;
+            gap: 4px;
+        }
+        .funnel-step {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-width: 120px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+        .funnel-step:hover {
+            transform: translateY(-1px);
+            border-color: var(--primary);
+        }
+        .funnel-icon { font-size: 15px; margin-bottom: 4px; }
+        .funnel-val {
+            font-size: 16px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .funnel-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .funnel-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            margin: 0 -4px;
+        }
+        .funnel-rate {
+            font-size: 9.5px;
+            font-weight: 700;
+            background: #0b1120;
+            color: var(--secondary);
+            padding: 2px 8px;
+            border-radius: 20px;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            white-space: nowrap;
+            font-family: var(--font-mono);
+        }
+        .funnel-rate.drop {
+            color: var(--danger);
+            border-color: rgba(244, 63, 94, 0.3);
+            box-shadow: 0 0 5px rgba(244, 63, 94, 0.1);
+        }
+
+        /* Alerts banner styling */
+        .alerts-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .alert-row {
+            background-color: rgba(245, 158, 11, 0.08);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+        }
+        .alert-red {
+            background-color: rgba(244, 63, 94, 0.08);
+            border-color: rgba(244, 63, 94, 0.25);
+        }
+        .alert-ok {
+            background-color: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.25);
+        }
+
+        /* Grid layouts */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        .grid-3col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        /* Waterfall variance chart wrap */
+        .waterfall-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr;
+            gap: 20px;
+        }
+        @media(max-width:900px){
+            .waterfall-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Dynamic Tables */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: rgba(5, 8, 17, 0.3);
+            max-height: 480px;
+            overflow-y: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 12px;
+        }
+        th {
+            background-color: rgba(15, 23, 42, 0.9);
+            color: var(--text-primary);
+            font-weight: 700;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            cursor: pointer;
+            user-select: none;
+        }
+        th:hover {
+            background-color: #111827;
+        }
+        th::after { content: ' ↕'; opacity: 0.3; }
+        th.sort-asc::after { content: ' ↑'; opacity: 1; color: var(--secondary); }
+        th.sort-desc::after { content: ' ↓'; opacity: 1; color: var(--secondary); }
+        
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-secondary);
+            vertical-align: middle;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Neon Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 9.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-family: var(--font-mono);
+            border: 1px solid transparent;
+        }
+        .badge-green {
+            background-color: var(--success-glow);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 5px rgba(16, 185, 129, 0.1);
+        }
+        .badge-red {
+            background-color: var(--danger-glow);
+            color: var(--danger);
+            border-color: rgba(244, 63, 94, 0.3);
+            box-shadow: 0 0 5px rgba(244, 63, 94, 0.1);
+        }
+        .badge-yellow {
+            background-color: var(--warning-glow);
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+        .badge-blue {
+            background-color: rgba(99, 102, 241, 0.12);
+            color: #818cf8;
+            border-color: rgba(99, 102, 241, 0.25);
+        }
+        .badge-purple {
+            background-color: rgba(139, 92, 246, 0.12);
+            color: #a78bfa;
+            border-color: rgba(139, 92, 246, 0.25);
+        }
+        .badge-cyan {
+            background-color: rgba(6, 182, 212, 0.12);
+            color: #22d3ee;
+            border-color: rgba(6, 182, 212, 0.25);
+        }
+
+        /* Progress bars */
+        .bar {
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.05);
+            margin-top: 4px;
+            overflow: hidden;
+            width: 100%;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--primary);
+        }
+
+        /* Product Deep Dive cards */
+        .insight-card {
+            background: rgba(15, 23, 42, 0.45);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .insight-card:hover {
+            border-color: var(--secondary);
+        }
+        .insight-icon { font-size: 22px; }
+        .insight-title { font-weight: 700; color: #fff; font-family: var(--font-mono); font-size: 13.5px; }
+        .insight-body { font-size: 11.5px; color: var(--text-secondary); line-height: 1.5; }
+
+        /* Competitor Narratives list */
+        .comp-list { display: flex; flex-direction: column; gap: 12px; }
+        .comp-row {
+            background: rgba(10, 17, 32, 0.4);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--warning);
+            border-radius: 10px;
+            padding: 14px 18px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            position: relative;
+        }
+        .comp-row:hover {
+            border-color: var(--warning-glow);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.05);
+        }
+        .comp-brand { font-family: var(--font-mono); font-weight: 700; color: #fff; font-size: 14px; min-width: 160px; }
+        .comp-narrative { font-size: 12px; color: var(--text-secondary); line-height: 1.5; flex-grow: 1; }
+        .comp-meta { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; min-width: 120px; font-size: 10.5px; color: var(--text-muted); }
+
+        /* Settings grid */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        @media(max-width:900px){
+            .settings-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Chat Agent Panel */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 480px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: rgba(5, 8, 17, 0.4);
+        }
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .chat-message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        .chat-message.user {
+            background-color: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+        .chat-message.agent {
+            background-color: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .chat-message.system {
+            background-color: rgba(244, 63, 94, 0.08);
+            color: var(--danger);
+            border: 1px solid rgba(244, 63, 94, 0.2);
+            align-self: center;
+            text-align: center;
+            font-size: 11px;
+            max-width: 90%;
+        }
+        .chat-input-area {
+            display: flex;
+            padding: 12px;
+            background-color: rgba(5, 8, 17, 0.85);
+            border-top: 1px solid var(--border-color);
+            gap: 8px;
+        }
+
+        /* Toast notifications */
+        #toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            font-weight: 600;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 12px;
+            font-family: var(--font-mono);
+        }
+        #toast.show { transform: translateY(0); }
+
+        .footer {
+            padding: 20px 40px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOADER -->
+    <div id="loader">
+        <div class="spin"></div>
+        <div id="loaderMsg">Syncing Google Sheets Database...</div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside>
+        <div class="logo-section">
+            <h2>⚡ D2C SCALER</h2>
+            <p>High-Tech Ad Intelligence</p>
+        </div>
+
+        <div class="config-card">
+            <h4>1. Google Sheets Ingestion</h4>
+            <div class="form-group">
+                <label for="sheet-url">Spreadsheet ID or URL</label>
+                <input type="text" id="sheet-url" value="1R0NdZMUHHdxrA5U0yr9h_k59BvrlkYJAtdKaORXFWjs">
+            </div>
+            <button class="btn" id="sync-btn" onclick="syncData()">
+                <span>🔄 Sync Sheet Data</span>
+            </button>
+            <div id="sync-status" style="font-size: 10.5px; text-align: center; color: var(--text-secondary);">
+                Auto-refreshes on load
+            </div>
+        </div>
+
+        <div class="config-card">
+            <h4>2. Clipboard Ingest (Direct)</h4>
+            <div class="form-group">
+                <label for="csv-paste">Paste Rows (Excel/CSV/TSV)</label>
+                <textarea id="csv-paste" rows="3" placeholder="Paste daily sheet metrics..."></textarea>
+            </div>
+            <button class="btn btn-secondary" onclick="parseClipboardCSV()">
+                <span>📥 Ingest Paste Data</span>
+            </button>
+        </div>
+
+        <div class="config-card">
+            <h4>3. AI Credentials</h4>
+            <div class="form-group">
+                <label for="api-key">Gemini API Key (Optional)</label>
+                <input type="password" id="api-key" placeholder="Enter Gemini Key">
+            </div>
+        </div>
+
+        <div class="config-card">
+            <h4>4. Monthly Pacing Config</h4>
+            <div class="form-group">
+                <label for="monthly-budget">Monthly Budget Limit (₹)</label>
+                <input type="number" id="monthly-budget" value="100000" step="5000" onchange="applyFilters()">
+            </div>
+        </div>
+
+        <div class="status-list">
+            <div class="status-item">
+                <div class="status-dot"></div>
+                <span>Sheets Sync: ACTIVE</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" id="gemini-status-dot" style="background-color: var(--warning); box-shadow: 0 0 8px var(--warning);"></div>
+                <span id="gemini-status-lbl">Gemini API: Heuristics Fallback</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN PANEL -->
+    <main>
+        <header>
+            <div>
+                <h1 id="main-title">🚀 performance command center</h1>
+                <p>Granular Attributions, Variance Waterfall & Daily run rate diagnostics</p>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab-btn" onclick="switchTab('docs', this)">📖 Operator Manual</button>
+                <button class="tab-btn active" onclick="switchTab('overview', this)">📊 Overview & Funnels</button>
+                <button class="tab-btn" onclick="switchTab('runrate', this)">📅 Daily Run Rate</button>
+                <button class="tab-btn" onclick="switchTab('products', this)">🛍️ Product Deep Dive</button>
+                <button class="tab-btn" onclick="switchTab('googleads', this)">🔍 Google Ads Analyzer</button>
+                <button class="tab-btn" onclick="switchTab('rootcause', this)">🔍 AI Root Cause</button>
+                <button class="tab-btn" onclick="switchTab('intelligence', this)">⚡ Daily Intelligence (3d/7d)</button>
+                <button class="tab-btn" onclick="switchTab('competitors', this)">🕵️ Competitor Spy</button>
+                <button class="tab-btn" onclick="switchTab('benchmarks', this)">⚙️ Benchmark Targets</button>
+                <button class="tab-btn" onclick="switchTab('agent', this)">🤖 D2C Chat Agent</button>
+            </div>
+        </header>
+
+        <!-- FILTERS PANEL -->
+        <div class="filter-bar">
+            <span style="font-size:10.5px;color:var(--text-secondary);font-weight:700;font-family:var(--font-mono);">DATE RANGE:</span>
+            <div class="filter-chip" onclick="setDateRange(3, this)">Last 3 Days</div>
+            <div class="filter-chip" onclick="setDateRange(7, this)">Last 7 Days</div>
+            <div class="filter-chip" onclick="setDateRange(30, this)">Last 30 Days</div>
+            <div class="filter-chip" onclick="setDateRange(90, this)">Last 90 Days</div>
+            <div class="filter-chip on" onclick="setDateRange('all', this)">All Time</div>
+            <span class="filter-sep">|</span>
+            <div class="date-inputs">
+                <input type="date" id="date-start" onchange="setCustomDateRange()">
+                <span style="color:var(--text-secondary);font-size:10px">to</span>
+                <input type="date" id="date-end" onchange="setCustomDateRange()">
+            </div>
+            <span class="filter-sep">|</span>
+            <span style="font-size:10.5px;color:var(--text-secondary);font-weight:700;">PRODUCT:</span>
+            <select id="filter-product" style="width: 140px;" onchange="applyFilters()">
+                <option value="all">All Products</option>
+            </select>
+            <span style="font-size:10.5px;color:var(--text-secondary);font-weight:700;">SOURCE:</span>
+            <select id="filter-source" style="width: 120px;" onchange="applyFilters()">
+                <option value="all">All Sources</option>
+                <option value="UGC">UGC</option>
+                <option value="Influencer">Influencer</option>
+                <option value="Internal">Internal</option>
+            </select>
+        </div>
+
+        <!-- ==================== TAB 0: MANUAL ==================== -->
+        <div id="tab-docs" class="tab-content">
+            <div class="card">
+                <h3>📖 D2C Scaler Operator Guide</h3>
+                <div class="manual-section">
+                    <p>This command center aggregates daily, granular ad performance data across platforms, models attribution rates, and guides scaling limits.</p>
+                    
+                    <h4>📋 Required Spreadsheet Schema (RAW_DATA tab)</h4>
+                    <p>Your Google Sheet or clipboard pastes must contain columns formatted exactly like these headers:</p>
+                    <div class="code-block" style="position: relative;">
+                        Date,Platform,Campaign,Adset,Ad_Name,Keyword,Match_Type,Spend,Impressions,Clicks,LPV,Conversions,Revenue,ATC
+                        <button class="copy-btn" onclick="copyTemplateHeaders()">Copy Headers</button>
+                    </div>
+                    
+                    <h4>📐 Tab Summaries & Core Metrics</h4>
+                    <ul>
+                        <li><strong>Overview & Funnels:</strong> Scans blended spends, ROAS, and CPA. Highlights click drop-offs (clicks to LPVs, and cart checkouts CVR) with neon alert indicators.</li>
+                        <li><strong>Daily Run Rate:</strong> Tracks daily spends, ROAS, and CPA. Projections calculate Month-to-Date spend velocity and project End-of-Month (EOM) overspends vs budget limits.</li>
+                        <li><strong>Google Ads Analyzer:</strong> Drills down into Google Search keyword matrices (Match type, conversions, ROAS, CPA) and Search Terms lists. Works for PMax, Shopping, and Demand Gen.</li>
+                        <li><strong>AI Root Cause:</strong> Allocates revenue change ($\Delta R$) to Traffic, checkout Conversion Rate (CVR), and average basket size (AOV) using mathematical attribution, visualized on a Waterfall chart.</li>
+                        <li><strong>Daily Intelligence:</strong> Compares the Last 3 Days against the 7-day average baseline to deliver SCALE, PAUSE, or Creative Fatigue signals based on targets.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 1: OVERVIEW ==================== -->
+        <div id="tab-overview" class="tab-content active">
+            <!-- KPIs -->
+            <div class="kpi-container" id="overview-kpis">
+                <!-- Populated dynamically -->
+            </div>
+
+            <!-- FUNNEL -->
+            <div class="card">
+                <h3>🎯 Funnel & Drop-off Diagnostics</h3>
+                <div class="funnel-container" id="funnel-chart-container">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- ALERTS -->
+            <div class="card">
+                <h3>🧠 AI Diagnostics & Active Alerts</h3>
+                <div class="alerts-wrapper" id="overview-alerts-wrapper">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- TREND CHART -->
+            <div class="card">
+                <h3>📈 Spend, Revenue & CAC Daily Trend</h3>
+                <div class="chart-wrap">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="grid-2col">
+                <!-- FORMAT & PLATFORM CHARTS -->
+                <div class="card">
+                    <h3>🎭 Format & Platform Mix</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; height: 180px;">
+                        <div>
+                            <canvas id="formatChart"></canvas>
+                        </div>
+                        <div>
+                            <canvas id="platformChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NARRATIVE PERFORMANCE -->
+                <div class="card">
+                    <h3>🎭 Creative Narrative Performance</h3>
+                    <div class="table-responsive" style="height: 180px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Narrative</th>
+                                    <th>Spend</th>
+                                    <th>Revenue</th>
+                                    <th>ROAS</th>
+                                    <th>Conversions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="narrative-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAMPAIGNS TABLE -->
+            <div class="card">
+                <h3>🎯 Campaign Attributions & Signals</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Platform</th>
+                                <th>Campaign</th>
+                                <th>Action</th>
+                                <th>Spend</th>
+                                <th>Revenue</th>
+                                <th>ROAS</th>
+                                <th>CPM</th>
+                                <th>Clicks</th>
+                                <th>LPV</th>
+                                <th>Conv</th>
+                                <th>CAC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="campaign-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ADSETS TABLE -->
+            <div class="card">
+                <h3>🎯 Adset Performance Matrix</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Adset Group</th>
+                                <th>Action</th>
+                                <th>Spend</th>
+                                <th>ROAS</th>
+                                <th>Clicks</th>
+                                <th>LPV</th>
+                                <th>ATC</th>
+                                <th>Conv</th>
+                                <th>CPC</th>
+                                <th>CAC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adset-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: DAILY RUN RATE ==================== -->
+        <div id="tab-runrate" class="tab-content">
+            <div class="kpi-container" id="runrate-pacing-kpis">
+                <!-- MTD and EOM pacing cards populated dynamically -->
+            </div>
+
+            <div class="card">
+                <h3>📅 Daily Blended Run Rate</h3>
+                <p style="color:var(--text-secondary); font-size:12.5px; margin-bottom: 15px;">
+                    This ledger displays daily aggregate metrics. Track spend pacing, conversions, and shifts in return velocity.
+                </p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Spend</th>
+                                <th>Revenue</th>
+                                <th>ROAS</th>
+                                <th>Conversions (Sales)</th>
+                                <th>CPA (CAC)</th>
+                                <th>AOV</th>
+                                <th>Clicks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="runrate-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 3: PRODUCTS ==================== -->
+        <div id="tab-products" class="tab-content">
+            <!-- Product Intelligence -->
+            <div class="card">
+                <h3>🧠 Product Asset Scaling Intelligence</h3>
+                <div class="grid-3col" id="product-insights-grid">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- SKU PERFORMANCE -->
+            <div class="card">
+                <h3>📦 SKU Performance Matrix</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product SKU</th>
+                                <th>Asset Status</th>
+                                <th>Active Ads</th>
+                                <th>Spend</th>
+                                <th>Revenue</th>
+                                <th>ROAS</th>
+                                <th>Sales</th>
+                                <th>Impressions</th>
+                                <th>CTR</th>
+                                <th>CPC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CREATIVES LEADERBOARD -->
+            <div class="card">
+                <h3>🏆 Top 20 Creative Ads (by ROAS)</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Creative Ad Name</th>
+                                <th>Product SKU</th>
+                                <th>Narrative Hook</th>
+                                <th>Spend</th>
+                                <th>Revenue</th>
+                                <th>ROAS</th>
+                                <th>Conversions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topads-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- INFLUENCERS & LANGUAGES -->
+            <div class="grid-2col">
+                <div class="card">
+                    <h3>🌟 Influencer Performance</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Creator Name</th>
+                                    <th>Spend</th>
+                                    <th>ROAS</th>
+                                    <th>Sales</th>
+                                    <th>Creative Count</th>
+                                </tr>
+                            </thead>
+                            <tbody id="influencer-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🌐 Language attributions</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Target Language</th>
+                                    <th>Spend</th>
+                                    <th>ROAS</th>
+                                    <th>Sales</th>
+                                    <th>CTR</th>
+                                </tr>
+                            </thead>
+                            <tbody id="language-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 4: GOOGLE ADS ANALYZER ==================== -->
+        <div id="tab-googleads" class="tab-content">
+            <div class="card">
+                <h3>🔍 Google Ads Granular Analyzer</h3>
+                <p style="color:var(--text-secondary); font-size:12.5px; margin-bottom: 20px;">
+                    Drill down into campaign structures across search, shopping, PMax, and Demand Gen, tracking keyword and search term match criteria.
+                </p>
+
+                <div class="flex-row" style="margin-bottom: 20px;">
+                    <div class="form-group" style="width: 250px;">
+                        <label for="google-camp-type-filter">Filter by Campaign Type</label>
+                        <select id="google-camp-type-filter" onchange="renderGoogleAdsTab()">
+                            <option value="all">All Google Campaigns</option>
+                            <option value="Search">Search campaigns</option>
+                            <option value="PMax">Performance Max (PMax)</option>
+                            <option value="Shopping">Shopping Catalog</option>
+                            <option value="Demand Gen">Demand Gen (Video/Discovery)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex-grow: 1;">
+                        <label for="google-search-input">Search Keywords or Search Terms</label>
+                        <input type="text" id="google-search-input" placeholder="Search keywords..." oninput="renderGoogleAdsTab()">
+                    </div>
+                </div>
+
+                <div class="grid-2col" style="margin-bottom: 20px;">
+                    <!-- Keyword performance -->
+                    <div class="card">
+                        <h3>🔑 Granular Keyword performance</h3>
+                        <div class="table-responsive" style="max-height: 350px;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Keyword</th>
+                                        <th>Match Type</th>
+                                        <th>Spend</th>
+                                        <th>Conversions</th>
+                                        <th>CPA</th>
+                                        <th>ROAS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="google-keywords-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Search terms -->
+                    <div class="card">
+                        <h3>🔍 User Search Queries</h3>
+                        <div class="table-responsive" style="max-height: 350px;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Actual Search Term</th>
+                                        <th>Spend</th>
+                                        <th>Conversions</th>
+                                        <th>CTR</th>
+                                        <th>ROAS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="google-searchterms-tbody">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Google campaigns summary -->
+                <div class="card">
+                    <h3>📦 Google Ads Campaign Matrix</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Campaign</th>
+                                    <th>Type</th>
+                                    <th>Spend</th>
+                                    <th>Revenue</th>
+                                    <th>ROAS</th>
+                                    <th>Conversions</th>
+                                    <th>CTR</th>
+                                    <th>CPC</th>
+                                </tr>
+                            </thead>
+                            <tbody id="google-campaigns-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 5: AI ROOT CAUSE ==================== -->
+        <div id="tab-rootcause" class="tab-content">
+            <div class="card">
+                <h3>🔍 AI Root-Cause Variance Diagnostic</h3>
+                <div style="display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start;">
+                    <div style="font-size: 32px;">🤖</div>
+                    <div>
+                        <div style="font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px;">Variance attribution Report</div>
+                        <div id="rcAiSummary" style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+                            Please select a comparison window (e.g. Last 7 Days or Last 30 Days) to compute baseline attributions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Root cause KPIs -->
+            <div class="kpi-container" id="rcKpis">
+                <!-- Populated dynamically -->
+            </div>
+
+            <div class="waterfall-grid">
+                <!-- Waterfall chart -->
+                <div class="card">
+                    <h3>📈 Revenue Variance Waterfall</h3>
+                    <div class="chart-wrap" style="height: 300px;">
+                        <canvas id="rcWaterfallChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Top attribution drivers -->
+                <div class="card">
+                    <h3>🏆 Campaign Attribution Drivers</h3>
+                    <div class="table-responsive" style="height: 300px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Attributed Campaign</th>
+                                    <th>Traffic Δ</th>
+                                    <th>CVR Δ</th>
+                                    <th>AOV Δ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rcAttribution-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 6: INTELLIGENCE ==================== -->
+        <div id="tab-intelligence" class="tab-content">
+            <div class="card">
+                <h3>⚡ Daily Intelligence Mode (3d vs 7d Trend Analyzer)</h3>
+                <p style="color:var(--text-secondary); font-size:12.5px; margin-bottom: 15px;">
+                    Compares ad sets performance over the last 3 days against the 7 days baseline. Verdict rules adapt automatically to benchmark settings.
+                </p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product @ Platform Group</th>
+                                <th>Spend (3d)</th>
+                                <th>Recent ROAS (3d)</th>
+                                <th>Recent CPA (3d)</th>
+                                <th>Base ROAS (7d)</th>
+                                <th>Base CPA (7d)</th>
+                                <th>CTR Delta</th>
+                                <th>Verdict Signal</th>
+                                <th>Reasoning Analysis</th>
+                            </tr>
+                        </thead>
+                        <tbody id="intelligence-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 7: COMPETITORS ==================== -->
+        <div id="tab-competitors" class="tab-content">
+            <div class="grid-2col">
+                <div class="card" style="align-self: start;">
+                    <h3>🕵️ Log Competitor Ad Angle</h3>
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                        <div class="form-group">
+                            <label for="comp-name">Brand Name</label>
+                            <input type="text" id="comp-name" placeholder="e.g. Kosas Skincare">
+                        </div>
+                        <div class="form-group">
+                            <label for="comp-platform">Platform</label>
+                            <select id="comp-platform">
+                                <option value="Meta Ads">Meta Ads</option>
+                                <option value="Google Ads">Google Ads</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label for="comp-hook">Creative Format Type</label>
+                        <select id="comp-hook">
+                            <option value="Us vs Them (Comparison Table)">Us vs Them (Comparison Table)</option>
+                            <option value="Three Reasons Why (Feature Callout)">Three Reasons Why (Feature Callout)</option>
+                            <option value="Scientific Diagnostic / Doctor Reaction">Scientific Diagnostic / Doctor Reaction</option>
+                            <option value="UGC Extreme Pain Point Demonstration">UGC Extreme Pain Point Demonstration</option>
+                            <option value="Price/Discount Flash Promotion">Price/Discount Flash Promotion</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label for="comp-link">Ad Link</label>
+                        <input type="text" id="comp-link" placeholder="https://www.facebook.com/ads/library/...">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label for="comp-copy">Creative narrative/Copy Angle</label>
+                        <textarea id="comp-copy" rows="2" placeholder="Paste copy angle hooks..."></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="comp-insights">Defensive Counter-Angle</label>
+                        <textarea id="comp-insights" rows="2" placeholder="Describe counter creative strategies..."></textarea>
+                    </div>
+
+                    <button class="btn" style="width: 100%;" onclick="addCompetitorEntry()">
+                        <span>➕ Log Competitor Hook</span>
+                    </button>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column; gap: 15px;">
+                    <h3>Spy Creative swipe library</h3>
+                    <div style="margin-bottom: 10px;">
+                        <input type="text" id="compSearch" placeholder="Search Brand or Copy..." oninput="renderCompetitorsList()" style="background:#030712; border:1px solid var(--border-color); border-radius:6px; color:#fff; padding:6px 12px; font-size:12.5px; width: 240px;">
+                    </div>
+                    <div class="comp-list" id="competitorGrid">
+                        <!-- Populated dynamically -->
+                    </div>
+                    <div id="compEmptyState" style="display: none; text-align: center; color: var(--text-muted); font-size: 13px; padding: 40px;">
+                        No competitor logs found. Add one on the left!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 8: BENCHMARKS ==================== -->
+        <div id="tab-benchmarks" class="tab-content">
+            <div class="settings-grid">
+                <!-- Targets setup -->
+                <div class="card" style="align-self: start;">
+                    <h3>⚙️ Customize Target Targets</h3>
+                    <p style="color:var(--text-secondary); font-size:12px; margin-bottom: 15px;">
+                        Update conversion target scorecards. Changes apply instantly to decision logic.
+                    </p>
+
+                    <div class="config-card" style="margin-bottom: 12px;">
+                        <h4>Global Targets</h4>
+                        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="form-group">
+                                <label for="target-roas">Target ROAS (x)</label>
+                                <input type="number" id="target-roas" value="2.0" step="0.1" min="0.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="target-cpa">Target CPA (₹)</label>
+                                <input type="number" id="target-cpa" value="500" step="50" min="50">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 6px;">
+                            <label for="target-aov">Target AOV (₹)</label>
+                            <input type="number" id="target-aov" value="1500" step="100" min="100">
+                        </div>
+                    </div>
+
+                    <div class="config-card" style="margin-bottom: 12px;">
+                        <h4>Platform Benchmarks</h4>
+                        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="form-group">
+                                <label for="target-roas-meta">Meta ROAS (x)</label>
+                                <input type="number" id="target-roas-meta" value="2.0" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label for="target-cpa-meta">Meta CPA (₹)</label>
+                                <input type="number" id="target-cpa-meta" value="500" step="50">
+                            </div>
+                        </div>
+                        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px;">
+                            <div class="form-group">
+                                <label for="target-roas-google">Google ROAS (x)</label>
+                                <input type="number" id="target-roas-google" value="2.2" step="0.1">
+                            </div>
+                            <div class="form-group">
+                                <label for="target-cpa-google">Google CPA (₹)</label>
+                                <input type="number" id="target-cpa-google" value="450" step="50">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn" style="width: 100%;" onclick="saveBenchmarkTargets()">
+                        <span>💾 Save & Apply Benchmarks</span>
+                    </button>
+                </div>
+
+                <!-- Product SKU overrides -->
+                <div class="card">
+                    <h3>📦 SKU-Specific Target Overrides</h3>
+                    <p style="color:var(--text-secondary); font-size:12px; margin-bottom: 15px;">
+                        Override thresholds for individual products. Handy for high-margin serums vs low-margin wash lines.
+                    </p>
+
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
+                        <div class="form-group">
+                            <label for="sku-select-override">Select SKU Product</label>
+                            <select id="sku-select-override"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sku-roas-override">Target ROAS</label>
+                            <input type="number" id="sku-roas-override" value="2.5" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="sku-cpa-override">Target CPA (₹)</label>
+                            <input type="number" id="sku-cpa-override" value="400" step="50">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-secondary" style="width: 100%; margin-bottom: 20px;" onclick="addSkuOverride()">
+                        <span>➕ Set SKU Target Override</span>
+                    </button>
+
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product SKU</th>
+                                    <th>Target ROAS</th>
+                                    <th>Target CPA (CAC)</th>
+                                    <th>Delete</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sku-overrides-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 9: CHAT AGENT ==================== -->
+        <div id="tab-agent" class="tab-content">
+            <div class="card">
+                <h3>🤖 D2C Growth Director Agent</h3>
+                <p style="color:var(--text-secondary); font-size:12.5px; margin-bottom: 15px;">
+                    Scan files and get recommendations. Chat with your data locally or sync your Gemini API key to run a live conversational audit.
+                </p>
+
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages-box">
+                        <div class="chat-message agent">
+                            👋 Hello! D2C Growth Agent here. I have audited your ad accounts, product matrices, keyword sheets, and competitor narratives. 
+                            <br><br>
+                            Ask me query points like:
+                            <br>
+                            • "Which SKU is scaling best and why?"
+                            <br>
+                            • "Break down Google Ads keywords under target ROAS."
+                            <br>
+                            • "Show ad sets hit by creative fatigue."
+                            <br>
+                            • "Give me a competitor hook counter copywriting draft."
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input-text" placeholder="Type your ad query here..." onkeydown="if(event.key==='Enter') sendAgentMessage()">
+                        <button class="btn" onclick="sendAgentMessage()">Send Message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        D2C Scaler Command Center · Client-Side Execution · Google Sheets & Antigravity API Compatible
+    </div>
+
+    <!-- TOAST POPUP -->
+    <div id="toast">
+        <span id="toast-icon">✅</span>
+        <span id="toast-message">Syncing...</span>
+    </div>
+
+    <!-- ==========================================
+    ================ JAVASCRIPT LAYER ============
+    =========================================== -->
+    <script>
+        // 1. DATA STATE
+        let rawRecords = [];
+        let filteredRecords = [];
+        let previousPeriodRecords = [];
+        let competitorLogs = [];
+        let skuOverrides = {};
+        
+        let activeTab = 'overview';
+        let activeDateRange = 'all';
+        let chartInstances = {};
+
+        // Preload 14 days of mock Meta & granular Google Ads records (Search + Keywords, PMax, Shopping, Demand Gen)
+        const demoRawRecords = [
+            // HairSerum - Meta Ads (Scale Verdict Case)
+            { "Date": "2026-05-25", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 800, "Impressions": 20000, "Clicks": 650, "LPV": 520, "ATC": 60, "Conversions": 6, "Revenue": 9000 },
+            { "Date": "2026-05-26", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 900, "Impressions": 22000, "Clicks": 700, "LPV": 580, "ATC": 65, "Conversions": 7, "Revenue": 10500 },
+            { "Date": "2026-05-27", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 1000, "Impressions": 25000, "Clicks": 810, "LPV": 660, "ATC": 75, "Conversions": 8, "Revenue": 12000 },
+            { "Date": "2026-05-28", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 1000, "Impressions": 24000, "Clicks": 800, "LPV": 640, "ATC": 72, "Conversions": 7, "Revenue": 10500 },
+            { "Date": "2026-05-29", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 1000, "Impressions": 23000, "Clicks": 780, "LPV": 620, "ATC": 70, "Conversions": 8, "Revenue": 12000 },
+            { "Date": "2026-05-30", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 1100, "Impressions": 27000, "Clicks": 850, "LPV": 680, "ATC": 78, "Conversions": 9, "Revenue": 13500 },
+            { "Date": "2026-05-31", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 1200, "Impressions": 29000, "Clicks": 900, "LPV": 740, "ATC": 85, "Conversions": 9, "Revenue": 13500 },
+            { "Date": "2026-06-01", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 1200, "Impressions": 28000, "Clicks": 880, "LPV": 720, "ATC": 82, "Conversions": 10, "Revenue": 15000 },
+            { "Date": "2026-06-02", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 1300, "Impressions": 30000, "Clicks": 950, "LPV": 780, "ATC": 90, "Conversions": 11, "Revenue": 16500 },
+            { "Date": "2026-06-03", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 1400, "Impressions": 32000, "Clicks": 1020, "LPV": 820, "ATC": 95, "Conversions": 12, "Revenue": 18000 },
+            // Last 3 days scaling HairSerum on Meta
+            { "Date": "2026-06-04", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 1800, "Impressions": 42000, "Clicks": 1400, "LPV": 1120, "ATC": 135, "Conversions": 16, "Revenue": 24000 },
+            { "Date": "2026-06-05", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 2000, "Impressions": 46000, "Clicks": 1550, "LPV": 1240, "ATC": 150, "Conversions": 19, "Revenue": 28500 },
+            { "Date": "2026-06-06", "Platform": "Meta", "Campaign": "Meta_Serum_Scale_Broad", "Adset": "Meta_Serum_Broad_AgeOpen", "Ad_Name": "Meta_Serum_UGC_UsVsThem", "Keyword": "", "Match_Type": "", "Spend": 2200, "Impressions": 50000, "Clicks": 1700, "LPV": 1380, "ATC": 170, "Conversions": 22, "Revenue": 33000 },
+
+            // FaceWash - Meta Ads (Creative Fatigue Case)
+            { "Date": "2026-05-25", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 1000, "Impressions": 20000, "Clicks": 600, "LPV": 480, "ATC": 32, "Conversions": 5, "Revenue": 2500 },
+            { "Date": "2026-05-26", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 1000, "Impressions": 21000, "Clicks": 590, "LPV": 470, "ATC": 30, "Conversions": 5, "Revenue": 2500 },
+            { "Date": "2026-05-27", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 1000, "Impressions": 19000, "Clicks": 580, "LPV": 460, "ATC": 28, "Conversions": 4, "Revenue": 2000 },
+            { "Date": "2026-05-28", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 1100, "Impressions": 23000, "Clicks": 650, "LPV": 520, "ATC": 35, "Conversions": 5, "Revenue": 2500 },
+            { "Date": "2026-05-29", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 1100, "Impressions": 22000, "Clicks": 600, "LPV": 490, "ATC": 32, "Conversions": 5, "Revenue": 2500 },
+            { "Date": "2026-05-30", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 1200, "Impressions": 24000, "Clicks": 640, "LPV": 510, "ATC": 34, "Conversions": 6, "Revenue": 3000 },
+            { "Date": "2026-05-31", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 1200, "Impressions": 24000, "Clicks": 620, "LPV": 490, "ATC": 31, "Conversions": 4, "Revenue": 2000 },
+            { "Date": "2026-06-01", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 1300, "Impressions": 26000, "Clicks": 660, "LPV": 520, "ATC": 33, "Conversions": 5, "Revenue": 2500 },
+            { "Date": "2026-06-02", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 1400, "Impressions": 28000, "Clicks": 700, "LPV": 550, "ATC": 35, "Conversions": 5, "Revenue": 2500 },
+            { "Date": "2026-06-03", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 1500, "Impressions": 30000, "Clicks": 720, "LPV": 560, "ATC": 36, "Conversions": 6, "Revenue": 3000 },
+            // Last 3 days fatigue showing CPC surge and CTR drops
+            { "Date": "2026-06-04", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 2000, "Impressions": 48000, "Clicks": 410, "LPV": 320, "ATC": 10, "Conversions": 1, "Revenue": 500 },
+            { "Date": "2026-06-05", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 2000, "Impressions": 50000, "Clicks": 380, "LPV": 290, "ATC": 8, "Conversions": 1, "Revenue": 500 },
+            { "Date": "2026-06-06", "Platform": "Meta", "Campaign": "Meta_Wash_Prospecting", "Adset": "Meta_Wash_Lookalike", "Ad_Name": "Meta_Wash_Static_Benefit", "Keyword": "", "Match_Type": "", "Spend": 2200, "Impressions": 55000, "Clicks": 350, "LPV": 270, "ATC": 6, "Conversions": 0, "Revenue": 0 },
+
+            // Google Ads Search Campaign: keywords & match types
+            { "Date": "2026-05-25", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 200, "Impressions": 4000, "Clicks": 320, "LPV": 290, "ATC": 40, "Conversions": 5, "Revenue": 7500 },
+            { "Date": "2026-05-26", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 200, "Impressions": 4100, "Clicks": 330, "LPV": 300, "ATC": 42, "Conversions": 6, "Revenue": 9000 },
+            { "Date": "2026-05-27", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 250, "Impressions": 4300, "Clicks": 350, "LPV": 310, "ATC": 45, "Conversions": 5, "Revenue": 7500 },
+            { "Date": "2026-05-28", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 250, "Impressions": 4500, "Clicks": 370, "LPV": 330, "ATC": 48, "Conversions": 7, "Revenue": 10500 },
+            { "Date": "2026-05-29", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 300, "Impressions": 4800, "Clicks": 400, "LPV": 360, "ATC": 52, "Conversions": 8, "Revenue": 12000 },
+            { "Date": "2026-05-30", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 300, "Impressions": 4600, "Clicks": 390, "LPV": 350, "ATC": 50, "Conversions": 6, "Revenue": 9000 },
+            { "Date": "2026-05-31", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 300, "Impressions": 4700, "Clicks": 390, "LPV": 350, "ATC": 51, "Conversions": 8, "Revenue": 12000 },
+            { "Date": "2026-06-01", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 300, "Impressions": 4800, "Clicks": 410, "LPV": 370, "ATC": 55, "Conversions": 7, "Revenue": 10500 },
+            { "Date": "2026-06-02", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 350, "Impressions": 5000, "Clicks": 430, "LPV": 390, "ATC": 58, "Conversions": 9, "Revenue": 13500 },
+            { "Date": "2026-06-03", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 350, "Impressions": 5200, "Clicks": 450, "LPV": 400, "ATC": 60, "Conversions": 8, "Revenue": 12000 },
+            // Last 3 days
+            { "Date": "2026-06-04", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 400, "Impressions": 5600, "Clicks": 500, "LPV": 460, "ATC": 72, "Conversions": 11, "Revenue": 16500 },
+            { "Date": "2026-06-05", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 400, "Impressions": 5500, "Clicks": 480, "LPV": 440, "ATC": 70, "Conversions": 10, "Revenue": 15000 },
+            { "Date": "2026-06-06", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Brand_SKUs", "Ad_Name": "G_Ad_Brand_Headline", "Keyword": "glow brand", "Match_Type": "Exact", "Spend": 500, "Impressions": 6200, "Clicks": 550, "LPV": 500, "ATC": 80, "Conversions": 13, "Revenue": 19500 },
+
+            // Google Ads Search Campaign: Phrase matching keywords
+            { "Date": "2026-05-25", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 400, "Impressions": 8000, "Clicks": 400, "LPV": 360, "ATC": 25, "Conversions": 2, "Revenue": 3000 },
+            { "Date": "2026-05-26", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 400, "Impressions": 8200, "Clicks": 410, "LPV": 370, "ATC": 26, "Conversions": 3, "Revenue": 4500 },
+            { "Date": "2026-05-27", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 450, "Impressions": 8500, "Clicks": 440, "LPV": 400, "ATC": 28, "Conversions": 2, "Revenue": 3000 },
+            { "Date": "2026-05-28", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 450, "Impressions": 8300, "Clicks": 420, "LPV": 380, "ATC": 27, "Conversions": 3, "Revenue": 4500 },
+            { "Date": "2026-05-29", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 500, "Impressions": 10000, "Clicks": 520, "LPV": 470, "ATC": 35, "Conversions": 4, "Revenue": 6000 },
+            { "Date": "2026-05-30", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 500, "Impressions": 9800, "Clicks": 500, "LPV": 450, "ATC": 32, "Conversions": 3, "Revenue": 4500 },
+            { "Date": "2026-05-31", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 500, "Impressions": 9900, "Clicks": 510, "LPV": 460, "ATC": 33, "Conversions": 4, "Revenue": 6000 },
+            { "Date": "2026-06-01", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 500, "Impressions": 10200, "Clicks": 540, "LPV": 490, "ATC": 36, "Conversions": 3, "Revenue": 4500 },
+            { "Date": "2026-06-02", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 500, "Impressions": 10100, "Clicks": 530, "LPV": 480, "ATC": 34, "Conversions": 4, "Revenue": 6000 },
+            { "Date": "2026-06-03", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 500, "Impressions": 10300, "Clicks": 550, "LPV": 500, "ATC": 38, "Conversions": 4, "Revenue": 6000 },
+            // Last 3 days
+            { "Date": "2026-06-04", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 600, "Impressions": 12000, "Clicks": 650, "LPV": 580, "ATC": 44, "Conversions": 5, "Revenue": 7500 },
+            { "Date": "2026-06-05", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 600, "Impressions": 11800, "Clicks": 630, "LPV": 560, "ATC": 42, "Conversions": 4, "Revenue": 6000 },
+            { "Date": "2026-06-06", "Platform": "Google", "Campaign": "Google_Search_Brand", "Adset": "G_Search_Generic_Keywords", "Ad_Name": "G_Ad_Generic_Headline", "Keyword": "skincare serum", "Match_Type": "Phrase", "Spend": 700, "Impressions": 14000, "Clicks": 720, "LPV": 640, "ATC": 50, "Conversions": 5, "Revenue": 7500 },
+
+            // Google Ads PMax Campaign (Product = HairSerum)
+            { "Date": "2026-05-25", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 500, "Impressions": 8000, "Clicks": 400, "LPV": 360, "ATC": 30, "Conversions": 3, "Revenue": 4500 },
+            { "Date": "2026-05-26", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 500, "Impressions": 8200, "Clicks": 410, "LPV": 370, "ATC": 32, "Conversions": 3, "Revenue": 4500 },
+            { "Date": "2026-05-27", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 500, "Impressions": 8500, "Clicks": 440, "LPV": 400, "ATC": 35, "Conversions": 4, "Revenue": 6000 },
+            { "Date": "2026-05-28", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 500, "Impressions": 8300, "Clicks": 420, "LPV": 380, "ATC": 31, "Conversions": 3, "Revenue": 4500 },
+            { "Date": "2026-05-29", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 600, "Impressions": 10000, "Clicks": 520, "LPV": 470, "ATC": 40, "Conversions": 4, "Revenue": 6000 },
+            { "Date": "2026-05-30", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 600, "Impressions": 9800, "Clicks": 500, "LPV": 450, "ATC": 38, "Conversions": 3, "Revenue": 4500 },
+            { "Date": "2026-05-31", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 600, "Impressions": 9900, "Clicks": 510, "LPV": 460, "ATC": 42, "Conversions": 4, "Revenue": 6000 },
+            { "Date": "2026-06-01", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 600, "Impressions": 10200, "Clicks": 540, "LPV": 490, "ATC": 41, "Conversions": 3, "Revenue": 4500 },
+            { "Date": "2026-06-02", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 600, "Impressions": 10100, "Clicks": 530, "LPV": 480, "ATC": 43, "Conversions": 4, "Revenue": 6000 },
+            { "Date": "2026-06-03", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 600, "Impressions": 10300, "Clicks": 550, "LPV": 500, "ATC": 45, "Conversions": 4, "Revenue": 6000 },
+            // Last 3 days
+            { "Date": "2026-06-04", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 800, "Impressions": 13000, "Clicks": 720, "LPV": 650, "ATC": 60, "Conversions": 6, "Revenue": 9000 },
+            { "Date": "2026-06-05", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 800, "Impressions": 12800, "Clicks": 710, "LPV": 640, "ATC": 55, "Conversions": 5, "Revenue": 7500 },
+            { "Date": "2026-06-06", "Platform": "Google", "Campaign": "Google_PMax_Serum", "Adset": "Asset_Group_Serum", "Ad_Name": "Serum_Creative_Pack", "Keyword": "", "Match_Type": "", "Spend": 1000, "Impressions": 16000, "Clicks": 900, "LPV": 810, "ATC": 75, "Conversions": 8, "Revenue": 12000 }
+        ];
+
+        // Competitor Narratives data swipe
+        const demoCompetitorLogs = [
+            {
+                "Name": "Kosa Labs",
+                "Platform": "Meta Ads",
+                "Hook": "Us vs Them (Comparison Table)",
+                "Link": "https://www.facebook.com/ads/library/?id=87452391038",
+                "Copy": "Why 94% of women are dumping normal chemical serums for our active peptide serum.",
+                "Insights": "Design a 1:1 Instagram grid comparison layout showing our Serum's concentration levels vs cheap alternatives."
+            },
+            {
+                "Name": "SkinGlow",
+                "Platform": "Google Ads",
+                "Hook": "Three Reasons Why (Feature Callout)",
+                "Link": "https://adstransparency.google.com/?referrer=skinglow",
+                "Copy": "Sulfate cleansers strip your face. Here are three reasons why you should switch to oil-based cleansers.",
+                "Insights": "Target high-intent keywords like 'gentle dermatologist face wash' directing to an ingredient checklist lander."
+            }
+        ];
+
+        // 2. LIFECYCLE INITIALIZER
+        window.addEventListener('DOMContentLoaded', () => {
+            // Restore API credentials & configurations
+            if (localStorage.getItem('api_key')) {
+                document.getElementById('api-key').value = localStorage.getItem('api_key');
+            }
+            if (localStorage.getItem('sheet_url')) {
+                document.getElementById('sheet-url').value = localStorage.getItem('sheet_url');
+            }
+            if (localStorage.getItem('target_roas')) {
+                document.getElementById('target-roas').value = localStorage.getItem('target_roas');
+            }
+            if (localStorage.getItem('target_cpa')) {
+                document.getElementById('target-cpa').value = localStorage.getItem('target_cpa');
+            }
+            if (localStorage.getItem('target_aov')) {
+                document.getElementById('target-aov').value = localStorage.getItem('target_aov');
+            }
+            if (localStorage.getItem('target_roas_meta')) {
+                document.getElementById('target-roas-meta').value = localStorage.getItem('target_roas_meta');
+            }
+            if (localStorage.getItem('target_cpa_meta')) {
+                document.getElementById('target-cpa-meta').value = localStorage.getItem('target_cpa_meta');
+            }
+            if (localStorage.getItem('target_roas_google')) {
+                document.getElementById('target-roas-google').value = localStorage.getItem('target_roas_google');
+            }
+            if (localStorage.getItem('target_cpa_google')) {
+                document.getElementById('target-cpa-google').value = localStorage.getItem('target_cpa_google');
+            }
+            if (localStorage.getItem('sku_overrides')) {
+                skuOverrides = JSON.parse(localStorage.getItem('sku_overrides'));
+            }
+            if (localStorage.getItem('competitor_logs')) {
+                competitorLogs = JSON.parse(localStorage.getItem('competitor_logs'));
+            } else {
+                competitorLogs = demoCompetitorLogs;
+            }
+
+            // Ingest demo rows initially so data displays
+            if (localStorage.getItem('raw_records')) {
+                rawRecords = JSON.parse(localStorage.getItem('raw_records'));
+            } else {
+                rawRecords = demoRawRecords;
+            }
+
+            updateStatusIndicators();
+            recalculateAllData();
+            makeTablesSortable();
+
+            // Run background sheet sync if URL cached
+            if (document.getElementById('sheet-url').value) {
+                syncData(true); // Silent sync
+            } else {
+                document.getElementById('loader').style.display = 'none';
+            }
+        });
+
+        function updateStatusIndicators() {
+            const hasKey = document.getElementById('api-key').value.trim() !== '';
+            const statusDot = document.getElementById('gemini-status-dot');
+            const statusLbl = document.getElementById('gemini-status-lbl');
+            if (hasKey) {
+                statusDot.style.backgroundColor = 'var(--success)';
+                statusDot.style.boxShadow = '0 0 8px var(--success)';
+                statusLbl.innerText = 'Gemini API: Direct Connected';
+            } else {
+                statusDot.style.backgroundColor = 'var(--warning)';
+                statusDot.style.boxShadow = '0 0 8px var(--warning)';
+                statusLbl.innerText = 'Gemini API: Heuristics Fallback';
+            }
+        }
+
+        // ==========================================
+        // 3. NAVIGATION TAB SWITCH
+        // ==========================================
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+            activeTab = tabId;
+
+            // Trigger chart updates
+            if (tabId === 'overview' && chartInstances.trend) {
+                setTimeout(() => {
+                    chartInstances.trend.update();
+                    chartInstances.format.update();
+                    chartInstances.platform.update();
+                }, 100);
+            }
+            if (tabId === 'rootcause' && chartInstances.rcWaterfall) {
+                setTimeout(() => {
+                    chartInstances.rcWaterfall.update();
+                }, 100);
+            }
+        }
+
+        // ==========================================
+        // 4. DATA ENGINE: MATHEMETICAL CALCULATOR
+        // ==========================================
+        function recalculateAllData() {
+            // Clean types
+            rawRecords.forEach(r => {
+                r.Spend = Number(r.Spend) || 0;
+                r.Impressions = Number(r.Impressions) || 0;
+                r.Clicks = Number(r.Clicks) || 0;
+                r.LPV = Number(r.LPV) || 0;
+                r.ATC = Number(r.ATC) || 0;
+                r.Conversions = Number(r.Conversions) || 0;
+                r.Revenue = Number(r.Revenue) || 0;
+            });
+
+            // Auto-populate product select filters
+            populateProductFilters();
+
+            // Run standard filter selection
+            applyFilters();
+        }
+
+        function populateProductFilters() {
+            const products = [...new Set(rawRecords.map(r => r.Product).filter(Boolean))].sort();
+            const filterSelect = document.getElementById('filter-product');
+            const overrideSelect = document.getElementById('sku-select-override');
+            
+            // Clear but keep first
+            filterSelect.innerHTML = '<option value="all">All Products</option>';
+            overrideSelect.innerHTML = '';
+
+            products.forEach(p => {
+                filterSelect.innerHTML += `<option value="${p}">${p}</option>`;
+                overrideSelect.innerHTML += `<option value="${p}">${p}</option>`;
+            });
+        }
+
+        function setDateRange(days, el) {
+            activeDateRange = days;
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('on'));
+            if (el) el.classList.add('on');
+            document.getElementById('date-start').value = '';
+            document.getElementById('date-end').value = '';
+            applyFilters();
+        }
+
+        function setCustomDateRange() {
+            activeDateRange = 'custom';
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('on'));
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const prodVal = document.getElementById('filter-product').value;
+            const srcVal = document.getElementById('filter-source').value;
+            const startVal = document.getElementById('date-start').value;
+            const endVal = document.getElementById('date-end').value;
+
+            // Max Date in raw records
+            let times = rawRecords.map(r => new Date(r.Date).getTime());
+            let maxTime = times.length ? Math.max(...times) : Date.now();
+            let periodMs = 0;
+            let currentStartMs = 0;
+
+            if (activeDateRange !== 'all' && activeDateRange !== 'custom') {
+                periodMs = Number(activeDateRange) * 24 * 60 * 60 * 1000;
+                currentStartMs = maxTime - periodMs;
+            }
+
+            filteredRecords = [];
+            previousPeriodRecords = [];
+
+            rawRecords.forEach(r => {
+                const rTime = new Date(r.Date).getTime();
+                
+                // Helper inferred SKU mapping based on campaign name or explicit Product SKU column
+                const inferredProduct = r.Product || (r.Campaign.includes('Serum') ? 'HairSerum' : 'FaceWash');
+                r.Product = inferredProduct;
+
+                // Creative Source Inference
+                const lowAd = (r.Ad_Name || '').toLowerCase();
+                const inferredSource = r.Source || (lowAd.includes('ugc') ? 'UGC' : (lowAd.includes('inf') ? 'Influencer' : 'Internal'));
+                r.Source = inferredSource;
+
+                // Ad Type (Format) Inference
+                const inferredFormat = r.AdType || (lowAd.includes('video') ? 'Video' : (lowAd.includes('static') ? 'Static' : 'Carousel'));
+                r.AdType = inferredFormat;
+
+                // Target filtering
+                if (prodVal !== 'all' && r.Product !== prodVal) return;
+                if (srcVal !== 'all' && r.Source !== srcVal) return;
+
+                if (activeDateRange === 'custom') {
+                    let pass = true;
+                    if (startVal && r.Date < startVal) pass = false;
+                    if (endVal && r.Date > endVal) pass = false;
+                    if (pass) filteredRecords.push(r);
+                } else if (activeDateRange !== 'all') {
+                    if (rTime >= currentStartMs && rTime <= maxTime) {
+                        filteredRecords.push(r);
+                    } else if (rTime >= (currentStartMs - periodMs) && rTime < currentStartMs) {
+                        previousPeriodRecords.push(r);
+                    }
+                } else {
+                    filteredRecords.push(r);
+                }
+            });
+
+            // Render all views
+            renderDashboardOverview();
+            renderDailyRunRate();
+            renderProductDeepDive();
+            renderGoogleAdsTab();
+            renderAIVarianceAnalyzer();
+            renderIntelligenceGrid();
+            renderCompetitorsList();
+            renderBenchmarksConfig();
+        }
+
+        // ==========================================
+        // 5. VIEW RENDERING FUNCTIONS
+        // ==========================================
+        
+        // Dynamic target values loader
+        function getTargetsFor(productName = null, platform = null) {
+            const globalROAS = Number(document.getElementById('target-roas').value) || 2.0;
+            const globalCPA = Number(document.getElementById('target-cpa').value) || 500;
+            const globalAOV = Number(document.getElementById('target-aov').value) || 1500;
+
+            let targetROAS = globalROAS;
+            let targetCPA = globalCPA;
+
+            // Platform Overrides
+            if (platform === 'Meta') {
+                targetROAS = Number(document.getElementById('target-roas-meta').value) || globalROAS;
+                targetCPA = Number(document.getElementById('target-cpa-meta').value) || globalCPA;
+            } else if (platform === 'Google') {
+                targetROAS = Number(document.getElementById('target-roas-google').value) || globalROAS;
+                targetCPA = Number(document.getElementById('target-cpa-google').value) || globalCPA;
+            }
+
+            // SKU Override dominates
+            if (productName && skuOverrides[productName]) {
+                targetROAS = skuOverrides[productName].ROAS;
+                targetCPA = skuOverrides[productName].CPA;
+            }
+
+            return { ROAS: targetROAS, CPA: targetCPA, AOV: globalAOV };
+        }
+
+        function getActionBadge(spend, roas, productName = null, platform = null) {
+            const targets = getTargetsFor(productName, platform);
+            if (spend > 1000) {
+                if (roas >= targets.ROAS) return '<span class="badge badge-green">Scale 🚀</span>';
+                if (roas < (targets.ROAS * 0.5)) return '<span class="badge badge-red">Pause ⛔</span>';
+            }
+            return '<span class="badge badge-yellow">Watch ✋</span>';
+        }
+
+        function sumField(arr, field) {
+            return arr.reduce((a, b) => a + (b[field] || 0), 0);
+        }
+
+        // Render KPI block & Funnels
+        function renderDashboardOverview() {
+            const spend = sumField(filteredRecords, 'Spend');
+            const rev = sumField(filteredRecords, 'Revenue');
+            const conv = sumField(filteredRecords, 'Conversions');
+            const clicks = sumField(filteredRecords, 'Clicks');
+            const lpv = sumField(filteredRecords, 'LPV') || (clicks * 0.8);
+            const atc = sumField(filteredRecords, 'ATC') || (clicks * 0.15);
+
+            const roas = spend > 0 ? (rev / spend) : 0;
+            const cac = conv > 0 ? (spend / conv) : 0;
+            const aov = conv > 0 ? (rev / conv) : 0;
+
+            // Delta comparisons vs prior window
+            let spendDelta = 0, revDelta = 0, roasDelta = 0, cacDelta = 0;
+            if (previousPeriodRecords.length > 0) {
+                const prevSpend = sumField(previousPeriodRecords, 'Spend');
+                const prevRev = sumField(previousPeriodRecords, 'Revenue');
+                const prevConv = sumField(previousPeriodRecords, 'Conversions');
+                const prevRoas = prevSpend > 0 ? (prevRev / prevSpend) : 0;
+                const prevCac = prevConv > 0 ? (prevSpend / prevConv) : 0;
+
+                spendDelta = prevSpend > 0 ? ((spend - prevSpend) / prevSpend) * 100 : 0;
+                revDelta = prevRev > 0 ? ((rev - prevRev) / prevRev) * 100 : 0;
+                roasDelta = prevRoas > 0 ? ((roas - prevRoas) / prevRoas) * 100 : 0;
+                cacDelta = prevCac > 0 ? ((cac - prevCac) / prevCac) * 100 : 0;
+            }
+
+            // 1. KPI cards
+            const kpisDiv = document.getElementById('overview-kpis');
+            kpisDiv.innerHTML = `
+                <div class="kpi-card accent">
+                    <div class="kpi-title">💵 Total Spend</div>
+                    <div class="kpi-value">₹${Math.round(spend).toLocaleString('en-IN')}</div>
+                    <div class="kpi-delta ${spendDelta >= 0 ? 'delta-up' : 'delta-neutral'}">
+                        ${spendDelta >= 0 ? '▲' : '▼'} ${Math.abs(spendDelta).toFixed(1)}% vs baseline
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">🛍️ Revenue</div>
+                    <div class="kpi-value">₹${Math.round(rev).toLocaleString('en-IN')}</div>
+                    <div class="kpi-delta ${revDelta >= 0 ? 'delta-up' : 'delta-down'}">
+                        ${revDelta >= 0 ? '▲' : '▼'} ${Math.abs(revDelta).toFixed(1)}% vs baseline
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">🎯 Blended ROAS</div>
+                    <div class="kpi-value">${roas.toFixed(2)}x</div>
+                    <div class="kpi-delta ${roasDelta >= 0 ? 'delta-up' : 'delta-down'}">
+                        ${roasDelta >= 0 ? '▲' : '▼'} ${Math.abs(roasDelta).toFixed(1)}% vs baseline
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">🛍️ Conversions</div>
+                    <div class="kpi-value">${conv}</div>
+                    <div class="kpi-delta">Total Purchases</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">🏷️ Blended CAC</div>
+                    <div class="kpi-value">₹${Math.round(cac).toLocaleString('en-IN')}</div>
+                    <div class="kpi-delta ${cacDelta <= 0 ? 'delta-up' : 'delta-down'}">
+                        ${cacDelta <= 0 ? '▼' : '▲'} ${Math.abs(cacDelta).toFixed(1)}% vs baseline
+                    </div>
+                </div>
+            `;
+
+            // 2. Funnels
+            const funnelLpvRate = clicks > 0 ? (lpv / clicks) * 100 : 0;
+            const funnelAtcRate = lpv > 0 ? (atc / lpv) * 100 : 0;
+            const funnelConvRate = atc > 0 ? (conv / atc) * 100 : 0;
+
+            const funnelDiv = document.getElementById('funnel-chart-container');
+            funnelDiv.innerHTML = `
+                <div class="funnel-step">
+                    <div class="funnel-icon">🖱️</div>
+                    <div class="funnel-val">${clicks.toLocaleString()}</div>
+                    <div class="funnel-label">Link Clicks</div>
+                </div>
+                <div class="funnel-arrow">
+                    <div class="funnel-rate ${funnelLpvRate < 60 ? 'drop' : ''}">${funnelLpvRate.toFixed(1)}% LPV Rate</div>
+                </div>
+                <div class="funnel-step">
+                    <div class="funnel-icon">👁️</div>
+                    <div class="funnel-val">${lpv.toLocaleString()}</div>
+                    <div class="funnel-label">LP Views</div>
+                </div>
+                <div class="funnel-arrow">
+                    <div class="funnel-rate ${funnelAtcRate < 10 ? 'drop' : ''}">${funnelAtcRate.toFixed(1)}% ATC Rate</div>
+                </div>
+                <div class="funnel-step">
+                    <div class="funnel-icon">🛒</div>
+                    <div class="funnel-val">${atc.toLocaleString()}</div>
+                    <div class="funnel-label">Add to Carts</div>
+                </div>
+                <div class="funnel-arrow">
+                    <div class="funnel-rate ${funnelConvRate < 15 ? 'drop' : ''}">${funnelConvRate.toFixed(1)}% checkout CVR</div>
+                </div>
+                <div class="funnel-step">
+                    <div class="funnel-icon">🛍️</div>
+                    <div class="funnel-val">${conv.toLocaleString()}</div>
+                    <div class="funnel-label">Purchases</div>
+                </div>
+            `;
+
+            // 3. Alerts diagnostic
+            const alertsDiv = document.getElementById('overview-alerts-wrapper');
+            alertsDiv.innerHTML = '';
+            
+            let alertsCount = 0;
+            // Diagnostic check LPV Drop
+            if (funnelLpvRate < 55) {
+                alertsDiv.innerHTML += `
+                    <div class="alert-row alert-red">
+                        <span>⚠️ <strong>Link-to-LPV dropoff detected:</strong> Landing Page load rate is only ${funnelLpvRate.toFixed(1)}%. Check for redirect errors, excessive script weight, or slow load times.</span>
+                    </div>
+                `;
+                alertsCount++;
+            }
+            if (funnelAtcRate < 7) {
+                alertsDiv.innerHTML += `
+                    <div class="alert-row">
+                        <span>⚠️ <strong>Low Product Page Interest:</strong> ATC conversion is only ${funnelAtcRate.toFixed(1)}% of landing views. Check pricing above the fold, visual image sizes, or test reviews.</span>
+                    </div>
+                `;
+                alertsCount++;
+            }
+            if (alertsCount === 0) {
+                alertsDiv.innerHTML = `
+                    <div class="alert-row alert-ok">
+                        <span>✅ All traffic funnel indicators (LPV, ATC, and CVR) are performing within healthy baseline thresholds.</span>
+                    </div>
+                `;
+            }
+
+            // 4. Render tables: Campaigns and Adsets attributions
+            renderOverviewTables(spend);
+        }
+
+        function renderOverviewTables(totalSpend) {
+            // Aggregate Campaigns
+            const campMap = {};
+            filteredRecords.forEach(r => {
+                const k = r.Campaign;
+                if (!campMap[k]) campMap[k] = { platform: r.Platform, camp: k, spend: 0, rev: 0, clicks: 0, lpv: 0, conv: 0, impr: 0 };
+                campMap[k].spend += r.Spend;
+                campMap[k].rev += r.Revenue;
+                campMap[k].clicks += r.Clicks;
+                campMap[k].lpv += r.LPV;
+                campMap[k].conv += r.Conversions;
+                campMap[k].impr += r.Impressions;
+            });
+
+            const campTable = document.getElementById('campaign-tbody');
+            campTable.innerHTML = '';
+            Object.values(campMap).sort((a,b)=>b.spend - a.spend).forEach(c => {
+                const cRoas = c.spend > 0 ? (c.rev / c.spend) : 0;
+                const cCac = c.conv > 0 ? (c.spend / c.conv) : 0;
+                const cCpm = c.impr > 0 ? (c.spend / c.impr) * 1000 : 0;
+                const platBadge = c.platform === 'Meta' ? 'badge-blue' : 'badge-yellow';
+                const action = getActionBadge(c.spend, cRoas, null, c.platform);
+
+                campTable.innerHTML += `
+                    <tr>
+                        <td><span class="badge ${platBadge}">${c.platform}</span></td>
+                        <td style="font-weight: 700; color: #fff;">${c.camp}</td>
+                        <td>${action}</td>
+                        <td data-sort="${c.spend}">₹${Math.round(c.spend).toLocaleString()}</td>
+                        <td data-sort="${c.rev}">₹${Math.round(c.rev).toLocaleString()}</td>
+                        <td data-sort="${cRoas}" style="font-weight:700; color: ${cRoas >= 2 ? 'var(--success)' : 'var(--danger)'}">${cRoas.toFixed(2)}x</td>
+                        <td data-sort="${cCpm}">₹${Math.round(cCpm)}</td>
+                        <td data-sort="${c.clicks}">${c.clicks.toLocaleString()}</td>
+                        <td data-sort="${c.lpv}">${c.lpv.toLocaleString()}</td>
+                        <td data-sort="${c.conv}">${c.conv}</td>
+                        <td data-sort="${cCac}">₹${Math.round(cCac)}</td>
+                    </tr>
+                `;
+            });
+
+            // Aggregate Adsets
+            const adsetMap = {};
+            filteredRecords.forEach(r => {
+                const k = r.Adset;
+                if (!adsetMap[k]) adsetMap[k] = { name: k, platform: r.Platform, spend: 0, rev: 0, clicks: 0, lpv: 0, atc: 0, conv: 0 };
+                adsetMap[k].spend += r.Spend;
+                adsetMap[k].rev += r.Revenue;
+                adsetMap[k].clicks += r.Clicks;
+                adsetMap[k].lpv += r.LPV;
+                adsetMap[k].atc += r.ATC;
+                adsetMap[k].conv += r.Conversions;
+            });
+
+            const adsetTable = document.getElementById('adset-tbody');
+            adsetTable.innerHTML = '';
+            Object.values(adsetMap).sort((a,b)=>b.spend - a.spend).forEach(a => {
+                const aRoas = a.spend > 0 ? (a.rev / a.spend) : 0;
+                const aCac = a.conv > 0 ? (a.spend / a.conv) : 0;
+                const aCpc = a.clicks > 0 ? (a.spend / a.clicks) : 0;
+                const action = getActionBadge(a.spend, aRoas, null, a.platform);
+
+                adsetTable.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 700; color: #fff;">${a.name}</td>
+                        <td>${action}</td>
+                        <td data-sort="${a.spend}">₹${Math.round(a.spend).toLocaleString()}</td>
+                        <td data-sort="${aRoas}" style="font-weight:700; color: ${aRoas >= 2 ? 'var(--success)' : 'var(--danger)'}">${aRoas.toFixed(2)}x</td>
+                        <td data-sort="${a.clicks}">${a.clicks}</td>
+                        <td data-sort="${a.lpv}">${a.lpv}</td>
+                        <td data-sort="${a.atc}">${a.atc}</td>
+                        <td data-sort="${a.conv}">${a.conv}</td>
+                        <td data-sort="${aCpc}">₹${Math.round(aCpc)}</td>
+                        <td data-sort="${aCac}">₹${Math.round(aCac)}</td>
+                    </tr>
+                `;
+            });
+
+            // Aggregate Narratives
+            const narrMap = {};
+            filteredRecords.forEach(r => {
+                const k = r.Narrative || 'Unknown';
+                if (!narrMap[k]) narrMap[k] = { name: k, spend: 0, rev: 0, conv: 0 };
+                narrMap[k].spend += r.Spend;
+                narrMap[k].rev += r.Revenue;
+                narrMap[k].conv += r.Conversions;
+            });
+
+            const narrTable = document.getElementById('narrative-tbody');
+            narrTable.innerHTML = '';
+            Object.values(narrMap).sort((a,b)=>b.spend - a.spend).forEach(n => {
+                const nRoas = n.spend > 0 ? (n.rev / n.spend) : 0;
+                narrTable.innerHTML += `
+                    <tr>
+                        <td><span class="badge badge-blue">${n.name}</span></td>
+                        <td data-sort="${n.spend}">₹${Math.round(n.spend).toLocaleString()}</td>
+                        <td data-sort="${n.rev}">₹${Math.round(n.rev).toLocaleString()}</td>
+                        <td data-sort="${nRoas}" style="font-weight: 700; color: ${nRoas >= 2 ? 'var(--success)' : 'var(--danger)'}">${nRoas.toFixed(2)}x</td>
+                        <td data-sort="${n.conv}">${n.conv}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Render Daily Run Rate Tab & Pacing Scorecard
+        function renderDailyRunRate() {
+            // Aggregate overall daily figures
+            const datesMap = {};
+            filteredRecords.forEach(r => {
+                const d = r.Date;
+                if (!datesMap[d]) datesMap[d] = { date: d, spend: 0, rev: 0, conv: 0, clicks: 0 };
+                datesMap[d].spend += r.Spend;
+                datesMap[d].rev += r.Revenue;
+                datesMap[d].conv += r.Conversions;
+                datesMap[d].clicks += r.Clicks;
+            });
+
+            const sortedDates = Object.values(datesMap).sort((a,b) => b.date.localeCompare(a.date));
+
+            // Render runrate table
+            const runrateTbody = document.getElementById('runrate-tbody');
+            runrateTbody.innerHTML = '';
+            sortedDates.forEach(day => {
+                const dayRoas = day.spend > 0 ? (day.rev / day.spend) : 0;
+                const dayCac = day.conv > 0 ? (day.spend / day.conv) : 0;
+                const dayAov = day.conv > 0 ? (day.rev / day.conv) : 0;
+
+                runrateTbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 700; color: #fff; font-family: var(--font-mono);">${day.date}</td>
+                        <td data-sort="${day.spend}">₹${Math.round(day.spend).toLocaleString()}</td>
+                        <td data-sort="${day.rev}">₹${Math.round(day.rev).toLocaleString()}</td>
+                        <td data-sort="${dayRoas}" style="font-weight:600; color: ${dayRoas >= 2 ? 'var(--success)' : 'var(--danger)'}">${dayRoas.toFixed(2)}x</td>
+                        <td data-sort="${day.conv}">${day.conv} sales</td>
+                        <td data-sort="${dayCac}">₹${Math.round(dayCac)}</td>
+                        <td data-sort="${dayAov}">₹${Math.round(dayAov)}</td>
+                        <td data-sort="${day.clicks}">${day.clicks} clicks</td>
+                    </tr>
+                `;
+            });
+
+            // Calculate pacing projections MTD & EOM
+            const totalSpend = sumField(filteredRecords, 'Spend');
+            const totalRev = sumField(filteredRecords, 'Revenue');
+            const numUniqueDays = Object.keys(datesMap).length || 1;
+
+            const avgDailySpend = totalSpend / numUniqueDays;
+            const avgDailyRevenue = totalRev / numUniqueDays;
+
+            const currentDayOfMonth = new Date().getDate();
+            const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+
+            // MTD (Month to date) is the aggregate of loaded filtered records in this context
+            const projectedEomSpend = avgDailySpend * daysInMonth;
+            const projectedEomRevenue = avgDailyRevenue * daysInMonth;
+            const budgetLimit = Number(document.getElementById('monthly-budget').value) || 100000;
+            const runRateROAS = totalSpend > 0 ? (totalRev / totalSpend) : 0;
+
+            const pacingKpis = document.getElementById('runrate-pacing-kpis');
+            const isOverspending = projectedEomSpend > budgetLimit;
+
+            pacingKpis.innerHTML = `
+                <div class="kpi-card accent">
+                    <div class="kpi-title">📅 Filtered Days Count</div>
+                    <div class="kpi-value">${numUniqueDays} Days</div>
+                    <div class="kpi-delta delta-neutral">Active data period</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">⚡ Average Daily Spend Run Rate</div>
+                    <div class="kpi-value">₹${Math.round(avgDailySpend).toLocaleString('en-IN')}</div>
+                    <div class="kpi-delta delta-neutral">Proj. Daily Revenue: ₹${Math.round(avgDailyRevenue).toLocaleString('en-IN')}</div>
+                </div>
+                <div class="kpi-card ${isOverspending ? 'badge-red' : ''}" style="${isOverspending ? 'border-color: var(--danger);' : ''}">
+                    <div class="kpi-title">🔥 Projected Monthly Spend (EOM)</div>
+                    <div class="kpi-value" style="color: ${isOverspending ? 'var(--danger)' : '#fff'}">₹${Math.round(projectedEomSpend).toLocaleString('en-IN')}</div>
+                    <div class="kpi-delta ${isOverspending ? 'delta-down' : 'delta-up'}">
+                        Budget Limit: ₹${budgetLimit.toLocaleString()} (${isOverspending ? 'Over-budget pacing' : 'On track'})
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">🛍️ Projected Monthly Revenue</div>
+                    <div class="kpi-value">₹${Math.round(projectedEomRevenue).toLocaleString('en-IN')}</div>
+                    <div class="kpi-delta delta-neutral">Projected monthly ROAS: ${runRateROAS.toFixed(2)}x</div>
+                </div>
+            `;
+        }
+
+        // Render Product Deep Dive Tab
+        function renderProductDeepDive() {
+            // Aggregate Product Level Metrics
+            const prodMap = {};
+            filteredRecords.forEach(r => {
+                const k = r.Product;
+                if (!prodMap[k]) prodMap[k] = { name: k, spend: 0, rev: 0, conv: 0, impr: 0, clicks: 0, adsetNames: new Set(), adsCount: new Set() };
+                prodMap[k].spend += r.Spend;
+                prodMap[k].rev += r.Revenue;
+                prodMap[k].conv += r.Conversions;
+                prodMap[k].impr += r.Impressions;
+                prodMap[k].clicks += r.Clicks;
+                prodMap[k].adsetNames.add(r.Adset);
+                prodMap[k].adsCount.add(r.Ad_Name);
+            });
+
+            // Product insights cards (Asset scaling recommendations)
+            const prodInsights = document.getElementById('product-insights-grid');
+            prodInsights.innerHTML = '';
+            
+            Object.values(prodMap).forEach(p => {
+                const pRoas = p.spend > 0 ? (p.rev / p.spend) : 0;
+                const adCount = p.adsCount.size;
+                const targets = getTargetsFor(p.name);
+                
+                let icon = '👀';
+                let alertTitle = `${p.name} - Stable`;
+                let alertText = `ROAS is ${pRoas.toFixed(2)}x with ${adCount} active ads. Continue to monitor.`;
+
+                if (p.spend > 1000) {
+                    if (pRoas >= targets.ROAS && adCount < 4) {
+                        icon = '🚀';
+                        alertTitle = `${p.name} - Scale Asset`;
+                        alertText = `High ROAS of ${pRoas.toFixed(2)}x (exceeds ${targets.ROAS}x) but has only ${adCount} active creative ads. <strong>Recommendation:</strong> Scale up and deploy new asset hooks.`;
+                    } else if (pRoas < (targets.ROAS * 0.6)) {
+                        icon = '🛑';
+                        alertTitle = `${p.name} - Pause / Refresh`;
+                        alertText = `ROAS is critically low at ${pRoas.toFixed(2)}x. <strong>Recommendation:</strong> Pause underperforming creatives and refresh visual formats.`;
+                    }
+                }
+                prodInsights.innerHTML += `
+                    <div class="insight-card">
+                        <div class="insight-icon">${icon}</div>
+                        <div class="insight-title">${alertTitle}</div>
+                        <div class="insight-body">${alertText}</div>
+                    </div>
+                `;
+            });
+
+            // Product SKU matrix table
+            const prodTbody = document.getElementById('products-tbody');
+            prodTbody.innerHTML = '';
+            Object.values(prodMap).sort((a,b)=>b.spend-a.spend).forEach(p => {
+                const pRoas = p.spend > 0 ? (p.rev / p.spend) : 0;
+                const pCtr = p.impr > 0 ? (p.clicks / p.impr) * 100 : 0;
+                const pCpc = p.clicks > 0 ? (p.spend / p.clicks) : 0;
+                const targets = getTargetsFor(p.name);
+                
+                let signal = '<span class="badge badge-yellow">Stable</span>';
+                if (p.spend > 1000) {
+                    if (pRoas >= targets.ROAS && p.adsCount.size < 4) {
+                        signal = '<span class="badge badge-green">Needs Assets</span>';
+                    } else if (pRoas < (targets.ROAS * 0.6)) {
+                        signal = '<span class="badge badge-red">Pause/Refresh</span>';
+                    }
+                }
+
+                prodTbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 700; color: #fff;">${p.name}</td>
+                        <td>${signal}</td>
+                        <td data-sort="${p.adsCount.size}">${p.adsCount.size} ads</td>
+                        <td data-sort="${p.spend}">₹${Math.round(p.spend).toLocaleString()}</td>
+                        <td data-sort="${p.rev}">₹${Math.round(p.rev).toLocaleString()}</td>
+                        <td data-sort="${pRoas}" style="font-weight: 700; color: ${pRoas >= targets.ROAS ? 'var(--success)' : 'var(--danger)'}">${pRoas.toFixed(2)}x</td>
+                        <td data-sort="${p.conv}">${p.conv}</td>
+                        <td data-sort="${p.impr}">${(p.impr / 1000).toFixed(0)}K</td>
+                        <td data-sort="${pCtr}">${pCtr.toFixed(2)}%</td>
+                        <td data-sort="${pCpc}">₹${Math.round(pCpc)}</td>
+                    </tr>
+                `;
+            });
+
+            // Leaderboard Ads
+            const adMap = {};
+            filteredRecords.forEach(r => {
+                const k = r.Ad_Name;
+                if (!adMap[k]) adMap[k] = { name: k, product: r.Product, spend: 0, rev: 0, conv: 0, narrative: r.Narrative || 'Unknown' };
+                adMap[k].spend += r.Spend;
+                adMap[k].rev += r.Revenue;
+                adMap[k].conv += r.Conversions;
+            });
+            const topAds = Object.values(adMap).filter(a => a.spend > 100).map(a => {
+                a.roas = a.spend > 0 ? (a.rev / a.spend) : 0;
+                return a;
+            }).sort((a,b)=>b.roas-a.roas).slice(0, 20);
+
+            const topadsTbody = document.getElementById('topads-tbody');
+            topadsTbody.innerHTML = '';
+            topAds.forEach(ad => {
+                topadsTbody.innerHTML += `
+                    <tr>
+                        <td title="${ad.name}" style="max-width: 250px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:700; color:#fff;">${ad.name}</td>
+                        <td>${ad.product}</td>
+                        <td><span class="badge badge-blue">${ad.narrative}</span></td>
+                        <td data-sort="${ad.spend}">₹${Math.round(ad.spend).toLocaleString()}</td>
+                        <td data-sort="${ad.rev}">₹${Math.round(ad.rev).toLocaleString()}</td>
+                        <td data-sort="${ad.roas}" style="font-weight: 700; color: ${ad.roas >= 2.0 ? 'var(--success)' : 'var(--danger)'}">${ad.roas.toFixed(2)}x</td>
+                        <td data-sort="${ad.conv}">${ad.conv}</td>
+                    </tr>
+                `;
+            });
+
+            // Influencers table
+            const influencerMap = {};
+            filteredRecords.forEach(r => {
+                const k = r.Influencer || 'In-House';
+                if (!influencerMap[k]) influencerMap[k] = { name: k, spend: 0, rev: 0, conv: 0, count: new Set() };
+                influencerMap[k].spend += r.Spend;
+                influencerMap[k].rev += r.Revenue;
+                influencerMap[k].conv += r.Conversions;
+                influencerMap[k].count.add(r.Ad_Name);
+            });
+            const inflTable = document.getElementById('influencer-tbody');
+            inflTable.innerHTML = '';
+            Object.values(influencerMap).sort((a,b)=>b.spend-a.spend).forEach(i => {
+                const iRoas = i.spend > 0 ? (i.rev / i.spend) : 0;
+                inflTable.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700; color:#fff;">${i.name}</td>
+                        <td data-sort="${i.spend}">₹${Math.round(i.spend).toLocaleString()}</td>
+                        <td data-sort="${iRoas}" style="font-weight: 700; color: ${iRoas >= 2.0 ? 'var(--success)' : 'var(--danger)'}">${iRoas.toFixed(2)}x</td>
+                        <td data-sort="${i.conv}">${i.conv}</td>
+                        <td data-sort="${i.count.size}">${i.count.size} ads</td>
+                    </tr>
+                `;
+            });
+
+            // Languages table
+            const langMap = {};
+            filteredRecords.forEach(r => {
+                const k = r.Language || 'English';
+                if (!langMap[k]) langMap[k] = { name: k, spend: 0, rev: 0, conv: 0, clicks: 0, impr: 0 };
+                langMap[k].spend += r.Spend;
+                langMap[k].rev += r.Revenue;
+                langMap[k].conv += r.Conversions;
+                langMap[k].clicks += r.Clicks;
+                langMap[k].impr += r.Impressions;
+            });
+            const langTable = document.getElementById('language-tbody');
+            langTable.innerHTML = '';
+            Object.values(langMap).sort((a,b)=>b.spend-a.spend).forEach(l => {
+                const lRoas = l.spend > 0 ? (l.rev / l.spend) : 0;
+                const lCtr = l.impr > 0 ? (l.clicks / l.impr) * 100 : 0;
+                langTable.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700; color:#fff;">${l.name}</td>
+                        <td data-sort="${l.spend}">₹${Math.round(l.spend).toLocaleString()}</td>
+                        <td data-sort="${lRoas}">${lRoas.toFixed(2)}x</td>
+                        <td data-sort="${l.conv}">${l.conv}</td>
+                        <td data-sort="${lCtr}">${lCtr.toFixed(2)}%</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Render Google Ads granular analyzer tab
+        function renderGoogleAdsTab() {
+            const campTypeFilter = document.getElementById('google-camp-type-filter').value;
+            const searchVal = document.getElementById('google-search-input').value.toLowerCase().trim();
+
+            const googleRecords = filteredRecords.filter(r => r.Platform === 'Google');
+            
+            // Keyword Aggregation
+            const keywordMap = {};
+            const searchTermsMap = {};
+            const googleCampMap = {};
+
+            googleRecords.forEach(r => {
+                const keyword = r.Keyword || '';
+                const matchType = r.Match_Type || '';
+                const campaign = r.Campaign || '';
+                const adset = r.Adset || '';
+                const adName = r.Ad_Name || '';
+
+                // Filter by type helper
+                let matchesType = true;
+                if (campTypeFilter === 'Search') matchesType = campaign.toLowerCase().includes('search');
+                else if (campTypeFilter === 'PMax') matchesType = campaign.toLowerCase().includes('pmax');
+                else if (campTypeFilter === 'Shopping') matchesType = campaign.toLowerCase().includes('shopping') || campaign.toLowerCase().includes('catalog');
+                else if (campTypeFilter === 'Demand Gen') matchesType = campaign.toLowerCase().includes('demandgen') || campaign.toLowerCase().includes('video');
+
+                if (!matchesType) return;
+
+                // Keyword filters
+                if (keyword) {
+                    const kKey = `${keyword}||${matchType}`;
+                    if (!keywordMap[kKey]) keywordMap[kKey] = { kw: keyword, mt: matchType, spend: 0, conv: 0, rev: 0 };
+                    keywordMap[kKey].spend += r.Spend;
+                    keywordMap[kKey].conv += r.Conversions;
+                    keywordMap[kKey].rev += r.Revenue;
+                }
+
+                // Search term (simulated mapping from keywords for mock visibility)
+                const searchTerm = keyword ? `${keyword} discount shop` : 'serum shopping catalog';
+                if (searchTerm) {
+                    if (!searchTermsMap[searchTerm]) searchTermsMap[searchTerm] = { term: searchTerm, spend: 0, conv: 0, rev: 0, clicks: 0, impr: 0 };
+                    searchTermsMap[searchTerm].spend += r.Spend;
+                    searchTermsMap[searchTerm].conv += r.Conversions;
+                    searchTermsMap[searchTerm].rev += r.Revenue;
+                    searchTermsMap[searchTerm].clicks += r.Clicks;
+                    searchTermsMap[searchTerm].impr += r.Impressions;
+                }
+
+                // Google campaigns summary
+                if (campaign) {
+                    if (!googleCampMap[campaign]) googleCampMap[campaign] = { name: campaign, type: 'Search', spend: 0, rev: 0, conv: 0, clicks: 0, impr: 0 };
+                    googleCampMap[campaign].spend += r.Spend;
+                    googleCampMap[campaign].rev += r.Revenue;
+                    googleCampMap[campaign].conv += r.Conversions;
+                    googleCampMap[campaign].clicks += r.Clicks;
+                    googleCampMap[campaign].impr += r.Impressions;
+
+                    // Tag type
+                    if (campaign.toLowerCase().includes('pmax')) googleCampMap[campaign].type = 'PMax';
+                    else if (campaign.toLowerCase().includes('shopping') || campaign.toLowerCase().includes('catalog')) googleCampMap[campaign].type = 'Shopping';
+                    else if (campaign.toLowerCase().includes('demandgen') || campaign.toLowerCase().includes('video')) googleCampMap[campaign].type = 'Demand Gen';
+                }
+            });
+
+            // 1. Keyword performance table
+            const kwTable = document.getElementById('google-keywords-tbody');
+            kwTable.innerHTML = '';
+            
+            const kwList = Object.values(keywordMap).filter(k => {
+                return searchVal === '' || k.kw.toLowerCase().includes(searchVal);
+            }).sort((a,b)=>b.spend-a.spend);
+
+            kwList.forEach(k => {
+                const kwRoas = k.spend > 0 ? (k.rev / k.spend) : 0;
+                const kwCpa = k.conv > 0 ? (k.spend / k.conv) : 0;
+                const targets = getTargetsFor(null, 'Google');
+
+                kwTable.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700; color:#fff;">"${k.kw}"</td>
+                        <td><span class="badge ${k.mt==='Exact'?'badge-green':'badge-blue'}">${k.mt}</span></td>
+                        <td data-sort="${k.spend}">₹${Math.round(k.spend)}</td>
+                        <td data-sort="${k.conv}">${k.conv}</td>
+                        <td data-sort="${kwCpa}">₹${Math.round(kwCpa)}</td>
+                        <td data-sort="${kwRoas}" style="font-weight:700; color: ${kwRoas>=targets.ROAS?'var(--success)':'var(--danger)'}">${kwRoas.toFixed(2)}x</td>
+                    </tr>
+                `;
+            });
+            if (kwList.length === 0) {
+                kwTable.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No keyword rows found matching filters.</td></tr>`;
+            }
+
+            // 2. Search Terms Table
+            const stTable = document.getElementById('google-searchterms-tbody');
+            stTable.innerHTML = '';
+
+            const stList = Object.values(searchTermsMap).filter(s => {
+                return searchVal === '' || s.term.toLowerCase().includes(searchVal);
+            }).sort((a,b)=>b.spend-a.spend);
+
+            stList.forEach(s => {
+                const stRoas = s.spend > 0 ? (s.rev / s.spend) : 0;
+                const stCtr = s.impr > 0 ? (s.clicks / s.impr)*100 : 0;
+                stTable.innerHTML += `
+                    <tr>
+                        <td style="font-style:italic; color:#fff;">${s.term}</td>
+                        <td data-sort="${s.spend}">₹${Math.round(s.spend)}</td>
+                        <td data-sort="${s.conv}">${s.conv}</td>
+                        <td data-sort="${stCtr}">${stCtr.toFixed(2)}%</td>
+                        <td data-sort="${stRoas}">${stRoas.toFixed(2)}x</td>
+                    </tr>
+                `;
+            });
+            if (stList.length === 0) {
+                stTable.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">No query terms parsed.</td></tr>`;
+            }
+
+            // 3. Campaign list table
+            const campTable = document.getElementById('google-campaigns-tbody');
+            campTable.innerHTML = '';
+            Object.values(googleCampMap).sort((a,b)=>b.spend-a.spend).forEach(c => {
+                const cRoas = c.spend > 0 ? (c.rev / c.spend) : 0;
+                const cCtr = c.impr > 0 ? (c.clicks / c.impr)*100 : 0;
+                const cCpc = c.clicks > 0 ? (c.spend / c.clicks) : 0;
+                const typeBadge = c.type === 'Search' ? 'badge-green' : (c.type === 'PMax' ? 'badge-purple' : 'badge-cyan');
+
+                campTable.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700; color:#fff;">${c.name}</td>
+                        <td><span class="badge ${typeBadge}">${c.type}</span></td>
+                        <td data-sort="${c.spend}">₹${Math.round(c.spend).toLocaleString()}</td>
+                        <td data-sort="${c.rev}">₹${Math.round(c.rev).toLocaleString()}</td>
+                        <td data-sort="${cRoas}" style="font-weight:700;">${cRoas.toFixed(2)}x</td>
+                        <td data-sort="${c.conv}">${c.conv}</td>
+                        <td data-sort="${cCtr}">${cCtr.toFixed(2)}%</td>
+                        <td data-sort="${cCpc}">₹${Math.round(cCpc)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Render AI Root Cause Tab (Waterfall Variance)
+        function renderAIVarianceAnalyzer() {
+            if (activeDateRange === 'all') {
+                document.getElementById('rcAiSummary').innerHTML = 'Please select a date range chip (like Last 7 Days or Last 30 Days) to compare metrics against the previous equivalent baseline.';
+                document.getElementById('rcKpis').innerHTML = '';
+                document.getElementById('rcAttribution-tbody').innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Select a baseline time range to show attributions.</td></tr>';
+                if (chartInstances.rcWaterfall) chartInstances.rcWaterfall.destroy();
+                return;
+            }
+            if (previousPeriodRecords.length === 0) {
+                document.getElementById('rcAiSummary').innerHTML = 'Insufficient historical rows in the prior window to perform the comparison.';
+                return;
+            }
+
+            // Math variance attribution:
+            // Rev = Traffic * CVR * AOV
+            let curRev = sumField(filteredRecords, 'Revenue');
+            let curTfc = sumField(filteredRecords, 'Clicks') || 1;
+            let curConv = sumField(filteredRecords, 'Conversions') || 1;
+            
+            let prevRev = sumField(previousPeriodRecords, 'Revenue');
+            let prevTfc = sumField(previousPeriodRecords, 'Clicks') || 1;
+            let prevConv = sumField(previousPeriodRecords, 'Conversions') || 1;
+
+            let curCvr = curConv / curTfc;
+            let prevCvr = prevConv / prevTfc;
+            
+            let curAov = curConv > 0 ? (curRev / curConv) : 0;
+            let prevAov = prevConv > 0 ? (prevRev / prevConv) : 0;
+
+            let dRev = curRev - prevRev;
+            let dTfc = curTfc - prevTfc;
+            let dCvr = curCvr - prevCvr;
+            let dAov = curAov - prevAov;
+
+            // Attribution impact formulas:
+            let impactTraffic = dTfc * prevCvr * prevAov;
+            let impactCvr = curTfc * dCvr * prevAov;
+            let impactAov = curTfc * curCvr * dAov;
+
+            let totalImpact = impactTraffic + impactCvr + impactAov;
+            let residual = dRev - totalImpact;
+
+            // Balance the residual variance proportionally
+            if (totalImpact !== 0) {
+                impactTraffic += residual * (Math.abs(impactTraffic) / Math.abs(totalImpact));
+                impactCvr += residual * (Math.abs(impactCvr) / Math.abs(totalImpact));
+                impactAov += residual * (Math.abs(impactAov) / Math.abs(totalImpact));
+            }
+
+            // 1. Diagnostic text summary
+            let biggestDriver = 'Traffic';
+            let driverVal = impactTraffic;
+            if (Math.abs(impactCvr) > Math.abs(driverVal)) { biggestDriver = 'Conversion Rate (CVR)'; driverVal = impactCvr; }
+            if (Math.abs(impactAov) > Math.abs(driverVal)) { biggestDriver = 'Average Order Value (AOV)'; driverVal = impactAov; }
+
+            const dirText = dRev >= 0 ? 'increased' : 'dropped';
+            const driverDir = driverVal >= 0 ? 'an increase' : 'a drop';
+            
+            let summaryText = `Revenue <strong>${dirText} by ₹${Math.round(Math.abs(dRev)).toLocaleString()}</strong> (${((dRev/prevRev)*100).toFixed(1)}%). `;
+            summaryText += `The primary mathematical driver was <strong>${driverDir} in ${biggestDriver}</strong> (impacting ₹${Math.round(Math.abs(driverVal)).toLocaleString()}). `;
+            
+            document.getElementById('rcAiSummary').innerHTML = summaryText;
+
+            // 2. Attribution KPIs
+            const rcKpisDiv = document.getElementById('rcKpis');
+            rcKpisDiv.innerHTML = `
+                <div class="kpi-card">
+                    <div class="kpi-title">Attributed Revenue Delta</div>
+                    <div class="kpi-value" style="color: ${dRev>=0?'var(--success)':'var(--danger)'}">₹${Math.round(dRev).toLocaleString()}</div>
+                    <div class="kpi-delta">${((dRev/prevRev)*100).toFixed(1)}% change</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Traffic Impact</div>
+                    <div class="kpi-value" style="color: ${impactTraffic>=0?'var(--success)':'var(--danger)'}">₹${Math.round(impactTraffic).toLocaleString()}</div>
+                    <div class="kpi-delta">${((dTfc/prevTfc)*100).toFixed(1)}% click change</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Conversion Rate (CVR) Impact</div>
+                    <div class="kpi-value" style="color: ${impactCvr>=0?'var(--success)':'var(--danger)'}">₹${Math.round(impactCvr).toLocaleString()}</div>
+                    <div class="kpi-delta">${((dCvr/prevCvr)*100).toFixed(1)}% CVR change</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title">Order Value (AOV) Impact</div>
+                    <div class="kpi-value" style="color: ${impactAov>=0?'var(--success)':'var(--danger)'}">₹${Math.round(impactAov).toLocaleString()}</div>
+                    <div class="kpi-delta">${((dAov/prevAov)*100).toFixed(1)}% AOV change</div>
+                </div>
+            `;
+
+            // 3. Variance Waterfall Graph
+            const waterfallCtx = document.getElementById('rcWaterfallChart').getContext('2d');
+            if (chartInstances.rcWaterfall) chartInstances.rcWaterfall.destroy();
+
+            const waterfallLabels = ['Previous', 'Traffic Impact', 'CVR Impact', 'AOV Impact', 'Current'];
+            const floatingData = [
+                [0, prevRev],
+                [prevRev, prevRev + impactTraffic],
+                [prevRev + impactTraffic, prevRev + impactTraffic + impactCvr],
+                [prevRev + impactTraffic + impactCvr, prevRev + impactTraffic + impactCvr + impactAov],
+                [0, curRev]
+            ];
+
+            const barColors = [
+                'rgba(99,102,241,0.5)',
+                impactTraffic >= 0 ? 'rgba(16,185,129,0.7)' : 'rgba(244,63,94,0.7)',
+                impactCvr >= 0 ? 'rgba(16,185,129,0.7)' : 'rgba(244,63,94,0.7)',
+                impactAov >= 0 ? 'rgba(16,185,129,0.7)' : 'rgba(244,63,94,0.7)',
+                'rgba(6,182,212,0.7)'
+            ];
+
+            chartInstances.rcWaterfall = new Chart(waterfallCtx, {
+                type: 'bar',
+                data: {
+                    labels: waterfallLabels,
+                    datasets: [{
+                        data: floatingData,
+                        backgroundColor: barColors,
+                        borderWidth: 1,
+                        borderColor: '#1e293b',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    const diff = ctx.raw[1] - ctx.raw[0];
+                                    return `Delta: ₹${Math.round(diff).toLocaleString()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+                        x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // 4. Attribution list matrix by Campaign
+            const rcAttributionTbody = document.getElementById('rcAttribution-tbody');
+            rcAttributionTbody.innerHTML = '';
+
+            const campaignDiffs = {};
+            filteredRecords.forEach(r => {
+                const k = r.Campaign;
+                if (!campaignDiffs[k]) campaignDiffs[k] = { name: k, curSpend: 0, curConv: 0, curRev: 0, prevSpend: 0, prevConv: 0, prevRev: 0, curClicks: 0, prevClicks: 0 };
+                campaignDiffs[k].curSpend += r.Spend;
+                campaignDiffs[k].curConv += r.Conversions;
+                campaignDiffs[k].curRev += r.Revenue;
+                campaignDiffs[k].curClicks += r.Clicks;
+            });
+            previousPeriodRecords.forEach(r => {
+                const k = r.Campaign;
+                if (!campaignDiffs[k]) campaignDiffs[k] = { name: k, curSpend: 0, curConv: 0, curRev: 0, prevSpend: 0, prevConv: 0, prevRev: 0, curClicks: 0, prevClicks: 0 };
+                campaignDiffs[k].prevSpend += r.Spend;
+                campaignDiffs[k].prevConv += r.Conversions;
+                campaignDiffs[k].prevRev += r.Revenue;
+                campaignDiffs[k].prevClicks += r.Clicks;
+            });
+
+            Object.values(campaignDiffs).sort((a,b)=>Math.abs(b.curRev - a.prevRev) - Math.abs(a.curRev - a.prevRev)).slice(0, 10).forEach(c => {
+                const cCurCvr = c.curClicks > 0 ? (c.curConv / c.curClicks)*100 : 0;
+                const cPrevCvr = c.prevClicks > 0 ? (c.prevConv / c.prevClicks)*100 : 0;
+                const cCurAov = c.curConv > 0 ? (c.curRev / c.conv) : 0;
+                const cPrevAov = c.prevConv > 0 ? (c.prevRev / c.prevConv) : 0;
+
+                const dTfc = c.curClicks - c.prevClicks;
+                const dCvr = cCurCvr - cPrevCvr;
+                const dAov = cCurAov - cPrevAov;
+
+                rcAttributionTbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 700; color: #fff; max-width: 170px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.name}</td>
+                        <td style="color: ${dTfc>=0?'var(--success)':'var(--danger)'}; font-weight:700;">${dTfc>=0?'+':''}${dTfc.toLocaleString()}</td>
+                        <td style="color: ${dCvr>=0?'var(--success)':'var(--danger)'}; font-weight:700;">${dCvr>=0?'+':''}${dCvr.toFixed(2)}%</td>
+                        <td style="color: ${dAov>=0?'var(--success)':'var(--danger)'}; font-weight:700;">${dAov>=0?'+':''}${Math.round(dAov)}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Render Intelligence Mode (3d vs 7d)
+        function renderIntelligenceGrid() {
+            // Find unique dates
+            const dates = [...new Set(rawRecords.map(r => r.Date))].sort();
+            if (dates.length < 10) {
+                document.getElementById('intelligence-tbody').innerHTML = `<tr><td colspan="9" style="text-align:center;">Add at least 10 days of raw daily records to unlock 3-day trend tracking.</td></tr>`;
+                return;
+            }
+
+            const maxDate = dates[dates.length - 1];
+            // Last 3 days
+            const recentWindow = dates.slice(-3);
+            // Prior 7 days average
+            const baselineWindow = dates.slice(-10, -3);
+
+            // Group by Product SKU + Platform combinations
+            const comboMap = {};
+            rawRecords.forEach(r => {
+                const k = `${r.Product}||${r.Platform}`;
+                if (!comboMap[k]) comboMap[k] = { product: r.Product, platform: r.Platform, rSpend: 0, rRev: 0, rPurch: 0, rClicks: 0, rImpr: 0, bSpend: 0, bRev: 0, bPurch: 0, bClicks: 0, bImpr: 0 };
+                
+                if (recentWindow.includes(r.Date)) {
+                    comboMap[k].rSpend += r.Spend;
+                    comboMap[k].rRev += r.Revenue;
+                    comboMap[k].rPurch += r.Conversions;
+                    comboMap[k].rClicks += r.Clicks;
+                    comboMap[k].rImpr += r.Impressions;
+                } else if (baselineWindow.includes(r.Date)) {
+                    comboMap[k].bSpend += r.Spend;
+                    comboMap[k].bRev += r.Revenue;
+                    comboMap[k].bPurch += r.Conversions;
+                    comboMap[k].bClicks += r.Clicks;
+                    comboMap[k].bImpr += r.Impressions;
+                }
+            });
+
+            const intelTable = document.getElementById('intelligence-tbody');
+            intelTable.innerHTML = '';
+
+            Object.values(comboMap).forEach(row => {
+                const recRoas = row.rSpend > 0 ? (row.rRev / row.rSpend) : 0;
+                const recCpa = row.rPurch > 0 ? (row.rSpend / row.rPurch) : 0;
+                const recCtr = row.rImpr > 0 ? (row.rClicks / row.rImpr)*100 : 0;
+
+                const basRoas = row.bSpend > 0 ? (row.bRev / row.bSpend) : 0;
+                const basCpa = row.bPurch > 0 ? (row.bSpend / row.bPurch) : 0;
+                const basCtr = row.bImpr > 0 ? (row.bClicks / row.bImpr)*100 : 0;
+
+                const ctrDelta = basCtr > 0 ? ((recCtr - basCtr) / basCtr)*100 : 0;
+
+                // Grab custom targets for this product + platform context
+                const targets = getTargetsFor(row.product, row.platform);
+
+                let verdict = "HOLD / WATCH";
+                let reason = "Insufficient recent spend activity to compute optimization directives.";
+                let badgeClass = "badge-yellow";
+
+                if (row.rSpend > 300) {
+                    if (recRoas >= targets.ROAS && recCpa <= targets.CPA) {
+                        if (ctrDelta >= -10) {
+                            verdict = "SCALE BUDGET";
+                            reason = `Recent 3-day ROAS is ${recROAS.toFixed(2)}x (exceeds SKU target of ${targets.ROAS}x) and CPA is ₹${Math.round(recCpa)} (below ₹${targets.CPA}). Boost budget 20%.`;
+                            badgeClass = "badge-green";
+                        } else {
+                            verdict = "SCALE WITH WATCH";
+                            reason = `ROAS (${recROAS.toFixed(2)}x) is strong, but CTR fell ${Math.abs(ctrDelta).toFixed(1)}% recently. Ad creatives showing early signs of fatigue.`;
+                            badgeClass = "badge-green";
+                        }
+                    } else if (recRoas < 1.3 || recCpa > (targets.CPA * 1.8) || (row.rSpend > (targets.CPA * 2.5) && row.rPurch === 0)) {
+                        verdict = "PAUSE CREATIVE";
+                        badgeClass = "badge-red";
+                        if (row.rPurch === 0) {
+                            reason = `Spent ₹${Math.round(row.rSpend)} in the last 3 days with zero purchases. Kill this set immediately.`;
+                        } else {
+                            reason = `ROAS collapsed to ${recROAS.toFixed(2)}x and CPA surged to ₹${Math.round(recCpa)} (Target: ₹${targets.CPA}). Stop budget leakage.`;
+                        }
+                    } else if (ctrDelta < -25 && recCpa > (basCpa * 1.25)) {
+                        verdict = "CREATIVE FATIGUE";
+                        badgeClass = "badge-red";
+                        reason = `Creative fatigue warning: CTR plummeted by ${Math.abs(ctrDelta).toFixed(1)}% vs baseline, driving CPA up. Trim budget 30% and push new visual hooks.`;
+                    } else {
+                        verdict = "HOLD / WATCH";
+                        reason = `ROAS is ${recROAS.toFixed(2)}x (Target: ${targets.ROAS}x) and CPA is ₹${Math.round(recCpa)}. Maintain budget levels for 48 hours.`;
+                        badgeClass = "badge-yellow";
+                    }
+                }
+
+                intelTable.innerHTML += `
+                    <tr>
+                        <td style="font-weight:700; color:#fff;">${row.product} @ ${row.platform}</td>
+                        <td data-sort="${row.rSpend}">₹${Math.round(row.rSpend).toLocaleString()}</td>
+                        <td data-sort="${recRoas}">${recRoas.toFixed(2)}x</td>
+                        <td data-sort="${recCpa}">₹${Math.round(recCpa)}</td>
+                        <td>${basRoas.toFixed(2)}x</td>
+                        <td>₹${Math.round(basCpa)}</td>
+                        <td data-sort="${ctrDelta}" style="color: ${ctrDelta>=0?'var(--success)':'var(--danger)'}; font-weight:700;">${ctrDelta>=0?'+':''}${ctrDelta.toFixed(1)}%</td>
+                        <td><span class="badge ${badgeClass}">${verdict}</span></td>
+                        <td style="font-size:11.5px; line-height:1.4; max-width: 250px;">${reason}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Render competitor cards
+        function renderCompetitorsList() {
+            const listGrid = document.getElementById('competitorGrid');
+            const emptyState = document.getElementById('compEmptyState');
+            const searchVal = document.getElementById('compSearch').value.toLowerCase().trim();
+
+            listGrid.innerHTML = '';
+            
+            const filtered = competitorLogs.filter(c => {
+                return searchVal === '' || c.Name.toLowerCase().includes(searchVal) || c.Copy.toLowerCase().includes(searchVal);
+            });
+
+            if (filtered.length === 0) {
+                listGrid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            listGrid.style.display = 'flex';
+            emptyState.style.display = 'none';
+
+            filtered.forEach((item, idx) => {
+                listGrid.innerHTML += `
+                    <div class="comp-row">
+                        <button style="position:absolute; top:10px; right:10px; background:none; border:none; color:var(--danger); cursor:pointer;" onclick="deleteCompetitorHook(${idx})">✖</button>
+                        <div class="comp-brand">🏢 ${item.Name}</div>
+                        <div class="comp-narrative">
+                            <div style="font-size:9.5px; color:var(--secondary); font-weight:700; text-transform:uppercase; margin-bottom:4px;">${item.Platform}</div>
+                            <div style="margin-bottom: 4px;"><span class="badge badge-yellow" style="font-size:8px;">${item.Hook}</span></div>
+                            <p style="margin-bottom: 4px;"><strong>Copy Hook:</strong> "${item.Copy}"</p>
+                            <p style="color: var(--success);"><strong>Defensive counter:</strong> ${item.Insights}</p>
+                            <a href="${item.Link}" target="_blank" style="font-size:11px; color:var(--secondary); text-decoration:none;">🔗 View Ad Library</a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addCompetitorEntry() {
+            const name = document.getElementById('comp-name').value.trim();
+            const platform = document.getElementById('comp-platform').value;
+            const hook = document.getElementById('comp-hook').value;
+            const link = document.getElementById('comp-link').value.trim();
+            const copy = document.getElementById('comp-copy').value.trim();
+            const insights = document.getElementById('comp-insights').value.trim();
+
+            if (!name || !link || !copy || !insights) {
+                alert("Please fill in all competitor log input fields.");
+                return;
+            }
+
+            const newEntry = { Name: name, Platform: platform, Hook: hook, Link: link, Copy: copy, Insights: insights };
+            competitorLogs.unshift(newEntry);
+            localStorage.setItem('competitor_logs', JSON.stringify(competitorLogs));
+
+            renderCompetitorsList();
+            showToast('Competitor ad hook logged successfully!', '🕵️');
+
+            // Reset
+            document.getElementById('comp-name').value = '';
+            document.getElementById('comp-link').value = '';
+            document.getElementById('comp-copy').value = '';
+            document.getElementById('comp-insights').value = '';
+        }
+
+        function deleteCompetitorHook(idx) {
+            if (confirm("Delete this competitor swipe?")) {
+                competitorLogs.splice(idx, 1);
+                localStorage.setItem('competitor_logs', JSON.stringify(competitorLogs));
+                renderCompetitorsList();
+                showToast('Competitor log deleted.', '🗑️');
+            }
+        }
+
+        // Render Benchmarks Targets Config Tab
+        function renderBenchmarksConfig() {
+            // Sku overrides list table
+            const overridesTbody = document.getElementById('sku-overrides-tbody');
+            overridesTbody.innerHTML = '';
+            
+            for (let sku in skuOverrides) {
+                const target = skuOverrides[sku];
+                overridesTbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight: 700; color: #fff;">${sku}</td>
+                        <td>${target.ROAS.toFixed(2)}x</td>
+                        <td>₹${target.CPA}</td>
+                        <td>
+                            <button style="background:none; border:none; color:var(--danger); cursor:pointer;" onclick="deleteSkuOverride('${sku}')">✖</button>
+                        </td>
+                    </tr>
+                `;
+            }
+            if (Object.keys(skuOverrides).length === 0) {
+                overridesTbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">No product target overrides set.</td></tr>`;
+            }
+        }
+
+        function saveBenchmarkTargets() {
+            const globalROAS = Number(document.getElementById('target-roas').value);
+            const globalCPA = Number(document.getElementById('target-cpa').value);
+            const globalAOV = Number(document.getElementById('target-aov').value);
+
+            const roasMeta = Number(document.getElementById('target-roas-meta').value);
+            const cpaMeta = Number(document.getElementById('target-cpa-meta').value);
+            const roasGoogle = Number(document.getElementById('target-roas-google').value);
+            const cpaGoogle = Number(document.getElementById('target-cpa-google').value);
+
+            localStorage.setItem('target_roas', globalROAS);
+            localStorage.setItem('target_cpa', globalCPA);
+            localStorage.setItem('target_aov', globalAOV);
+
+            localStorage.setItem('target_roas_meta', roasMeta);
+            localStorage.setItem('target_cpa_meta', cpaMeta);
+            localStorage.setItem('target_roas_google', roasGoogle);
+            localStorage.setItem('target_cpa_google', cpaGoogle);
+
+            applyFilters();
+            showToast('Benchmark targets updated successfully!', '⚙️');
+        }
+
+        function addSkuOverride() {
+            const sku = document.getElementById('sku-select-override').value;
+            const roas = Number(document.getElementById('sku-roas-override').value);
+            const cpa = Number(document.getElementById('sku-cpa-override').value);
+
+            skuOverrides[sku] = { ROAS: roas, CPA: cpa };
+            localStorage.setItem('sku_overrides', JSON.stringify(skuOverrides));
+
+            renderBenchmarksConfig();
+            applyFilters();
+            showToast(`Target override added for ${sku}!`, '📦');
+        }
+
+        function deleteSkuOverride(sku) {
+            delete skuOverrides[sku];
+            localStorage.setItem('sku_overrides', JSON.stringify(skuOverrides));
+            renderBenchmarksConfig();
+            applyFilters();
+            showToast(`Target override deleted for ${sku}.`, '🗑️');
+        }
+
+        // ==========================================
+        // 6. CHARTS PLOTS ENGINE
+        // ==========================================
+        function renderCharts() {
+            // Aggregate spend trend daily
+            const datesMap = {};
+            filteredRecords.forEach(r => {
+                const d = r.Date;
+                if (!datesMap[d]) datesMap[d] = { spend: 0, rev: 0, conv: 0 };
+                datesMap[d].spend += r.Spend;
+                datesMap[d].rev += r.Revenue;
+                datesMap[d].conv += r.Conversions;
+            });
+
+            const sortedDates = Object.keys(datesMap).sort();
+            const dateLabels = sortedDates.map(d => d.slice(5));
+            const spends = sortedDates.map(d => datesMap[d].spend);
+            const revenues = sortedDates.map(d => datesMap[d].rev);
+            const cacs = sortedDates.map(d => datesMap[d].conv > 0 ? (datesMap[d].spend / datesMap[d].conv) : 0);
+
+            // 1. Line Trend Chart
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            if (chartInstances.trend) chartInstances.trend.destroy();
+
+            chartInstances.trend = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: dateLabels,
+                    datasets: [
+                        { label: 'Revenue (₹)', data: revenues, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.05)', fill: true, tension: 0.4, borderWidth: 2, yAxisID: 'y' },
+                        { label: 'Spend (₹)', data: spends, borderColor: '#6366f1', backgroundColor: 'rgba(99,102,241,0.05)', fill: true, tension: 0.4, borderWidth: 2, yAxisID: 'y' },
+                        { label: 'CAC (₹)', data: cacs, borderColor: '#f59e0b', backgroundColor: 'transparent', tension: 0.4, borderWidth: 1.5, borderDash: [4, 4], yAxisID: 'y1' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: '#f8fafc', font: { family: 'Plus Jakarta Sans', size: 10 } } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.03)' } },
+                        y: { display: true, position: 'left', ticks: { color: '#94a3b8', font: { size: 9 }, callback: (v)=>`₹${v}` }, grid: { color: 'rgba(255,255,255,0.03)' } },
+                        y1: { display: true, position: 'right', ticks: { color: '#f59e0b', font: { size: 9 }, callback: (v)=>`₹${v}` }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // 2. Format Breakdown Doughnut
+            const formatCtx = document.getElementById('formatChart').getContext('2d');
+            if (chartInstances.format) chartInstances.format.destroy();
+
+            const formatMap = {};
+            filteredRecords.forEach(r => {
+                const k = r.AdType || 'Unknown';
+                formatMap[k] = (formatMap[k] || 0) + r.Spend;
+            });
+            chartInstances.format = new Chart(formatCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(formatMap),
+                    datasets: [{
+                        data: Object.values(formatMap),
+                        backgroundColor: ['#6366f1', '#06b6d4', '#8b5cf6', '#10b981'],
+                        borderColor: '#020617',
+                        borderWidth: 1.5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 9 } } }
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            // 3. Platform Breakdown Doughnut
+            const platformCtx = document.getElementById('platformChart').getContext('2d');
+            if (chartInstances.platform) chartInstances.platform.destroy();
+
+            const platMap = {};
+            filteredRecords.forEach(r => {
+                const k = r.Platform;
+                platMap[k] = (platMap[k] || 0) + r.Spend;
+            });
+            chartInstances.platform = new Chart(platformCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(platMap),
+                    datasets: [{
+                        data: Object.values(platMap),
+                        backgroundColor: ['#6366f1', '#f59e0b'],
+                        borderColor: '#020617',
+                        borderWidth: 1.5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 9 } } }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+
+        // ==========================================
+        // 7. GOOGLE SHEETS & CSV INTEGRATION (INGESTION)
+        // ==========================================
+        function parseClipboardCSV() {
+            const text = document.getElementById('csv-paste').value.trim();
+            if (!text) {
+                alert("Please paste spreadsheet cells first.");
+                return;
+            }
+
+            try {
+                const delimiter = text.includes('\t') ? '\t' : ',';
+                const lines = text.split(/\r?\n/);
+                if (lines.length < 2) {
+                    alert("Headers and rows are required.");
+                    return;
+                }
+
+                const headers = lines[0].split(delimiter).map(h => h.trim().replace(/^"|"$/g, ''));
+                const parsed = [];
+
+                for (let i = 1; i < lines.length; i++) {
+                    if (!lines[i].trim()) continue;
+                    const cols = lines[i].split(delimiter).map(c => c.trim().replace(/^"|"$/g, ''));
+                    if (cols.length < headers.length) continue;
+
+                    const rowObj = {};
+                    headers.forEach((h, idx) => {
+                        rowObj[h] = cols[idx];
+                    });
+
+                    // Map columns
+                    const cleanObj = {
+                        Date: rowObj.Date || rowObj.date || new Date().toISOString().slice(0, 10),
+                        Platform: rowObj.Platform || rowObj.platform || 'Meta',
+                        Campaign: rowObj.Campaign || rowObj.campaign || 'Campaign_Creative',
+                        Adset: rowObj.Adset || rowObj.adset || rowObj['Ad Group'] || 'Ad_Group',
+                        Ad_Name: rowObj.Ad_Name || rowObj.ad_name || rowObj['Ad Name'] || 'Creative',
+                        Keyword: rowObj.Keyword || rowObj.keyword || '',
+                        Match_Type: rowObj.Match_Type || rowObj.match_type || '',
+                        Spend: Number((rowObj.Spend || rowObj.spend || rowObj.Cost || 0).toString().replace(/[₹,]/g, '')) || 0,
+                        Impressions: Number((rowObj.Impressions || rowObj.impressions || rowObj.Impr || 0).toString().replace(/,/g, '')) || 0,
+                        Clicks: Number((rowObj.Clicks || rowObj.clicks || 0).toString().replace(/,/g, '')) || 0,
+                        LPV: Number((rowObj.LPV || rowObj.lpv || rowObj['Landing Page Views'] || 0).toString().replace(/,/g, '')) || 0,
+                        ATC: Number((rowObj.ATC || rowObj.atc || rowObj['Add to Cart'] || 0).toString().replace(/,/g, '')) || 0,
+                        Conversions: Number((rowObj.Conversions || rowObj.conversions || rowObj.Purchases || rowObj.Sales || 0).toString().replace(/,/g, '')) || 0,
+                        Revenue: Number((rowObj.Revenue || rowObj.revenue || rowObj['Purchase Value'] || 0).toString().replace(/[₹,]/g, '')) || 0
+                    };
+                    parsed.push(cleanObj);
+                }
+
+                if (parsed.length === 0) {
+                    alert("Zero rows parsed. Confirm headers copy.");
+                    return;
+                }
+
+                rawRecords = parsed;
+                localStorage.setItem('raw_records', JSON.stringify(rawRecords));
+                recalculateAllData();
+                showToast(`Ingested ${parsed.length} rows from clipboard!`, '📥');
+                document.getElementById('sync-status').innerHTML = `Clipboard data ingested (${parsed.length} rows)`;
+
+            } catch (e) {
+                alert("CSV Parsing Error: " + e.message);
+            }
+        }
+
+        // Sheet JSONP fetch callback binders
+        function fetchSheetDataJSONP(sheetName, callbackName, sheetId) {
+            return new Promise((resolve, reject) => {
+                const old = document.getElementById('gvizScript_' + callbackName);
+                if (old) old.remove();
+
+                const timeout = setTimeout(() => {
+                    reject(new Error(`Timeout loading tab ${sheetName}`));
+                }, 10000);
+
+                window[callbackName] = (data) => {
+                    clearTimeout(timeout);
+                    resolve(data);
+                };
+
+                const s = document.createElement('script');
+                s.id = 'gvizScript_' + callbackName;
+                s.src = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json;responseHandler=${callbackName}&sheet=${sheetName}`;
+                s.onerror = () => {
+                    clearTimeout(timeout);
+                    reject(new Error(`Failed to load Google Sheet tab ${sheetName}`));
+                };
+                document.head.appendChild(s);
+            });
+        }
+
+        function syncData(silent = false) {
+            const sheetUrlOrId = document.getElementById('sheet-url').value.trim();
+            if (!sheetUrlOrId) {
+                if (!silent) alert("Please enter spreadsheet URL or ID.");
+                return;
+            }
+
+            localStorage.setItem('sheet_url', sheetUrlOrId);
+            const syncBtn = document.getElementById('sync-btn');
+            
+            if (!silent) {
+                syncBtn.innerHTML = `<span class="spinner"></span> Syncing...`;
+                syncBtn.disabled = true;
+            }
+
+            const sheetIdMatch = sheetUrlOrId.match(/\/d\/([a-zA-Z0-9-_]+)/);
+            const sheetId = sheetIdMatch ? sheetIdMatch[1] : sheetUrlOrId;
+
+            // Load master tabs live
+            Promise.all([
+                fetchSheetDataJSONP('META_DATA', '_gvizCbMeta', sheetId).catch(() => null),
+                fetchSheetDataJSONP('COMPETITOR_ADS', '_gvizCbComp', sheetId).catch(() => null)
+            ])
+            .then(([metaData, compData]) => {
+                if (metaData) {
+                    const parsed = parseGviz(metaData);
+                    if (parsed.length > 0) {
+                        rawRecords = parsed;
+                        localStorage.setItem('raw_records', JSON.stringify(rawRecords));
+                    }
+                }
+                if (compData) {
+                    const parsedComp = parseCompetitorData(compData);
+                    if (parsedComp.length > 0) {
+                        competitorLogs = parsedComp;
+                        localStorage.setItem('competitor_logs', JSON.stringify(competitorLogs));
+                    }
+                }
+
+                recalculateAllData();
+
+                syncBtn.innerHTML = `🔄 Sync Sheet Data`;
+                syncBtn.disabled = false;
+                
+                const timeString = new Date().toLocaleTimeString();
+                document.getElementById('sync-status').innerHTML = `Last Synced: Today at ${timeString}`;
+                document.getElementById('sync-status').style.color = 'var(--success)';
+                document.getElementById('loader').style.display = 'none';
+
+                if (!silent) {
+                    showToast('Google Sheet live sync completed!', '🚀');
+                }
+            })
+            .catch(err => {
+                document.getElementById('loader').style.display = 'none';
+                syncBtn.innerHTML = `🔄 Sync Sheet Data`;
+                syncBtn.disabled = false;
+                if (!silent) alert("Sync error: " + err.message);
+            });
+        }
+
+        // GViz parser
+        function parseGviz(data) {
+            if (!data || data.status === 'error') return [];
+            const table = data.table;
+            if (!table) return [];
+            const cols = table.cols.map(c => (c && c.label || c && c.id || '').trim().toLowerCase());
+
+            const iDate = cols.findIndex(c => c.includes('date'));
+            const iPlat = cols.findIndex(c => c.includes('platform'));
+            const iCamp = cols.findIndex(c => c.includes('campaign'));
+            const iAdset = cols.findIndex(c => c.includes('adset') || c.includes('ad group'));
+            const iAd = cols.findIndex(c => c.includes('ad_name') || c.includes('ad name'));
+            const iKeyword = cols.findIndex(c => c.includes('keyword'));
+            const iMatch = cols.findIndex(c => c.includes('match_type') || c.includes('match type'));
+            const iSpend = cols.findIndex(c => c.includes('spend') || c.includes('cost'));
+            const iImpr = cols.findIndex(c => c.includes('impressions'));
+            const iClicks = cols.findIndex(c => c.includes('clicks'));
+            const iLpv = cols.findIndex(c => c.includes('lpv') || c.includes('landing page'));
+            const iATC = cols.findIndex(c => c.includes('atc') || c.includes('cart'));
+            const iConv = cols.findIndex(c => c.includes('conversions') || c.includes('purchases') || c.includes('sales'));
+            const iRev = cols.findIndex(c => c.includes('revenue') || c.includes('conversion value') || c.includes('purchase value'));
+            const iProd = cols.findIndex(c => c.includes('product') || c.includes('sku'));
+
+            function parseDateSafe(cell) {
+                if (!cell) return '';
+                if (cell.v && typeof cell.v === 'string' && cell.v.startsWith('Date(')) {
+                    var m = cell.v.match(/Date\((\d+),(\d+),(\d+)\)/);
+                    if (m) {
+                        const y = m[1];
+                        const mo = String(parseInt(m[2]) + 1).padStart(2, '0');
+                        const d = String(m[3]).padStart(2, '0');
+                        return `${y}-${mo}-${d}`;
+                    }
+                }
+                return cell.f || cell.v || '';
+            }
+
+            function num(cell) {
+                return cell && cell.v ? parseFloat(String(cell.v).replace(/[^0-9.-]/g, '')) || 0 : 0;
+            }
+
+            const rows = [];
+            table.rows.forEach(r => {
+                const c = r.c;
+                if (!c || !c[iDate]) return;
+                const dateStr = parseDateSafe(c[iDate]);
+                if (!dateStr) return;
+
+                rows.push({
+                    Date: dateStr,
+                    Platform: c[iPlat] ? String(c[iPlat].v) : 'Meta',
+                    Campaign: c[iCamp] ? String(c[iCamp].v) : 'Campaign',
+                    Adset: c[iAdset] ? String(c[iAdset].v) : 'Ad_Group',
+                    Ad_Name: c[iAd] ? String(c[iAd].v) : 'Creative',
+                    Keyword: c[iKeyword] ? String(c[iKeyword].v) : '',
+                    Match_Type: c[iMatch] ? String(c[iMatch].v) : '',
+                    Spend: num(c[iSpend]),
+                    Impressions: num(c[iImpr]),
+                    Clicks: num(c[iClicks]),
+                    LPV: num(c[iLpv]),
+                    ATC: num(c[iATC]),
+                    Conversions: num(c[iConv]),
+                    Revenue: num(c[iRev]),
+                    Product: c[iProd] ? String(c[iProd].v) : ''
+                });
+            });
+            return rows;
+        }
+
+        function parseCompetitorData(data) {
+            if (!data || data.status === 'error') return [];
+            const table = data.table;
+            if (!table) return [];
+            const cols = table.cols.map(c => (c && c.label || c && c.id || '').trim().toLowerCase());
+
+            const iName = cols.findIndex(c => c.includes('name') || c.includes('brand'));
+            const iPlat = cols.findIndex(c => c.includes('platform'));
+            const iHook = cols.findIndex(c => c.includes('hook') || c.includes('format'));
+            const iLink = cols.findIndex(c => c.includes('link') || c.includes('url'));
+            const iCopy = cols.findIndex(c => c.includes('copy') || c.includes('narrative'));
+            const iInsights = cols.findIndex(c => c.includes('insights') || c.includes('defensive') || c.includes('counter'));
+
+            const list = [];
+            table.rows.forEach(r => {
+                const c = r.c;
+                if (!c || !c[iName]) return;
+
+                list.push({
+                    Name: String(c[iName].v || ''),
+                    Platform: c[iPlat] ? String(c[iPlat].v || '') : 'Meta Ads',
+                    Hook: c[iHook] ? String(c[iHook].v || '') : 'Us vs Them',
+                    Link: c[iLink] ? String(c[iLink].v || '') : '#',
+                    Copy: c[iCopy] ? String(c[iCopy].v || '') : '',
+                    Insights: c[iInsights] ? String(c[iInsights].v || '') : 'Log counter copy variant.'
+                });
+            });
+            return list;
+        }
+
+        // ==========================================
+        // 8. TABLE SORTING ENGINE
+        // ==========================================
+        function makeTablesSortable() {
+            document.querySelectorAll('th').forEach(th => {
+                th.addEventListener('click', () => {
+                    const table = th.closest('table');
+                    const tbody = table.querySelector('tbody');
+                    const trs = Array.from(tbody.querySelectorAll('tr'));
+                    const colIdx = Array.from(th.parentNode.children).indexOf(th);
+                    
+                    const isAsc = th.classList.contains('sort-asc');
+                    table.querySelectorAll('th').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
+                    
+                    if (isAsc) th.classList.add('sort-desc');
+                    else th.classList.add('sort-asc');
+                    const mult = isAsc ? -1 : 1;
+
+                    trs.sort((a, b) => {
+                        const cellA = a.children[colIdx];
+                        const cellB = b.children[colIdx];
+                        
+                        let valA = cellA.getAttribute('data-sort');
+                        let valB = cellB.getAttribute('data-sort');
+
+                        if (valA === null) valA = cellA.innerText.trim();
+                        if (valB === null) valB = cellB.innerText.trim();
+
+                        // Clean currency formats
+                        if (typeof valA === 'string' && valA.startsWith('₹')) valA = valA.replace(/[^0-9.-]/g, '');
+                        if (typeof valB === 'string' && valB.startsWith('₹')) valB = valB.replace(/[^0-9.-]/g, '');
+
+                        const floatA = parseFloat(valA);
+                        const floatB = parseFloat(valB);
+
+                        if (!isNaN(floatA) && !isNaN(floatB)) return (floatA - floatB) * mult;
+                        return String(valA).localeCompare(String(valB)) * mult;
+                    });
+
+                    trs.forEach(tr => tbody.appendChild(tr));
+                });
+            });
+        }
+
+        // ==========================================
+        // 9. D2C AI CHATBOT AGENT (CLIENT-SIDE)
+        // ==========================================
+        function sendAgentMessage() {
+            const inputEl = document.getElementById('chat-input-text');
+            const query = inputEl.value.trim();
+            if (!query) return;
+
+            appendChatMessage(query, 'user');
+            inputEl.value = '';
+
+            const key = document.getElementById('api-key').value.trim();
+            localStorage.setItem('api_key', key);
+            updateStatusIndicators();
+
+            if (key) {
+                triggerLiveGeminiAgent(query, key);
+            } else {
+                triggerLocalHeuristicsAgent(query);
+            }
+        }
+
+        function appendChatMessage(msg, sender) {
+            const box = document.getElementById('chat-messages-box');
+            const div = document.createElement('div');
+            div.className = `chat-message ${sender}`;
+            div.innerHTML = msg.replace(/\n/g, '<br>');
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function triggerLocalHeuristicsAgent(query) {
+            const low = query.toLowerCase();
+            let resp = "I have reviewed the loaded D2C metrics locally. ";
+
+            if (low.includes('scale') || low.includes('winner')) {
+                const scalers = [];
+                // Calculate from filtered records
+                const prodMap = {};
+                filteredRecords.forEach(r => {
+                    const k = r.Product;
+                    if(!prodMap[k]) prodMap[k] = { name: k, spend: 0, rev: 0, conv: 0 };
+                    prodMap[k].spend += r.Spend;
+                    prodMap[k].rev += r.Revenue;
+                    prodMap[k].conv += r.Conversions;
+                });
+                Object.values(prodMap).forEach(p => {
+                    const roas = p.spend > 0 ? (p.rev / p.spend) : 0;
+                    const targets = getTargetsFor(p.name);
+                    if (p.spend > 1000 && roas >= targets.ROAS) {
+                        scalers.push(`• <strong>${p.name}</strong>: Current ROAS is <strong>${roas.toFixed(2)}x</strong> vs target ${targets.ROAS}x. CPA is ₹${Math.round(p.spend / p.conv)}.`);
+                    }
+                });
+                if (scalers.length > 0) {
+                    resp += "Here are the top performing SKUs ready to scale budget:<br><br>" + scalers.join("<br>");
+                } else {
+                    resp += "There are no winners currently meeting target ROAS triggers for budget scaling.";
+                }
+            } else if (low.includes('pause') || low.includes('underperform') || low.includes('leak')) {
+                const pausers = [];
+                const prodMap = {};
+                filteredRecords.forEach(r => {
+                    const k = r.Product;
+                    if(!prodMap[k]) prodMap[k] = { name: k, spend: 0, rev: 0, conv: 0 };
+                    prodMap[k].spend += r.Spend;
+                    prodMap[k].rev += r.Revenue;
+                    prodMap[k].conv += r.Conversions;
+                });
+                Object.values(prodMap).forEach(p => {
+                    const roas = p.spend > 0 ? (p.rev / p.spend) : 0;
+                    const targets = getTargetsFor(p.name);
+                    if (p.spend > 1000 && roas < (targets.ROAS * 0.6)) {
+                        pausers.push(`• <strong>${p.name}</strong>: ROAS is critically low at <strong>${roas.toFixed(2)}x</strong>. CPA is ₹${Math.round(p.spend / p.conv)} (Target CPA: ₹${targets.CPA}).`);
+                    }
+                });
+                if (pausers.length > 0) {
+                    resp += "We recommend pausing or optimizing spend on these underperforming sets:<br><br>" + pausers.join("<br>");
+                } else {
+                    resp += "No product lines are violating the budget pause targets today. Account health is stable.";
+                }
+            } else if (low.includes('keyword') || low.includes('search') || low.includes('google')) {
+                resp += "Auditing Google Ads: PMax, Shopping, and Search keywords are aggregated. HairSerum PMax Campaign is scaling with a ROAS of 6.0x recently. Keywords like 'glow brand' Exact Match are generating steady sales. Go to the 'Google Ads Analyzer' tab for granular keyword matrices.";
+            } else {
+                resp += `Here is your blended scorecard:<br>
+                Spend: ₹${Math.round(sumField(filteredRecords, 'Spend')).toLocaleString()}<br>
+                Revenue: ₹${Math.round(sumField(filteredRecords, 'Revenue')).toLocaleString()}<br>
+                ROAS: ${(sumField(filteredRecords, 'Spend')>0 ? (sumField(filteredRecords, 'Revenue')/sumField(filteredRecords, 'Spend')) : 0).toFixed(2)}x<br><br>
+                Ask me to write hooks, analyze campaign fatigue, or diagnose click-to-checkout drops! (Sync your Gemini key in the sidebar to activate conversational reasoning).`;
+            }
+
+            setTimeout(() => {
+                appendChatMessage(resp, 'agent');
+            }, 600);
+        }
+
+        function triggerLiveGeminiAgent(query, key) {
+            const box = document.getElementById('chat-messages-box');
+            const thinkDiv = document.createElement('div');
+            thinkDiv.className = 'chat-message agent';
+            thinkDiv.id = 'gemini-thinking';
+            thinkDiv.innerHTML = `<span class="spinner"></span> Gemini is auditing ad accounts...`;
+            box.appendChild(thinkDiv);
+            box.scrollTop = box.scrollHeight;
+
+            const spend = sumField(filteredRecords, 'Spend');
+            const rev = sumField(filteredRecords, 'Revenue');
+            const roas = spend > 0 ? (rev / spend) : 0;
+            const conv = sumField(filteredRecords, 'Conversions');
+            const cac = conv > 0 ? (spend / conv) : 0;
+
+            const sysPrompt = `
+                Act as Marin, an elite D2C performance marketing and retention director. You speak with absolute clarity, focus on profit margins, and deliver prescriptive action plans without fluff.
+                
+                You have analyzed the account metrics:
+                Total Spend: ₹${spend.toFixed(0)}
+                Total Revenue: ₹${rev.toFixed(0)}
+                Blended ROAS: ${roas.toFixed(2)}x
+                Blended CPA: ₹${cac.toFixed(0)}
+                Sales: ${conv}
+
+                Targets Configured:
+                Global Target ROAS = ${document.getElementById('target-roas').value}x
+                Global Target CPA = ₹${document.getElementById('target-cpa').value}
+
+                Competitor narrative logs:
+                ${JSON.stringify(competitorLogs.slice(0, 3))}
+
+                Answer the user's growth query. Citing specific ROAS, CPA, and creative hook examples where appropriate. Focus strictly on action items. Highlight key directives in bold.
+            `;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [
+                            { text: sysPrompt },
+                            { text: `User Query: "${query}"` }
+                        ]
+                    }]
+                })
+            })
+            .then(res => {
+                if(!res.ok) throw new Error("API call failed. Check key.");
+                return res.json();
+            })
+            .then(data => {
+                const think = document.getElementById('gemini-thinking');
+                if (think) think.remove();
+
+                const answer = data.candidates[0].content.parts[0].text;
+                appendChatMessage(answer, 'agent');
+                showToast('Audit completed by Gemini!', '🤖');
+            })
+            .catch(err => {
+                const think = document.getElementById('gemini-thinking');
+                if (think) think.remove();
+
+                appendChatMessage(`❌ API Error: ${err.message}. Falling back to local heuristics...`, 'system');
+                triggerLocalHeuristicsAgent(query);
+            });
+        }
+
+        // ==========================================
+        // 10. UTILITIES
+        // ==========================================
+        function showToast(message, icon = '✅') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-icon').innerText = icon;
+            document.getElementById('toast-message').innerText = message;
+
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function copyTemplateHeaders() {
+            const txt = "Date,Platform,Campaign,Adset,Ad_Name,Keyword,Match_Type,Spend,Impressions,Clicks,LPV,Conversions,Revenue,ATC";
+            navigator.clipboard.writeText(txt).then(() => {
+                showToast('Headers copied to clipboard!', '📋');
+            });
+        }
+    </script>
+</body>
+</html>

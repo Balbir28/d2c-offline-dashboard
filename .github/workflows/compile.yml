@@ -1,0 +1,66 @@
+name: Compile D2C Dashboard & Presentation
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Compile Widescreen Pitch Deck (PPTX)
+      run: |
+        python3 generate_pitch_deck.py
+
+    - name: Compile Ads Audit & Scale Simulator (XLSX)
+      run: |
+        python3 generate_chapter2_audit.py
+
+    - name: Verify Compiled Artifacts
+      run: |
+        # Check if the outputs exist and are non-empty
+        if [ ! -f "Chapter2_Drip_Scale_Strategy.pptx" ] || [ ! -s "Chapter2_Drip_Scale_Strategy.pptx" ]; then
+          echo "❌ PPTX Presentation is missing or empty!"
+          exit 1
+        fi
+        if [ ! -f "Chapter2_Drip_Ads_Audit_and_ROAS_Strategy.xlsx" ] || [ ! -s "Chapter2_Drip_Ads_Audit_and_ROAS_Strategy.xlsx" ]; then
+          echo "❌ Excel Dashboard is missing or empty!"
+          exit 1
+        fi
+        echo "✅ Verification successful! Files compiled correctly."
+
+    - name: Upload Pitch Deck (PPTX)
+      uses: actions/upload-artifact@v4
+      with:
+        name: Chapter2-Drip-Scale-Strategy-PPTX
+        path: Chapter2_Drip_Scale_Strategy.pptx
+        retention-days: 30
+
+    - name: Upload Excel Dashboard (XLSX)
+      uses: actions/upload-artifact@v4
+      with:
+        name: Chapter2-Drip-Ads-Audit-and-ROAS-Strategy-XLSX
+        path: Chapter2_Drip_Ads_Audit_and_ROAS_Strategy.xlsx
+        retention-days: 30

@@ -1,0 +1,16 @@
+{
+  "name": "D2C Scaler Command Center",
+  "short_name": "D2C Scaler",
+  "description": "Premium D2C Growth & Performance Command Center App",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "./d2c_app_icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+========================================================================
+🚀 D2C SCALER PERFORMANCE COMMAND CENTER - QUICK START GUIDE
+========================================================================
+
+Follow these 3 simple steps to open and use the Performance Dashboard:
+
+------------------------------------------------------------------------
+STEP 1: ⚠️ IMPORTANT: UNZIP / EXTRACT THE BUNDLE FIRST ⚠️
+------------------------------------------------------------------------
+Do NOT double-click the files directly inside the ZIP folder! 
+For the offline libraries and templates to work correctly:
+1. Right-click the "D2C_Scaler_Shareable_Bundle.zip" file.
+2. Select "Extract All" (Windows) or double-click to unzip (Mac).
+3. Open the newly created unzipped folder.
+
+------------------------------------------------------------------------
+STEP 2: LAUNCH THE DASHBOARD
+------------------------------------------------------------------------
+1. Double-click the "index.html" file inside the folder.
+2. It will instantly open in your web browser (Chrome, Safari, Edge).
+3. The dashboard will automatically populate with 30 days of simulated 
+   D2C mock data (ROAS, funnels, heatmaps, waterfall charts) so you can 
+   explore the app immediately!
+
+------------------------------------------------------------------------
+STEP 3: HOW TO LOAD YOUR OWN DATA
+------------------------------------------------------------------------
+You can load your own store metrics in two ways:
+
+👉 METHOD A: Drag-and-Drop Local Excel (100% Offline)
+   1. Open the included template: "D2C_Marketing_Dashboard_Template.xlsx"
+   2. Paste your Meta, Google, Sales, and Product data into the tabs.
+   3. Save and close the Excel file.
+   4. Open "index.html" in your browser, go to the "Data Ingestion" tab 
+      (the last tab), and drag & drop the saved Excel file onto the screen.
+   5. Your dashboard will refresh and load your metrics instantly!
+
+👉 METHOD B: Google Sheets Live Sync (Online)
+   1. Upload the "D2C_Marketing_Dashboard_Template.xlsx" template to Google Drive.
+   2. Open it as Google Sheets.
+   3. Click File -> Share -> Share with others, and change permissions to 
+      "Anyone with the link can view" (Viewer access).
+   4. Copy the URL of your Google Sheet.
+   5. Go to the "Data Ingestion" tab of your dashboard (index.html), paste 
+      the URL in the box, and click "Sync Google Sheet".
+   6. The dashboard will load and sync your live metrics!
+
+------------------------------------------------------------------------
+📁 WHAT'S INSIDE THIS BUNDLE:
+------------------------------------------------------------------------
+* index.html                        - The performance dashboard app
+* D2C_Marketing_Dashboard_Template.xlsx - Main data template
+* D2C_Scaler_Ads_Nomenclature.xlsx   - Nomenclature tracker
+* Ads_Tracker_Template.xlsx          - Daily ads tracker sheet
+* chart.umd.min.js / papaparse.min.js / xlsx.full.min.js - Offline libraries
+* d2c_app_icon.png                  - App logo
+* manifest.json / service-worker.js - PWA config scripts
+
+------------------------------------------------------------------------
+Need Support? 
+Open the index.html file and use the "AI Growth Agent" tab for 
+interactive troubleshooting and diagnostics!
+========================================================================

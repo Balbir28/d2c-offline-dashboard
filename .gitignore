@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+ENV/
+env/
+
+# Excel & PowerPoint temporary files
+~$*.xlsx
+~$*.pptx
+*.tmp
+
+# Apps Script clasp files
+.clasp.json
+.claspignore
+
+# Node / JS
+node_modules/
+package-lock.json
+
+# IDE / System
+.DS_Store
+.idea/
+.vscode/
+
+# Brain / local logs
+brain/
+.gemini/
+*.webp
+*.png
+*.mp4
