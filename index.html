@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,10 @@
     <!-- Premium Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- PWA Manifest & Icon Links -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" href="d2c_app_icon.png">
@@ -31,24 +34,30 @@
             --bg-card2: rgba(18, 24, 48, 0.5);
             --border-color: rgba(255, 255, 255, 0.07);
             --border-glow: rgba(255, 255, 255, 0.18);
-            
+
             --text-primary: #eef1f8;
             --text-secondary: #b4bdd0;
             --text-muted: #7a85a0;
-            
-            --primary: #3b82f6;          /* Sapphire Blue */
+
+            --primary: #3b82f6;
+            /* Sapphire Blue */
             --primary-glow: rgba(59, 130, 246, 0.3);
-            --secondary: #f59e0b;        /* Warm Amber Gold */
+            --secondary: #f59e0b;
+            /* Warm Amber Gold */
             --secondary-glow: rgba(245, 158, 11, 0.3);
-            --accent: #c4b5fd;           /* Soft Violet */
-            
-            --success: #22c55e;          /* Vivid Green */
+            --accent: #c4b5fd;
+            /* Soft Violet */
+
+            --success: #22c55e;
+            /* Vivid Green */
             --success-glow: rgba(34, 197, 94, 0.2);
-            --danger: #ef4444;           /* Bright Red */
+            --danger: #ef4444;
+            /* Bright Red */
             --danger-glow: rgba(239, 68, 68, 0.2);
-            --warning: #eab308;          /* Bright Gold */
+            --warning: #eab308;
+            /* Bright Gold */
             --warning-glow: rgba(234, 179, 8, 0.2);
-            
+
             --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --font-mono: 'Space Grotesk', monospace;
             --glass-blur: blur(35px) saturate(200%);
@@ -69,7 +78,7 @@
             min-height: 100vh;
             display: flex;
             overflow-x: hidden;
-            background-image: 
+            background-image:
                 radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.14) 0px, transparent 50%),
                 radial-gradient(at 50% 0%, rgba(139, 92, 246, 0.10) 0px, transparent 50%),
                 radial-gradient(at 100% 0%, rgba(245, 158, 11, 0.10) 0px, transparent 50%),
@@ -77,9 +86,17 @@
                 radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.12) 0px, transparent 50%);
             background-attachment: fixed;
         }
+
         /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 6px; }
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.3);
+            border-radius: 6px;
+        }
 
         /* Loader Overlay */
         #loader {
@@ -93,6 +110,7 @@
             z-index: 9999;
             gap: 16px;
         }
+
         .spin {
             width: 50px;
             height: 50px;
@@ -102,9 +120,24 @@
             animation: spin 0.8s linear infinite;
             box-shadow: 0 0 15px var(--primary-glow);
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        #loaderMsg { color: var(--text-primary); font-size: 14px; font-weight: 600; font-family: var(--font-mono); }
-        #loaderSub { color: var(--text-secondary); font-size: 11px; }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #loaderMsg {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font-mono);
+        }
+
+        #loaderSub {
+            color: var(--text-secondary);
+            font-size: 11px;
+        }
 
         /* Sidebar Styling */
         aside {
@@ -131,6 +164,7 @@
             padding-bottom: 16px;
             text-align: center;
         }
+
         .logo-section h2 {
             font-family: var(--font-mono);
             font-size: 23px;
@@ -144,6 +178,7 @@
             justify-content: center;
             gap: 6px;
         }
+
         .logo-section p {
             font-size: 9px;
             color: var(--text-secondary);
@@ -158,6 +193,7 @@
             flex-direction: column;
             gap: 4px;
         }
+
         .nav-item {
             display: flex;
             align-items: center;
@@ -171,16 +207,19 @@
             transition: all 0.2s;
             user-select: none;
         }
+
         .nav-item:hover {
             color: var(--text-primary);
             background-color: rgba(255, 255, 255, 0.03);
             transform: translateX(3px);
         }
+
         .nav-item.active {
             color: #ffffff;
             background: rgba(59, 130, 246, 0.16);
             box-shadow: inset 3px 0 0 var(--primary);
         }
+
         .nav-icon {
             font-size: 15px;
             width: 20px;
@@ -198,20 +237,23 @@
             gap: 10px;
             margin-top: auto;
         }
+
         .config-card h4 {
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             color: var(--secondary);
             font-family: var(--font-mono);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             padding-bottom: 5px;
         }
+
         .config-row {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
+
         .config-row label {
             font-size: 9px;
             font-weight: 700;
@@ -219,7 +261,12 @@
             text-transform: uppercase;
         }
 
-        input[type="text"], input[type="number"], input[type="password"], select, textarea, input[type="date"] {
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        select,
+        textarea,
+        input[type="date"] {
             width: 100%;
             background-color: #030712;
             border: 1px solid var(--border-color);
@@ -231,7 +278,11 @@
             outline: none;
             transition: all 0.2s;
         }
-        input:focus, select:focus, textarea:focus, input[type="date"]:focus {
+
+        input:focus,
+        select:focus,
+        textarea:focus,
+        input[type="date"]:focus {
             border-color: var(--secondary);
             box-shadow: 0 0 8px var(--secondary-glow);
         }
@@ -253,24 +304,29 @@
             gap: 6px;
             font-family: var(--font-main);
         }
+
         .btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px var(--primary-glow);
         }
+
         .btn-secondary {
             background: rgba(30, 41, 59, 0.4);
             border: 1px solid var(--border-color);
             color: var(--text-primary);
         }
+
         .btn-secondary:hover {
             background: rgba(30, 41, 59, 0.75);
             box-shadow: none;
         }
+
         .btn-danger {
             background: rgba(244, 63, 94, 0.2);
             border: 1px solid rgba(244, 63, 94, 0.4);
             color: #fda4af;
         }
+
         .btn-danger:hover {
             background: var(--danger);
             color: white;
@@ -286,12 +342,14 @@
             border-top: 1px solid var(--border-color);
             padding-top: 12px;
         }
+
         .status-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
             color: var(--text-secondary);
         }
+
         .status-dot {
             width: 6px;
             height: 6px;
@@ -300,6 +358,7 @@
             box-shadow: 0 0 6px var(--danger);
             display: inline-block;
         }
+
         .status-dot.connected {
             background-color: var(--success);
             box-shadow: 0 0 6px var(--success);
@@ -328,6 +387,7 @@
             flex-wrap: wrap;
             gap: 10px;
         }
+
         header h1 {
             font-family: var(--font-mono);
             font-size: 25px;
@@ -336,6 +396,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         header p {
             color: var(--text-secondary);
             font-size: 12px;
@@ -352,8 +413,9 @@
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
+
         .filter-chip {
             background-color: rgba(59, 130, 246, 0.08);
             border: 1px solid var(--border-color);
@@ -366,26 +428,32 @@
             color: var(--primary);
             font-family: var(--font-mono);
         }
-        .filter-chip:hover, .filter-chip.on {
+
+        .filter-chip:hover,
+        .filter-chip.on {
             background-color: var(--primary);
             color: white;
             box-shadow: 0 0 8px var(--primary-glow);
             border-color: transparent;
         }
+
         .filter-sep {
             color: var(--text-muted);
             font-size: 12px;
         }
+
         .date-inputs {
             display: flex;
             gap: 6px;
             align-items: center;
         }
+
         .date-inputs input {
             padding: 4px 8px;
             font-size: 11px;
             width: 115px;
         }
+
         .filter-bar select {
             width: auto;
             min-width: 120px;
@@ -401,15 +469,17 @@
             border: 1px solid rgba(255, 255, 255, 0.08) !important;
             border-radius: 18px;
             padding: 26px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
             position: relative;
             overflow: hidden;
             transition: border-color 0.25s, box-shadow 0.25s;
         }
+
         .card:hover {
             border-color: rgba(255, 255, 255, 0.18) !important;
             box-shadow: 0 12px 40px rgba(129, 140, 248, 0.08);
         }
+
         .card h3 {
             font-family: var(--font-mono);
             font-size: 14.5px;
@@ -430,6 +500,7 @@
             flex-direction: column;
             gap: 20px;
         }
+
         .tab-content.active {
             display: flex;
         }
@@ -440,6 +511,7 @@
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 12px;
         }
+
         .kpi-card {
             background: rgba(255, 255, 255, 0.02) !important;
             backdrop-filter: blur(15px) !important;
@@ -450,17 +522,20 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.2s;
         }
+
         .kpi-card:hover {
             border-color: rgba(255, 255, 255, 0.15) !important;
             transform: translateY(-2px);
         }
+
         .kpi-card.accent {
             border-color: rgba(6, 182, 212, 0.4);
             background: radial-gradient(100% 100% at 100% 0%, rgba(6, 182, 212, 0.05) 0%, transparent 100%), rgba(5, 8, 17, 0.45);
         }
+
         .kpi-title {
             color: var(--text-secondary);
             font-size: 9.5px;
@@ -468,6 +543,7 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
+
         .kpi-value {
             font-size: 22px;
             font-weight: 700;
@@ -477,6 +553,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .kpi-delta {
             font-size: 10.5px;
             font-weight: 600;
@@ -484,9 +561,18 @@
             align-items: center;
             gap: 4px;
         }
-        .delta-up { color: var(--success); }
-        .delta-down { color: var(--danger); }
-        .delta-neutral { color: var(--text-muted); }
+
+        .delta-up {
+            color: var(--success);
+        }
+
+        .delta-down {
+            color: var(--danger);
+        }
+
+        .delta-neutral {
+            color: var(--text-muted);
+        }
 
         /* Conversion Funnel Strip */
         .funnel-container {
@@ -500,6 +586,7 @@
             overflow-x: auto;
             gap: 4px;
         }
+
         .funnel-step {
             background: rgba(59, 130, 246, 0.04);
             border: 1px solid var(--border-color);
@@ -512,29 +599,38 @@
             min-width: 110px;
             transition: all 0.2s;
         }
+
         .funnel-step:hover {
             border-color: var(--primary);
             transform: translateY(-1px);
         }
-        .funnel-icon { font-size: 14px; margin-bottom: 2px; }
+
+        .funnel-icon {
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
         .funnel-val {
             font-size: 15px;
             font-weight: 700;
             font-family: var(--font-mono);
             color: #fff;
         }
+
         .funnel-label {
             font-size: 8.5px;
             font-weight: 700;
             color: var(--text-secondary);
             text-transform: uppercase;
         }
+
         .funnel-arrow {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 2px;
         }
+
         .funnel-rate {
             font-size: 9px;
             font-weight: 700;
@@ -546,6 +642,7 @@
             white-space: nowrap;
             font-family: var(--font-mono);
         }
+
         .funnel-rate.drop {
             color: var(--danger);
             border-color: rgba(244, 63, 94, 0.25);
@@ -557,18 +654,23 @@
             grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
             gap: 28px;
         }
+
         .grid-3col {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
             gap: 28px;
         }
+
         .grid-waterfall {
             display: grid;
             grid-template-columns: 1.4fr 1fr;
             gap: 28px;
         }
+
         @media(max-width:950px) {
-            .grid-waterfall { grid-template-columns: 1fr; }
+            .grid-waterfall {
+                grid-template-columns: 1fr;
+            }
         }
 
         /* Apple OS Spacious Driver Flow */
@@ -578,6 +680,7 @@
             gap: 24px;
             padding: 10px 0;
         }
+
         .flow-header-bridge {
             display: flex;
             justify-content: space-between;
@@ -587,6 +690,7 @@
             padding-bottom: 20px;
             margin-bottom: 10px;
         }
+
         .flow-revenue-node {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -594,13 +698,15 @@
             padding: 16px 24px;
             text-align: center;
             flex: 1;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
             backdrop-filter: var(--glass-blur);
         }
+
         .flow-revenue-node.current {
             background: linear-gradient(135deg, rgba(129, 140, 248, 0.12), rgba(167, 139, 250, 0.12));
             border-color: rgba(129, 140, 248, 0.3);
         }
+
         .flow-revenue-label {
             font-size: 10px;
             font-weight: 700;
@@ -609,12 +715,14 @@
             letter-spacing: 0.06em;
             margin-bottom: 6px;
         }
+
         .flow-revenue-val {
             font-size: 24px;
             font-weight: 700;
             color: #fff;
             font-family: var(--font-mono);
         }
+
         .flow-connector-arrow {
             display: flex;
             flex-direction: column;
@@ -622,11 +730,13 @@
             justify-content: center;
             gap: 4px;
         }
+
         .flow-drivers-container {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
+
         .flow-driver-row {
             display: flex;
             align-items: center;
@@ -638,16 +748,19 @@
             gap: 24px;
             transition: all 0.25s;
         }
+
         .flow-driver-row:hover {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(255, 255, 255, 0.1);
         }
+
         .flow-driver-meta {
             display: flex;
             align-items: center;
             gap: 16px;
             flex: 1.2;
         }
+
         .flow-driver-icon {
             width: 42px;
             height: 42px;
@@ -657,30 +770,46 @@
             justify-content: center;
             font-size: 20px;
         }
-        .flow-driver-icon.traffic { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
-        .flow-driver-icon.cvr { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-        .flow-driver-icon.aov { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+        .flow-driver-icon.traffic {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .flow-driver-icon.cvr {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+        }
+
+        .flow-driver-icon.aov {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
 
         .flow-driver-info {
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
+
         .flow-driver-name {
             font-size: 14px;
             font-weight: 700;
             color: #fff;
         }
+
         .flow-driver-change {
             font-size: 11.5px;
             color: var(--text-secondary);
         }
+
         .flow-driver-impact-bar {
             flex: 2;
             display: flex;
             align-items: center;
             gap: 14px;
         }
+
         .flow-bar-bg {
             height: 10px;
             background: rgba(255, 255, 255, 0.06);
@@ -689,10 +818,12 @@
             overflow: hidden;
             position: relative;
         }
+
         .flow-bar-fill {
             height: 100%;
             border-radius: 5px;
         }
+
         .flow-driver-revenue-impact {
             flex: 1;
             text-align: right;
@@ -700,6 +831,7 @@
             flex-direction: column;
             justify-content: center;
         }
+
         .flow-impact-label {
             font-size: 9.5px;
             color: var(--text-muted);
@@ -707,6 +839,7 @@
             letter-spacing: 0.04em;
             margin-bottom: 2px;
         }
+
         .flow-impact-val {
             font-size: 16.5px;
             font-weight: 700;
@@ -722,12 +855,14 @@
             max-height: 400px;
             overflow-y: auto;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 11.5px;
             text-align: left;
         }
+
         th {
             background-color: rgba(15, 23, 42, 0.95);
             color: var(--text-primary);
@@ -744,22 +879,39 @@
             cursor: pointer;
             user-select: none;
         }
+
         th:hover {
             background-color: #0c1220;
         }
-        th::after { content: ' ↕'; opacity: 0.2; font-size: 9px; }
-        th.sort-asc::after { content: ' ↑'; opacity: 1; color: var(--secondary); }
-        th.sort-desc::after { content: ' ↓'; opacity: 1; color: var(--secondary); }
+
+        th::after {
+            content: ' ↕';
+            opacity: 0.2;
+            font-size: 9px;
+        }
+
+        th.sort-asc::after {
+            content: ' ↑';
+            opacity: 1;
+            color: var(--secondary);
+        }
+
+        th.sort-desc::after {
+            content: ' ↓';
+            opacity: 1;
+            color: var(--secondary);
+        }
 
         td {
             padding: 8px 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
             color: var(--text-secondary);
             vertical-align: middle;
         }
+
         tr:hover td {
             color: var(--text-primary);
-            background-color: rgba(255,255,255,0.02);
+            background-color: rgba(255, 255, 255, 0.02);
         }
 
         /* Neon action badges */
@@ -775,31 +927,37 @@
             font-family: var(--font-mono);
             border: 1px solid transparent;
         }
+
         .badge-green {
             background-color: var(--success-glow);
             color: var(--success);
             border-color: rgba(16, 185, 129, 0.25);
         }
+
         .badge-red {
             background-color: var(--danger-glow);
             color: var(--danger);
             border-color: rgba(244, 63, 94, 0.25);
         }
+
         .badge-yellow {
             background-color: var(--warning-glow);
             color: var(--warning);
             border-color: rgba(245, 158, 11, 0.25);
         }
+
         .badge-blue {
             background-color: rgba(59, 130, 246, 0.1);
             color: #93c5fd;
             border-color: rgba(59, 130, 246, 0.25);
         }
+
         .badge-cyan {
             background-color: rgba(6, 182, 212, 0.1);
             color: #22d3ee;
             border-color: rgba(6, 182, 212, 0.25);
         }
+
         .badge-purple {
             background-color: rgba(139, 92, 246, 0.1);
             color: #a78bfa;
@@ -809,11 +967,12 @@
         .bar {
             height: 3px;
             border-radius: 2px;
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
             margin-top: 3px;
             overflow: hidden;
             width: 100%;
         }
+
         .bar-fill {
             height: 100%;
             background: var(--primary);
@@ -824,14 +983,16 @@
             overflow-x: auto;
             margin-top: 6px;
         }
+
         .cohort-cell {
             text-align: center;
             font-weight: 600;
             padding: 6px 8px !important;
             color: #fff;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
             border: 1.5px solid var(--bg-surface) !important;
         }
+
         .ch-hdr {
             text-align: center;
         }
@@ -844,6 +1005,7 @@
             border-radius: 10px;
             margin-bottom: 14px;
         }
+
         .diagnostic-hdr {
             display: flex;
             align-items: center;
@@ -866,6 +1028,7 @@
             flex-wrap: wrap;
             gap: 10px;
         }
+
         .flow-node {
             background-color: var(--bg-surface);
             border: 1px solid var(--border-color);
@@ -874,18 +1037,29 @@
             text-align: center;
             min-width: 140px;
             font-size: 11px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
+
         .flow-arrow {
             font-size: 16px;
             color: var(--secondary);
             font-weight: 700;
             animation: pulseGlow 1.5s infinite;
         }
+
         @keyframes pulseGlow {
-            0% { opacity: 0.4; }
-            50% { opacity: 1; text-shadow: 0 0 8px var(--secondary); }
-            100% { opacity: 0.4; }
+            0% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 8px var(--secondary);
+            }
+
+            100% {
+                opacity: 0.4;
+            }
         }
 
         .template-tabs {
@@ -895,6 +1069,7 @@
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 4px;
         }
+
         .template-tab-btn {
             background: none;
             border: none;
@@ -905,15 +1080,18 @@
             border-radius: 4px;
             transition: all 0.2s;
         }
+
         .template-tab-btn:hover {
             color: white;
             background-color: rgba(255, 255, 255, 0.02);
         }
+
         .template-tab-btn.active {
             background-color: rgba(6, 182, 212, 0.15);
             color: var(--secondary);
             font-weight: 700;
         }
+
         .sheet-tab-link {
             padding: 8px 16px;
             font-size: 12px;
@@ -923,18 +1101,22 @@
             font-family: var(--font-mono);
             font-weight: 600;
         }
+
         .sheet-tab-link:hover {
             background: rgba(6, 182, 212, 0.12);
             color: var(--secondary);
         }
+
         .template-panel {
             display: none;
             flex-direction: column;
             gap: 10px;
         }
+
         .template-panel.active {
             display: flex;
         }
+
         .template-code-box {
             background-color: #030712;
             border: 1px solid var(--border-color);
@@ -955,12 +1137,14 @@
             gap: 12px;
             margin-top: 14px;
         }
+
         .import-card {
-            background: rgba(5,8,17,0.4);
+            background: rgba(5, 8, 17, 0.4);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 12px;
         }
+
         .import-hdr {
             display: flex;
             justify-content: space-between;
@@ -970,6 +1154,7 @@
             color: #fff;
             margin-bottom: 6px;
         }
+
         .import-area {
             height: 120px;
             resize: none;
@@ -991,14 +1176,28 @@
             align-items: center;
             gap: 6px;
         }
-        .drop-zone:hover, .drop-zone.dragover {
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
             border-color: var(--secondary);
             background-color: rgba(6, 182, 212, 0.05);
             box-shadow: 0 0 10px rgba(6, 182, 212, 0.1);
         }
-        .drop-zone-icon { font-size: 26px; }
-        .drop-zone-text { font-size: 12.5px; font-weight: 600; color: #fff; }
-        .drop-zone-sub { font-size: 10.5px; color: var(--text-secondary); }
+
+        .drop-zone-icon {
+            font-size: 26px;
+        }
+
+        .drop-zone-text {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .drop-zone-sub {
+            font-size: 10.5px;
+            color: var(--text-secondary);
+        }
 
         /* Chat Agent Panel */
         .chat-container {
@@ -1010,6 +1209,7 @@
             overflow: hidden;
             background-color: rgba(5, 8, 17, 0.35);
         }
+
         .chat-messages {
             flex-grow: 1;
             overflow-y: auto;
@@ -1018,6 +1218,7 @@
             flex-direction: column;
             gap: 12px;
         }
+
         .chat-message {
             max-width: 80%;
             padding: 10px 14px;
@@ -1026,6 +1227,7 @@
             line-height: 1.5;
             word-wrap: break-word;
         }
+
         .chat-message.user {
             background-color: var(--primary);
             color: white;
@@ -1033,6 +1235,7 @@
             border-bottom-right-radius: 2px;
             box-shadow: 0 0 10px var(--primary-glow);
         }
+
         .chat-message.agent {
             background-color: rgba(255, 255, 255, 0.03);
             color: var(--text-primary);
@@ -1040,6 +1243,7 @@
             align-self: flex-start;
             border-bottom-left-radius: 2px;
         }
+
         .chat-message.system {
             background-color: rgba(244, 63, 94, 0.08);
             color: var(--danger);
@@ -1049,6 +1253,7 @@
             font-size: 11px;
             max-width: 90%;
         }
+
         .chat-input-area {
             display: flex;
             padding: 10px;
@@ -1066,7 +1271,7 @@
             color: white;
             padding: 10px 18px;
             border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             font-weight: 600;
             z-index: 9999;
             display: flex;
@@ -1077,7 +1282,10 @@
             font-size: 11.5px;
             font-family: var(--font-mono);
         }
-        #toast.show { transform: translateY(0); }
+
+        #toast.show {
+            transform: translateY(0);
+        }
 
         footer {
             padding: 16px;
@@ -1089,6 +1297,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- LOADER OVERLAY -->
@@ -1187,21 +1396,29 @@
             </div>
             <div style="display:flex; align-items:center; gap:10px;">
                 <!-- Open active Google Sheet workspace -->
-                <button class="btn btn-secondary" id="pwa-install-btn" style="display:none; padding:4px 10px;" onclick="installPWA()">📲 Install App</button>
+                <button class="btn btn-secondary" id="pwa-install-btn" style="display:none; padding:4px 10px;"
+                    onclick="installPWA()">📲 Install App</button>
                 <!-- Sheet dropdown -->
                 <div style="position:relative; display:inline-block;" id="sheet-btn-wrap">
-                    <button class="btn btn-secondary" id="btn-open-sheet" style="padding:4px 10px; border-color:var(--secondary); color:var(--secondary);" onclick="toggleSheetDropdown(event)">🔗 Open Google Sheet ▾</button>
-                    <div id="sheet-tab-dropdown" style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg-card2); border:1px solid var(--border-glow); border-radius:10px; padding:6px 0; min-width:190px; z-index:999; box-shadow:0 8px 32px rgba(0,0,0,0.5); backdrop-filter:blur(16px);">
-                        <div style="padding:4px 14px 6px; font-size:9px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Select Sheet Tab</div>
+                    <button class="btn btn-secondary" id="btn-open-sheet"
+                        style="padding:4px 10px; border-color:var(--secondary); color:var(--secondary);"
+                        onclick="toggleSheetDropdown(event)">🔗 Open Google Sheet ▾</button>
+                    <div id="sheet-tab-dropdown"
+                        style="display:none; position:absolute; top:calc(100% + 6px); right:0; background:var(--bg-card2); border:1px solid var(--border-glow); border-radius:10px; padding:6px 0; min-width:190px; z-index:999; box-shadow:0 8px 32px rgba(0,0,0,0.5); backdrop-filter:blur(16px);">
+                        <div
+                            style="padding:4px 14px 6px; font-size:9px; color:var(--text-muted); text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">
+                            Select Sheet Tab</div>
                         <div class="sheet-tab-link" onclick="openSheetTab('META_DATA')">🔵 META_DATA</div>
                         <div class="sheet-tab-link" onclick="openSheetTab('GOOGLE_DATA')">🟡 GOOGLE_DATA</div>
                         <div class="sheet-tab-link" onclick="openSheetTab('SALES_DATA')">🟢 SALES_DATA</div>
                         <div class="sheet-tab-link" onclick="openSheetTab('PRODUCT_MASTER')">📦 PRODUCT_MASTER</div>
                         <div style="border-top:1px solid var(--border-color); margin:4px 0;"></div>
-                        <div class="sheet-tab-link" onclick="openSheetTab(null)" style="color:var(--text-secondary);">🔗 Open Full Sheet</div>
+                        <div class="sheet-tab-link" onclick="openSheetTab(null)" style="color:var(--text-secondary);">🔗
+                            Open Full Sheet</div>
                     </div>
                 </div>
-                <div id="sync-time-stamp" style="font-size:10px; color:var(--text-secondary); font-family:var(--font-mono); background:rgba(255,255,255,0.03); border:1px solid var(--border-color); padding:4px 10px; border-radius:20px;">
+                <div id="sync-time-stamp"
+                    style="font-size:10px; color:var(--text-secondary); font-family:var(--font-mono); background:rgba(255,255,255,0.03); border:1px solid var(--border-color); padding:4px 10px; border-radius:20px;">
                     Local Storage Session
                 </div>
             </div>
@@ -1209,13 +1426,14 @@
 
         <!-- FILTERS DASHBOARD BAR -->
         <div class="filter-bar">
-            <span style="font-size:10.5px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Time Range:</span>
+            <span style="font-size:10.5px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Time
+                Range:</span>
             <div class="filter-chip" onclick="setDateChip(3, this)">3 Days</div>
             <div class="filter-chip" onclick="setDateChip(7, this)">7 Days</div>
             <div class="filter-chip" onclick="setDateChip(30, this)">30 Days</div>
             <div class="filter-chip" onclick="setDateChip(90, this)">90 Days</div>
             <div class="filter-chip on" onclick="setDateChip('all', this)">Infinite</div>
-            
+
             <span class="filter-sep">|</span>
             <div class="date-inputs">
                 <input type="date" id="filter-start-date" onchange="setCustomDates()">
@@ -1224,7 +1442,8 @@
             </div>
 
             <span class="filter-sep">|</span>
-            <span style="font-size:10.5px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Product:</span>
+            <span
+                style="font-size:10.5px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Product:</span>
             <select id="filter-product-select" onchange="runCalculations()">
                 <option value="all">All Products</option>
             </select>
@@ -1250,28 +1469,40 @@
             <!-- Funnel Optimization Intelligence -->
             <div class="card" style="border-color: rgba(59, 130, 246, 0.3);">
                 <h3>💡 Last 3 Days Funnel optimization & Action signals</h3>
-                <div id="overview-funnel-intelligence" style="font-size:12.5px; line-height:1.6; display:flex; flex-direction:column; gap:8px;">
+                <div id="overview-funnel-intelligence"
+                    style="font-size:12.5px; line-height:1.6; display:flex; flex-direction:column; gap:8px;">
                     <!-- Injected via JS -->
                 </div>
             </div>
 
             <!-- Top & Worst Performers Grid Matrix -->
             <div class="card" style="border-color: rgba(59, 130, 246, 0.25); margin-bottom: 20px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--border-color); padding-bottom:10px;">
+                <div
+                    style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid var(--border-color); padding-bottom:10px;">
                     <h3 style="margin:0;">🏆 Top &amp; Worst Performance Leaderboard</h3>
                     <!-- Sub-tabs switcher -->
-                    <div style="display:flex; gap:6px; background:rgba(255,255,255,0.03); padding:3px; border-radius:6px; border:1px solid var(--border-color);">
-                        <button class="plat-btn on" id="btn-perf-prod" onclick="switchPerformanceLevel('prod', this)" style="font-size:10.5px; padding:4px 10px; border-radius:4px; cursor:pointer; background:var(--primary); border:none; color:#fff; font-family:var(--font-mono); font-weight:600; transition:all 0.2s;">📦 Products</button>
-                        <button class="plat-btn" id="btn-perf-meta" onclick="switchPerformanceLevel('meta', this)" style="font-size:10.5px; padding:4px 10px; border-radius:4px; cursor:pointer; background:transparent; border:none; color:var(--text-secondary); font-family:var(--font-mono); transition:all 0.2s;">🔵 Meta Ads</button>
-                        <button class="plat-btn" id="btn-perf-google" onclick="switchPerformanceLevel('google', this)" style="font-size:10.5px; padding:4px 10px; border-radius:4px; cursor:pointer; background:transparent; border:none; color:var(--text-secondary); font-family:var(--font-mono); transition:all 0.2s;">🟡 Google Ads</button>
+                    <div
+                        style="display:flex; gap:6px; background:rgba(255,255,255,0.03); padding:3px; border-radius:6px; border:1px solid var(--border-color);">
+                        <button class="plat-btn on" id="btn-perf-prod" onclick="switchPerformanceLevel('prod', this)"
+                            style="font-size:10.5px; padding:4px 10px; border-radius:4px; cursor:pointer; background:var(--primary); border:none; color:#fff; font-family:var(--font-mono); font-weight:600; transition:all 0.2s;">📦
+                            Products</button>
+                        <button class="plat-btn" id="btn-perf-meta" onclick="switchPerformanceLevel('meta', this)"
+                            style="font-size:10.5px; padding:4px 10px; border-radius:4px; cursor:pointer; background:transparent; border:none; color:var(--text-secondary); font-family:var(--font-mono); transition:all 0.2s;">🔵
+                            Meta Ads</button>
+                        <button class="plat-btn" id="btn-perf-google" onclick="switchPerformanceLevel('google', this)"
+                            style="font-size:10.5px; padding:4px 10px; border-radius:4px; cursor:pointer; background:transparent; border:none; color:var(--text-secondary); font-family:var(--font-mono); transition:all 0.2s;">🟡
+                            Google Ads</button>
                     </div>
                 </div>
 
                 <!-- Product Performers Panel -->
                 <div class="performance-panel active" id="panel-perf-prod">
                     <div class="grid-2col" style="gap:15px;">
-                        <div style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
-                            <h4 style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">🏆 Top Performing Products (by ROAS)</h4>
+                        <div
+                            style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🏆 Top Performing Products (by ROAS)</h4>
                             <div class="table-wrap">
                                 <table style="font-size:11px;">
                                     <thead>
@@ -1286,8 +1517,11 @@
                                 </table>
                             </div>
                         </div>
-                        <div style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
-                            <h4 style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">🛑 Worst Performing Products (by ROAS)</h4>
+                        <div
+                            style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🛑 Worst Performing Products (by ROAS)</h4>
                             <div class="table-wrap">
                                 <table style="font-size:11px;">
                                     <thead>
@@ -1307,10 +1541,15 @@
 
                 <!-- Meta Ads Performers Panel -->
                 <div class="performance-panel" id="panel-perf-meta" style="display:none;">
-                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Campaign Level</div>
+                    <div
+                        style="font-size:10px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">
+                        Campaign Level</div>
                     <div class="grid-2col" style="gap:15px; margin-bottom:15px;">
-                        <div style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
-                            <h4 style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">🏆 Top Meta Campaigns</h4>
+                        <div
+                            style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🏆 Top Meta Campaigns</h4>
                             <div class="table-wrap">
                                 <table style="font-size:11px;">
                                     <thead>
@@ -1325,8 +1564,11 @@
                                 </table>
                             </div>
                         </div>
-                        <div style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
-                            <h4 style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">🛑 Worst Meta Campaigns</h4>
+                        <div
+                            style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🛑 Worst Meta Campaigns</h4>
                             <div class="table-wrap">
                                 <table style="font-size:11px;">
                                     <thead>
@@ -1343,10 +1585,15 @@
                         </div>
                     </div>
 
-                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Ad Set Level</div>
+                    <div
+                        style="font-size:10px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">
+                        Ad Set Level</div>
                     <div class="grid-2col" style="gap:15px;">
-                        <div style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
-                            <h4 style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">🏆 Top Meta Ad Sets</h4>
+                        <div
+                            style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🏆 Top Meta Ad Sets</h4>
                             <div class="table-wrap">
                                 <table style="font-size:11px;">
                                     <thead>
@@ -1361,8 +1608,11 @@
                                 </table>
                             </div>
                         </div>
-                        <div style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
-                            <h4 style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">🛑 Worst Meta Ad Sets</h4>
+                        <div
+                            style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🛑 Worst Meta Ad Sets</h4>
                             <div class="table-wrap">
                                 <table style="font-size:11px;">
                                     <thead>
@@ -1382,10 +1632,15 @@
 
                 <!-- Google Ads Performers Panel -->
                 <div class="performance-panel" id="panel-perf-google" style="display:none;">
-                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Campaign Level</div>
+                    <div
+                        style="font-size:10px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">
+                        Campaign Level</div>
                     <div class="grid-2col" style="gap:15px; margin-bottom:15px;">
-                        <div style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
-                            <h4 style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">🏆 Top Google Campaigns</h4>
+                        <div
+                            style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🏆 Top Google Campaigns</h4>
                             <div class="table-wrap">
                                 <table style="font-size:11px;">
                                     <thead>
@@ -1400,8 +1655,11 @@
                                 </table>
                             </div>
                         </div>
-                        <div style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
-                            <h4 style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">🛑 Worst Google Campaigns</h4>
+                        <div
+                            style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🛑 Worst Google Campaigns</h4>
                             <div class="table-wrap">
                                 <table style="font-size:11px;">
                                     <thead>
@@ -1418,10 +1676,15 @@
                         </div>
                     </div>
 
-                    <div style="font-size:10px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">Keyword / Query Level</div>
+                    <div
+                        style="font-size:10px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">
+                        Keyword / Query Level</div>
                     <div class="grid-2col" style="gap:15px;">
-                        <div style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
-                            <h4 style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">🏆 Top Google Keywords</h4>
+                        <div
+                            style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🏆 Top Google Keywords</h4>
                             <div class="table-wrap">
                                 <table style="font-size:11px;">
                                     <thead>
@@ -1436,8 +1699,11 @@
                                 </table>
                             </div>
                         </div>
-                        <div style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
-                            <h4 style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">🛑 Worst Google Keywords</h4>
+                        <div
+                            style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🛑 Worst Google Keywords</h4>
                             <div class="table-wrap">
                                 <table style="font-size:11px;">
                                     <thead>
@@ -1538,12 +1804,14 @@
         <div id="tab-googleads" class="tab-content">
             <div class="card">
                 <h3>🔍 Google Ads Keyword-Level Performance</h3>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
                     <div style="font-size: 11px; color: var(--text-secondary);">
                         Granular match type and keyword metrics. Use filters to query exact matches.
                     </div>
                     <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="text" id="google-keyword-search" placeholder="Search Keyword..." oninput="renderGoogleAdsTab()" style="width: 200px; padding: 5px 10px;">
+                        <input type="text" id="google-keyword-search" placeholder="Search Keyword..."
+                            oninput="renderGoogleAdsTab()" style="width: 200px; padding: 5px 10px;">
                         <select id="google-camp-type-filter" onchange="renderGoogleAdsTab()">
                             <option value="all">All Campaign Types</option>
                             <option value="Search">Search</option>
@@ -1728,7 +1996,8 @@
         <div id="tab-rootcause" class="tab-content">
             <div class="diagnostic-card">
                 <div class="diagnostic-hdr">🤖 Diagnostic Mathematical Summary</div>
-                <div id="rcAiSummary" style="font-size:12.5px; color:var(--text-primary); line-height:1.6; padding-left:26px;">
+                <div id="rcAiSummary"
+                    style="font-size:12.5px; color:var(--text-primary); line-height:1.6; padding-left:26px;">
                     Baseline comparison loading...
                 </div>
             </div>
@@ -1831,15 +2100,23 @@
         <!-- 10. COMPETITOR INTELLIGENCE -->
         <div id="tab-competitor" class="tab-content">
             <!-- Search & Quick Pre-filters -->
-            <div class="card" style="border-color: rgba(6, 182, 212, 0.4); background: radial-gradient(100% 100% at 0% 0%, rgba(6, 182, 212, 0.04) 0%, transparent 100%), var(--bg-card);">
+            <div class="card"
+                style="border-color: rgba(6, 182, 212, 0.4); background: radial-gradient(100% 100% at 0% 0%, rgba(6, 182, 212, 0.04) 0%, transparent 100%), var(--bg-card);">
                 <h3>🕵️ Competitor Ads Library Deep-Linker</h3>
                 <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">
-                    Search and examine live active narrative ads of any competitor directly inside Meta Ads Library and Google Ads Transparency Center.
+                    Search and examine live active narrative ads of any competitor directly inside Meta Ads Library and
+                    Google Ads Transparency Center.
                 </p>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                    <input type="text" id="comp-search-brand" placeholder="Enter Competitor Brand Name (e.g. Minimalist, Mamaearth, Plum)" style="flex:1; min-width:260px; height: 36px; padding: 6px 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color:#fff; border-radius:4px;">
-                    <button class="btn btn-secondary" onclick="openMetaAdsLibrary()" style="background:#1877f2; border:none; color:#fff; display:flex; align-items:center; gap:6px;">🔵 Search Meta Ads Library</button>
-                    <button class="btn btn-secondary" onclick="openGoogleAdsLibrary()" style="background:#f4b400; border:none; color:#000; display:flex; align-items:center; gap:6px;">🟡 Search Google Ads</button>
+                    <input type="text" id="comp-search-brand"
+                        placeholder="Enter Competitor Brand Name (e.g. Minimalist, Mamaearth, Plum)"
+                        style="flex:1; min-width:260px; height: 36px; padding: 6px 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color:#fff; border-radius:4px;">
+                    <button class="btn btn-secondary" onclick="openMetaAdsLibrary()"
+                        style="background:#1877f2; border:none; color:#fff; display:flex; align-items:center; gap:6px;">🔵
+                        Search Meta Ads Library</button>
+                    <button class="btn btn-secondary" onclick="openGoogleAdsLibrary()"
+                        style="background:#f4b400; border:none; color:#000; display:flex; align-items:center; gap:6px;">🟡
+                        Search Google Ads</button>
                 </div>
             </div>
 
@@ -1880,13 +2157,16 @@
                         </div>
                         <div class="config-row" style="flex-direction:column; align-items:flex-start; gap:4px;">
                             <label for="comp-log-copy">Ad Copy / Visual Hook Summary</label>
-                            <textarea id="comp-log-copy" placeholder="Paste ad text or describe visual hook..." style="width:100%; height:55px; font-family:inherit; font-size:11px; padding:6px; background:#070b19; border:1px solid var(--border-color); color:var(--text-primary); border-radius:4px;"></textarea>
+                            <textarea id="comp-log-copy" placeholder="Paste ad text or describe visual hook..."
+                                style="width:100%; height:55px; font-family:inherit; font-size:11px; padding:6px; background:#070b19; border:1px solid var(--border-color); color:var(--text-primary); border-radius:4px;"></textarea>
                         </div>
                         <div class="config-row" style="flex-direction:column; align-items:flex-start; gap:4px;">
                             <label for="comp-log-strategy">Airtight Counter Strategy</label>
-                            <textarea id="comp-log-strategy" placeholder="Describe counter strategy..." style="width:100%; height:55px; font-family:inherit; font-size:11px; padding:6px; background:#070b19; border:1px solid var(--border-color); color:var(--text-primary); border-radius:4px;"></textarea>
+                            <textarea id="comp-log-strategy" placeholder="Describe counter strategy..."
+                                style="width:100%; height:55px; font-family:inherit; font-size:11px; padding:6px; background:#070b19; border:1px solid var(--border-color); color:var(--text-primary); border-radius:4px;"></textarea>
                         </div>
-                        <button class="btn" onclick="saveCompetitorAd()" style="margin-top:5px; width:100%;">💾 Save to Competitor Database</button>
+                        <button class="btn" onclick="saveCompetitorAd()" style="margin-top:5px; width:100%;">💾 Save to
+                            Competitor Database</button>
                     </div>
                 </div>
 
@@ -1897,7 +2177,9 @@
                         <canvas id="chart-competitor-narratives"></canvas>
                     </div>
                     <div style="font-size:11.5px; line-height:1.6; color:var(--text-secondary);">
-                        💡 <strong>Competitor Intelligence Heuristic</strong>: Ads running for <strong>longer durations (&gt;30 days)</strong> represent proven scale winners. Model their hooks and copy format immediately to capture overlapping audience interest!
+                        💡 <strong>Competitor Intelligence Heuristic</strong>: Ads running for <strong>longer durations
+                            (&gt;30 days)</strong> represent proven scale winners. Model their hooks and copy format
+                        immediately to capture overlapping audience interest!
                     </div>
                 </div>
             </div>
@@ -1934,11 +2216,14 @@
                 <div class="chat-container">
                     <div class="chat-messages" id="chat-messages-box">
                         <div class="chat-message agent">
-                            Greetings. I am Marin, your D2C growth analytics co-pilot. I have audited your local marketing records. Ask me to identify winners, suggest hook optimizations, or isolate budget leaks.
+                            Greetings. I am Marin, your D2C growth analytics co-pilot. I have audited your local
+                            marketing records. Ask me to identify winners, suggest hook optimizations, or isolate budget
+                            leaks.
                         </div>
                     </div>
                     <div class="chat-input-area">
-                        <input type="text" id="chat-input-text" placeholder="e.g. Which Meta campaigns should I scale?" onkeydown="if(event.key === 'Enter') sendAgentMessage()">
+                        <input type="text" id="chat-input-text" placeholder="e.g. Which Meta campaigns should I scale?"
+                            onkeydown="if(event.key === 'Enter') sendAgentMessage()">
                         <button class="btn" onclick="sendAgentMessage()">Send ⚡</button>
                     </div>
                 </div>
@@ -1947,7 +2232,8 @@
             <div class="card">
                 <h3>🔑 Gemini API Authentication</h3>
                 <p style="font-size:11px; color:var(--text-secondary); margin-bottom:8px;">
-                    Provide a Gemini API Key to unlock conversational logic. If left empty, local analytical rules will run fallbacks.
+                    Provide a Gemini API Key to unlock conversational logic. If left empty, local analytical rules will
+                    run fallbacks.
                 </p>
                 <div style="display:flex; gap:10px;">
                     <input type="password" id="api-key" placeholder="Paste your Gemini API Key here...">
@@ -1959,13 +2245,17 @@
         <!-- 11. DATA INGESTION & SYNC -->
         <div id="tab-datasync" class="tab-content">
             <!-- Live Sync Connect Card -->
-            <div class="card" style="border-color: rgba(6, 182, 212, 0.4); background: radial-gradient(100% 100% at 0% 0%, rgba(6, 182, 212, 0.04) 0%, transparent 100%), var(--bg-card);">
+            <div class="card"
+                style="border-color: rgba(6, 182, 212, 0.4); background: radial-gradient(100% 100% at 0% 0%, rgba(6, 182, 212, 0.04) 0%, transparent 100%), var(--bg-card);">
                 <h3>🔗 Google Sheet Auto-Sync Engine</h3>
                 <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">
-                    Connect direct to your dashboard sheet tab-by-tab using secure visualization JSONP feeds. Data updates in real time.
+                    Connect direct to your dashboard sheet tab-by-tab using secure visualization JSONP feeds. Data
+                    updates in real time.
                 </p>
                 <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                    <input type="text" id="sheet-url" placeholder="Paste your Google Sheet URL or ID (e.g. 1R0NdZMUHHdxrA5U0yr9h_k59BvrlkYJAtdKaORXFWjs)" style="flex:1; min-width:320px;">
+                    <input type="text" id="sheet-url"
+                        placeholder="Paste your Google Sheet URL or ID (e.g. 1R0NdZMUHHdxrA5U0yr9h_k59BvrlkYJAtdKaORXFWjs)"
+                        style="flex:1; min-width:320px;">
                     <button class="btn" id="sync-btn" onclick="syncData()">🔄 Sync Google Sheet</button>
                 </div>
             </div>
@@ -1973,8 +2263,10 @@
             <!-- Auto-Correction and Validation Log -->
             <div class="card">
                 <h3>🛡️ Ingestion Auto-Correction & Mappings Log</h3>
-                <div id="ingestion-correction-log" style="font-family:var(--font-mono); font-size:11.5px; background-color:#030712; border:1px solid var(--border-color); border-radius:6px; padding:12px; height:130px; overflow-y:auto; color:#a7f3d0; line-height:1.5;">
-                    <div style="color:var(--text-muted);">No correction events logged. Load or sync data to analyze.</div>
+                <div id="ingestion-correction-log"
+                    style="font-family:var(--font-mono); font-size:11.5px; background-color:#030712; border:1px solid var(--border-color); border-radius:6px; padding:12px; height:130px; overflow-y:auto; color:#a7f3d0; line-height:1.5;">
+                    <div style="color:var(--text-muted);">No correction events logged. Load or sync data to analyze.
+                    </div>
                 </div>
             </div>
 
@@ -1984,26 +2276,33 @@
                 <div class="ingest-flow-visual">
                     <div class="flow-node">
                         <strong>1. Open Google Sheet</strong>
-                        <div style="font-size:9.5px; color:var(--text-secondary); margin-top:4px;">Set share: "Anyone with link can view"</div>
+                        <div style="font-size:9.5px; color:var(--text-secondary); margin-top:4px;">Set share: "Anyone
+                            with link can view"</div>
                     </div>
                     <div class="flow-arrow">➔</div>
                     <div class="flow-node">
                         <strong>2. GViz Endpoint</strong>
-                        <div style="font-size:9.5px; color:var(--text-secondary); margin-top:4px;">Request tq?tqx=out:json for sheets</div>
+                        <div style="font-size:9.5px; color:var(--text-secondary); margin-top:4px;">Request
+                            tq?tqx=out:json for sheets</div>
                     </div>
                     <div class="flow-arrow">➔</div>
                     <div class="flow-node">
                         <strong>3. JSONP Wrapper</strong>
-                        <div style="font-size:9.5px; color:var(--text-secondary); margin-top:4px;">Script callback executes in browser</div>
+                        <div style="font-size:9.5px; color:var(--text-secondary); margin-top:4px;">Script callback
+                            executes in browser</div>
                     </div>
                     <div class="flow-arrow">➔</div>
                     <div class="flow-node">
                         <strong>4. Direct Parse</strong>
-                        <div style="font-size:9.5px; color:var(--text-secondary); margin-top:4px;">Data populated in tables + localStorage</div>
+                        <div style="font-size:9.5px; color:var(--text-secondary); margin-top:4px;">Data populated in
+                            tables + localStorage</div>
                     </div>
                 </div>
                 <div style="font-size:11.5px; color:var(--text-secondary); line-height:1.6;">
-                    The standalone offline dashboard fetches directly from Google Sheets using the Google Visualization (GViz) data feed. Because this feed uses a JSONP response callback (e.g. <code>_gvizCbMeta(data)</code>), it completely bypasses Cross-Origin Resource Sharing (CORS) blocks, letting you fetch spreadsheets safely from a static local HTML file.
+                    The standalone offline dashboard fetches directly from Google Sheets using the Google Visualization
+                    (GViz) data feed. Because this feed uses a JSONP response callback (e.g.
+                    <code>_gvizCbMeta(data)</code>), it completely bypasses Cross-Origin Resource Sharing (CORS) blocks,
+                    letting you fetch spreadsheets safely from a static local HTML file.
                 </div>
             </div>
 
@@ -2011,44 +2310,66 @@
             <div class="card">
                 <h3>📋 Google Sheet Template Schemas</h3>
                 <div class="template-tabs">
-                    <button class="template-tab-btn active" onclick="switchTemplateTab('tpl-meta', this)">Meta Template</button>
-                    <button class="template-tab-btn" onclick="switchTemplateTab('tpl-google', this)">Google Template</button>
-                    <button class="template-tab-btn" onclick="switchTemplateTab('tpl-sales', this)">Sales LTV Template</button>
-                    <button class="template-tab-btn" onclick="switchTemplateTab('tpl-product', this)">Product Margins</button>
+                    <button class="template-tab-btn active" onclick="switchTemplateTab('tpl-meta', this)">Meta
+                        Template</button>
+                    <button class="template-tab-btn" onclick="switchTemplateTab('tpl-google', this)">Google
+                        Template</button>
+                    <button class="template-tab-btn" onclick="switchTemplateTab('tpl-sales', this)">Sales LTV
+                        Template</button>
+                    <button class="template-tab-btn" onclick="switchTemplateTab('tpl-product', this)">Product
+                        Margins</button>
                 </div>
 
                 <!-- Meta Template Panel -->
                 <div class="template-panel active" id="tpl-meta">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span style="font-size:11px; font-weight:700; color:var(--secondary);">Sheet Tab: META_DATA</span>
-                        <button class="btn btn-secondary" onclick="copyHeaders('Day,Account Name,Campaign name,Ad set name,Ad name,Currency,Amount spent (INR),Impressions,Link clicks,Landing page views,Add To Cart,Purchases,Purchases conversion value,3-second video plays,Video plays at 25%,Video plays at 50%,Video plays at 75%,Video plays at 95%,Video plays at 100%,Website URL,Ad set ID,Ad ID,Product,Ad Type,Type of Ad,Influencer Name,Narrative,Language')">📋 Copy Headers</button>
+                        <span style="font-size:11px; font-weight:700; color:var(--secondary);">Sheet Tab:
+                            META_DATA</span>
+                        <button class="btn btn-secondary"
+                            onclick="copyHeaders('Day,Account Name,Campaign name,Ad set name,Ad name,Currency,Amount spent (INR),Impressions,Link clicks,Landing page views,Add To Cart,Purchases,Purchases conversion value,3-second video plays,Video plays at 25%,Video plays at 50%,Video plays at 75%,Video plays at 95%,Video plays at 100%,Website URL,Ad set ID,Ad ID,Product,Ad Type,Type of Ad,Influencer Name,Narrative,Language')">📋
+                            Copy Headers</button>
                     </div>
-                    <div class="template-code-box">Day, Account Name, Campaign name, Ad set name, Ad name, Currency, Amount spent (INR), Impressions, Link clicks, Landing page views, Add To Cart, Purchases, Purchases conversion value, 3-second video plays, Video plays at 25%, Video plays at 50%, Video plays at 75%, Video plays at 95%, Video plays at 100%, Website URL, Ad set ID, Ad ID, Product, Ad Type, Type of Ad, Influencer Name, Narrative, Language</div>
+                    <div class="template-code-box">Day, Account Name, Campaign name, Ad set name, Ad name, Currency,
+                        Amount spent (INR), Impressions, Link clicks, Landing page views, Add To Cart, Purchases,
+                        Purchases conversion value, 3-second video plays, Video plays at 25%, Video plays at 50%, Video
+                        plays at 75%, Video plays at 95%, Video plays at 100%, Website URL, Ad set ID, Ad ID, Product,
+                        Ad Type, Type of Ad, Influencer Name, Narrative, Language</div>
                 </div>
 
                 <!-- Google Template Panel -->
                 <div class="template-panel" id="tpl-google">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span style="font-size:11px; font-weight:700; color:var(--secondary);">Sheet Tab: GOOGLE_DATA</span>
-                        <button class="btn btn-secondary" onclick="copyHeaders('Date,Campaign,Ad Group,Keyword,Match Type,Spend,Impressions,Clicks,Landing Page Views,Add to Cart,Conversions,Revenue')">📋 Copy Headers</button>
+                        <span style="font-size:11px; font-weight:700; color:var(--secondary);">Sheet Tab:
+                            GOOGLE_DATA</span>
+                        <button class="btn btn-secondary"
+                            onclick="copyHeaders('Date,Campaign,Ad Group,Keyword,Match Type,Spend,Impressions,Clicks,Landing Page Views,Add to Cart,Conversions,Revenue')">📋
+                            Copy Headers</button>
                     </div>
-                    <div class="template-code-box">Date, Campaign, Ad Group, Keyword, Match Type, Spend, Impressions, Clicks, Landing Page Views, Add to Cart, Conversions, Revenue</div>
+                    <div class="template-code-box">Date, Campaign, Ad Group, Keyword, Match Type, Spend, Impressions,
+                        Clicks, Landing Page Views, Add to Cart, Conversions, Revenue</div>
                 </div>
 
                 <!-- Sales Template Panel -->
                 <div class="template-panel" id="tpl-sales">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span style="font-size:11px; font-weight:700; color:var(--secondary);">Sheet Tab: SALES_DATA</span>
-                        <button class="btn btn-secondary" onclick="copyHeaders('Order ID,Customer ID,Order Date,Revenue,Product,Platform,Cohort Month')">📋 Copy Headers</button>
+                        <span style="font-size:11px; font-weight:700; color:var(--secondary);">Sheet Tab:
+                            SALES_DATA</span>
+                        <button class="btn btn-secondary"
+                            onclick="copyHeaders('Order ID,Customer ID,Order Date,Revenue,Product,Platform,Cohort Month')">📋
+                            Copy Headers</button>
                     </div>
-                    <div class="template-code-box">Order ID, Customer ID, Order Date, Revenue, Product, Platform, Cohort Month</div>
+                    <div class="template-code-box">Order ID, Customer ID, Order Date, Revenue, Product, Platform, Cohort
+                        Month</div>
                 </div>
 
                 <!-- Product Template Panel -->
                 <div class="template-panel" id="tpl-product">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <span style="font-size:11px; font-weight:700; color:var(--secondary);">Sheet Tab: PRODUCT_MASTER</span>
-                        <button class="btn btn-secondary" onclick="copyHeaders('Product,Price,Cost of Goods,Margin,Target CPA')">📋 Copy Headers</button>
+                        <span style="font-size:11px; font-weight:700; color:var(--secondary);">Sheet Tab:
+                            PRODUCT_MASTER</span>
+                        <button class="btn btn-secondary"
+                            onclick="copyHeaders('Product,Price,Cost of Goods,Margin,Target CPA')">📋 Copy
+                            Headers</button>
                     </div>
                     <div class="template-code-box">Product, Price, Cost of Goods, Margin, Target CPA</div>
                 </div>
@@ -2061,7 +2382,8 @@
                     <span class="drop-zone-icon">📊</span>
                     <span class="drop-zone-text">Drop your D2C_Marketing_Dashboard_Template.xlsx here</span>
                     <span class="drop-zone-sub">or click to browse local files (bulk-loads all tabs)</span>
-                    <input type="file" id="excel-file-uploader" accept=".xlsx" style="display:none;" onchange="handleExcelUpload(event)">
+                    <input type="file" id="excel-file-uploader" accept=".xlsx" style="display:none;"
+                        onchange="handleExcelUpload(event)">
                 </div>
 
                 <div class="import-grid">
@@ -2070,28 +2392,32 @@
                             <span>META_DATA (Meta Performance)</span>
                             <span class="badge" id="badge-meta-status">Empty</span>
                         </div>
-                        <textarea class="import-area" id="txt-meta" placeholder="Paste META_DATA tab here..."></textarea>
+                        <textarea class="import-area" id="txt-meta"
+                            placeholder="Paste META_DATA tab here..."></textarea>
                     </div>
                     <div class="import-card">
                         <div class="import-hdr">
                             <span>GOOGLE_DATA (Google Ads Query / Keywords)</span>
                             <span class="badge" id="badge-google-status">Empty</span>
                         </div>
-                        <textarea class="import-area" id="txt-google" placeholder="Paste GOOGLE_DATA tab here..."></textarea>
+                        <textarea class="import-area" id="txt-google"
+                            placeholder="Paste GOOGLE_DATA tab here..."></textarea>
                     </div>
                     <div class="import-card">
                         <div class="import-hdr">
                             <span>SALES_DATA (Shopify Cohorts)</span>
                             <span class="badge" id="badge-sales-status">Empty</span>
                         </div>
-                        <textarea class="import-area" id="txt-sales" placeholder="Paste SALES_DATA tab here..."></textarea>
+                        <textarea class="import-area" id="txt-sales"
+                            placeholder="Paste SALES_DATA tab here..."></textarea>
                     </div>
                     <div class="import-card">
                         <div class="import-hdr">
                             <span>PRODUCT_MASTER (Margins & Costs)</span>
                             <span class="badge" id="badge-product-status">Empty</span>
                         </div>
-                        <textarea class="import-area" id="txt-product" placeholder="Paste PRODUCT_MASTER tab here..."></textarea>
+                        <textarea class="import-area" id="txt-product"
+                            placeholder="Paste PRODUCT_MASTER tab here..."></textarea>
                     </div>
                     <div class="import-card" style="grid-column: 1 / -1;">
                         <div class="import-hdr">
@@ -2135,7 +2461,7 @@
 
         var FILTERED_RECORDS = [];
         var PREVIOUS_PERIOD_RECORDS = [];
-        
+
         var dateRangeMode = 'all';
         var _charts = {};
 
@@ -2145,11 +2471,11 @@
             e.preventDefault();
             deferredPrompt = e;
             var installBtn = document.getElementById('pwa-install-btn');
-            if(installBtn) installBtn.style.display = 'flex';
+            if (installBtn) installBtn.style.display = 'flex';
         });
 
         function installPWA() {
-            if(deferredPrompt) {
+            if (deferredPrompt) {
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
@@ -2176,15 +2502,15 @@
             var dd = document.getElementById('sheet-tab-dropdown');
             dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
         }
-        document.addEventListener('click', function() {
+        document.addEventListener('click', function () {
             var dd = document.getElementById('sheet-tab-dropdown');
-            if(dd) dd.style.display = 'none';
+            if (dd) dd.style.display = 'none';
         });
 
         function openSheetTab(tabName) {
             document.getElementById('sheet-tab-dropdown').style.display = 'none';
             var urlVal = document.getElementById('sheet-url').value.trim();
-            if(!urlVal) {
+            if (!urlVal) {
                 alert('Please enter your Google Sheet URL or ID in the Data Ingestion & Sync tab first.');
                 switchTab('datasync', document.querySelector('[onclick*="datasync"]'));
                 return;
@@ -2192,10 +2518,10 @@
             var sheetIdMatch = urlVal.match(/\/d\/([a-zA-Z0-9-_]+)/);
             var sheetId = sheetIdMatch ? sheetIdMatch[1] : urlVal;
             var baseUrl = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/edit';
-            if(tabName) {
+            if (tabName) {
                 // We store gid per tab name after successful GViz fetch
                 var storedGid = localStorage.getItem('gid_' + tabName);
-                if(storedGid) {
+                if (storedGid) {
                     window.open(baseUrl + '#gid=' + storedGid, '_blank');
                 } else {
                     // Fallback: open and show guidance
@@ -2220,7 +2546,7 @@
 
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
-            
+
             const titleMap = {
                 overview: 'Growth & Performance Command Center',
                 metaads: 'Meta Ads Performance Attribution',
@@ -2236,7 +2562,7 @@
                 datasync: 'Google Sheets Ingestion & Sync Setup'
             };
             document.getElementById('page-title').innerText = titleMap[tabId] || 'D2C Command Center';
-            
+
             if (tabId === 'overview') {
                 setTimeout(renderOverviewCharts, 50);
             } else if (tabId === 'rootcause') {
@@ -2266,7 +2592,7 @@
         function setDateChip(days, el) {
             dateRangeMode = days;
             document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('on'));
-            if(el) el.classList.add('on');
+            if (el) el.classList.add('on');
             document.getElementById('filter-start-date').value = '';
             document.getElementById('filter-end-date').value = '';
             runCalculations();
@@ -2284,7 +2610,7 @@
         function addParseLog(type, msg) {
             PARSE_LOGS.push(`[${type}] ${msg}`);
             var logBox = document.getElementById('ingestion-correction-log');
-            if(logBox) {
+            if (logBox) {
                 logBox.innerHTML = PARSE_LOGS.map(l => {
                     var color = l.includes('ERROR') ? 'var(--danger)' : (l.includes('CORRECTED') ? 'var(--secondary)' : '#a7f3d0');
                     return `<div style="color:${color};">${l}</div>`;
@@ -2296,20 +2622,20 @@
         function parseFlexibleDate(dateStr) {
             if (!dateStr) return null;
             var str = dateStr.toString().trim();
-            
+
             var d = new Date(str);
             if (!isNaN(d.getTime())) return d;
-            
+
             var parts = [];
             if (str.indexOf('/') !== -1) parts = str.split('/');
             else if (str.indexOf('-') !== -1) parts = str.split('-');
             else if (str.indexOf('.') !== -1) parts = str.split('.');
-            
+
             if (parts.length === 3) {
                 var p0 = parseInt(parts[0], 10);
                 var p1 = parseInt(parts[1], 10);
                 var p2 = parseInt(parts[2], 10);
-                
+
                 if (parts[0].length === 4) {
                     d = new Date(p0, p1 - 1, p2);
                     if (!isNaN(d.getTime())) return d;
@@ -2329,7 +2655,7 @@
             if (typeof val === 'number') return val;
             var valStr = val.toString().trim();
             if (!valStr) return 0;
-            
+
             var clean = valStr.replace(/[₹$,%]/g, '').replace(/,/g, '').trim();
             var num = parseFloat(clean);
             if (isNaN(num)) {
@@ -2343,13 +2669,13 @@
 
         function autoTagMetadataJS(campaign, adSet, adName) {
             var combined = (campaign + ' | ' + adSet + ' | ' + adName).toLowerCase();
-            
+
             var product = 'Other Product';
             if (combined.indexOf('serum') !== -1) product = 'Hair Growth Serum';
             else if (combined.indexOf('bodywash') !== -1 || combined.indexOf('body wash') !== -1) product = '5% AHA BHA Exfoliating Body Wash';
             else if (combined.indexOf('gummies') !== -1) product = 'Biotin Hair Gummies';
             else if (combined.indexOf('underarm') !== -1) product = 'Underarm Roll On';
-            
+
             var typeOfAd = 'Video Ad';
             if (combined.indexOf('static') !== -1 || combined.indexOf('image') !== -1) typeOfAd = 'Static Creative';
             else if (combined.indexOf('carousel') !== -1) typeOfAd = 'Carousel';
@@ -2382,8 +2708,8 @@
             if (!grid || grid.length <= 1) return [];
             var rawHeaders = grid[0].map(h => String(h).trim());
             var headers = rawHeaders.map(h => h.toLowerCase());
-            
-            var getIndex = function(aliases, standardName) {
+
+            var getIndex = function (aliases, standardName) {
                 for (var i = 0; i < aliases.length; i++) {
                     var idx = headers.indexOf(aliases[i].toLowerCase());
                     if (idx !== -1) {
@@ -2424,19 +2750,19 @@
             for (var r = 1; r < grid.length; r++) {
                 var row = grid[r];
                 if (!row || row.length === 0 || !row[iDate]) continue;
-                
+
                 var date = parseFlexibleDate(row[iDate]);
                 if (!date) continue;
 
                 var spend = cleanParseFloat(row[iSpend], 'Spend');
                 var clicks = cleanParseFloat(row[iClicks], 'Clicks');
-                
+
                 var lpv = 0;
                 if (iLpv !== -1) {
                     lpv = cleanParseFloat(row[iLpv], 'LPV');
                 } else {
                     lpv = clicks * 0.8;
-                    if(r === 1) addParseLog('ESTIMATED', `Missing 'LPV' column in ${platform} tab. Estimated using clicks * 80%`);
+                    if (r === 1) addParseLog('ESTIMATED', `Missing 'LPV' column in ${platform} tab. Estimated using clicks * 80%`);
                 }
 
                 var atc = 0;
@@ -2444,7 +2770,7 @@
                     atc = cleanParseFloat(row[iATC], 'ATC');
                 } else {
                     atc = clicks * 0.15;
-                    if(r === 1) addParseLog('ESTIMATED', `Missing 'ATC' column in ${platform} tab. Estimated using clicks * 15%`);
+                    if (r === 1) addParseLog('ESTIMATED', `Missing 'ATC' column in ${platform} tab. Estimated using clicks * 15%`);
                 }
 
                 var camp = iCamp !== -1 ? String(row[iCamp]) : 'Generic Campaign';
@@ -2455,7 +2781,7 @@
 
                 list.push({
                     Date: date,
-                    DateStr: date.toISOString().slice(0,10),
+                    DateStr: date.toISOString().slice(0, 10),
                     Time: date.getTime(),
                     Platform: platform,
                     Campaign: camp,
@@ -2590,7 +2916,7 @@
                     renderMetaAdsTab();
                     renderGoogleAdsTab();
                     renderCohortsTab();
-                    
+
                     // Render Daily Ledger tabs
                     renderDailyLedgerTab('overall');
                     renderDailyLedgerTab('meta');
@@ -2598,7 +2924,7 @@
 
                     renderRootCauseTab();
                     renderOptimizerTab();
-                    
+
                     document.getElementById('status-cache-text').innerText = `${FILTERED_RECORDS.length} ROWS`;
                     document.getElementById('status-cache-text').style.color = 'var(--success)';
                     document.getElementById('sync-time-stamp').innerText = `✓ Updated: ${new Date().toLocaleTimeString()}`;
@@ -2656,12 +2982,12 @@
 
         // 1. Overview Tab
         function renderOverviewTab() {
-            var spend = FILTERED_RECORDS.reduce((a,r)=>a+r.Spend, 0);
-            var rev = FILTERED_RECORDS.reduce((a,r)=>a+r.Revenue, 0);
-            var conv = FILTERED_RECORDS.reduce((a,r)=>a+r.Conversions, 0);
-            var clicks = FILTERED_RECORDS.reduce((a,r)=>a+r.Clicks, 0);
-            var lpv = FILTERED_RECORDS.reduce((a,r)=>a+r.LPV, 0);
-            var atc = FILTERED_RECORDS.reduce((a,r)=>a+r.ATC, 0);
+            var spend = FILTERED_RECORDS.reduce((a, r) => a + r.Spend, 0);
+            var rev = FILTERED_RECORDS.reduce((a, r) => a + r.Revenue, 0);
+            var conv = FILTERED_RECORDS.reduce((a, r) => a + r.Conversions, 0);
+            var clicks = FILTERED_RECORDS.reduce((a, r) => a + r.Clicks, 0);
+            var lpv = FILTERED_RECORDS.reduce((a, r) => a + r.LPV, 0);
+            var atc = FILTERED_RECORDS.reduce((a, r) => a + r.ATC, 0);
 
             var roas = spend > 0 ? (rev / spend) : 0;
             var cac = conv > 0 ? (spend / conv) : 0;
@@ -2670,9 +2996,9 @@
             // Delta calculations vs baseline
             var spD = 0, revD = 0, roasD = 0, cacD = 0;
             if (PREVIOUS_PERIOD_RECORDS.length > 0) {
-                var prevSp = PREVIOUS_PERIOD_RECORDS.reduce((a,r)=>a+r.Spend, 0);
-                var prevRev = PREVIOUS_PERIOD_RECORDS.reduce((a,r)=>a+r.Revenue, 0);
-                var prevConv = PREVIOUS_PERIOD_RECORDS.reduce((a,r)=>a+r.Conversions, 0);
+                var prevSp = PREVIOUS_PERIOD_RECORDS.reduce((a, r) => a + r.Spend, 0);
+                var prevRev = PREVIOUS_PERIOD_RECORDS.reduce((a, r) => a + r.Revenue, 0);
+                var prevConv = PREVIOUS_PERIOD_RECORDS.reduce((a, r) => a + r.Conversions, 0);
                 var prevRoas = prevSp > 0 ? (prevRev / prevSp) : 0;
                 var prevCac = prevConv > 0 ? (prevSp / prevConv) : 0;
 
@@ -2787,8 +3113,8 @@
 
             // 1. Products
             var prods = aggregateBy(FILTERED_RECORDS, 'Product');
-            var topProds = prods.filter(p => p.spend >= minSpendThreshold).sort((a,b)=>b.roas - a.roas).slice(0, 5);
-            var worstProds = prods.filter(p => p.spend >= minSpendThreshold).sort((a,b)=>a.roas - b.roas).slice(0, 5);
+            var topProds = prods.filter(p => p.spend >= minSpendThreshold).sort((a, b) => b.roas - a.roas).slice(0, 5);
+            var worstProds = prods.filter(p => p.spend >= minSpendThreshold).sort((a, b) => a.roas - b.roas).slice(0, 5);
 
             document.getElementById('tbl-perf-prod-top').innerHTML = renderPerfRows(topProds, 'Product');
             document.getElementById('tbl-perf-prod-worst').innerHTML = renderPerfRows(worstProds, 'Product');
@@ -2796,22 +3122,22 @@
             // 2. Meta Ads
             var metaRecs = FILTERED_RECORDS.filter(r => r.Platform === 'Meta');
             var metaCamps = aggregateBy(metaRecs, 'Campaign');
-            var topMetaCamps = metaCamps.filter(c => c.spend >= minSpendThreshold).sort((a,b)=>b.roas - a.roas).slice(0, 5);
-            var worstMetaCamps = metaCamps.filter(c => c.spend >= minSpendThreshold).sort((a,b)=>a.roas - b.roas).slice(0, 5);
+            var topMetaCamps = metaCamps.filter(c => c.spend >= minSpendThreshold).sort((a, b) => b.roas - a.roas).slice(0, 5);
+            var worstMetaCamps = metaCamps.filter(c => c.spend >= minSpendThreshold).sort((a, b) => a.roas - b.roas).slice(0, 5);
             document.getElementById('tbl-perf-meta-camp-top').innerHTML = renderPerfRows(topMetaCamps, 'Campaign');
             document.getElementById('tbl-perf-meta-camp-worst').innerHTML = renderPerfRows(worstMetaCamps, 'Campaign');
 
             var metaAdsets = aggregateBy(metaRecs, 'Adset');
-            var topMetaAdsets = metaAdsets.filter(a => a.spend >= minSpendThreshold).sort((a,b)=>b.roas - a.roas).slice(0, 5);
-            var worstMetaAdsets = metaAdsets.filter(a => a.spend >= minSpendThreshold).sort((a,b)=>a.roas - b.roas).slice(0, 5);
+            var topMetaAdsets = metaAdsets.filter(a => a.spend >= minSpendThreshold).sort((a, b) => b.roas - a.roas).slice(0, 5);
+            var worstMetaAdsets = metaAdsets.filter(a => a.spend >= minSpendThreshold).sort((a, b) => a.roas - b.roas).slice(0, 5);
             document.getElementById('tbl-perf-meta-adset-top').innerHTML = renderPerfRows(topMetaAdsets, 'Adset');
             document.getElementById('tbl-perf-meta-adset-worst').innerHTML = renderPerfRows(worstMetaAdsets, 'Adset');
 
             // 3. Google Ads
             var googleRecs = FILTERED_RECORDS.filter(r => r.Platform === 'Google');
             var googleCamps = aggregateBy(googleRecs, 'Campaign');
-            var topGoogleCamps = googleCamps.filter(c => c.spend >= minSpendThreshold).sort((a,b)=>b.roas - a.roas).slice(0, 5);
-            var worstGoogleCamps = googleCamps.filter(c => c.spend >= minSpendThreshold).sort((a,b)=>a.roas - b.roas).slice(0, 5);
+            var topGoogleCamps = googleCamps.filter(c => c.spend >= minSpendThreshold).sort((a, b) => b.roas - a.roas).slice(0, 5);
+            var worstGoogleCamps = googleCamps.filter(c => c.spend >= minSpendThreshold).sort((a, b) => a.roas - b.roas).slice(0, 5);
             document.getElementById('tbl-perf-google-camp-top').innerHTML = renderPerfRows(topGoogleCamps, 'Campaign');
             document.getElementById('tbl-perf-google-camp-worst').innerHTML = renderPerfRows(worstGoogleCamps, 'Campaign');
 
@@ -2827,8 +3153,8 @@
                 k.roas = k.spend > 0 ? (k.rev / k.spend) : 0;
                 return k;
             });
-            var topGoogleKws = googleKwList.filter(k => k.spend >= minSpendThreshold).sort((a,b)=>b.roas - a.roas).slice(0, 5);
-            var worstGoogleKws = googleKwList.filter(k => k.spend >= minSpendThreshold).sort((a,b)=>a.roas - b.roas).slice(0, 5);
+            var topGoogleKws = googleKwList.filter(k => k.spend >= minSpendThreshold).sort((a, b) => b.roas - a.roas).slice(0, 5);
+            var worstGoogleKws = googleKwList.filter(k => k.spend >= minSpendThreshold).sort((a, b) => a.roas - b.roas).slice(0, 5);
             document.getElementById('tbl-perf-google-kw-top').innerHTML = renderPerfRows(topGoogleKws, 'Keyword');
             document.getElementById('tbl-perf-google-kw-worst').innerHTML = renderPerfRows(worstGoogleKws, 'Keyword');
         }
@@ -2861,12 +3187,12 @@
             var recs3d = FILTERED_RECORDS.filter(r => r.Time >= startThreeDays);
             if (recs3d.length === 0) recs3d = FILTERED_RECORDS;
 
-            var spend3d = recs3d.reduce((a,r)=>a+r.Spend, 0);
-            var rev3d = recs3d.reduce((a,r)=>a+r.Revenue, 0);
-            var clicks3d = recs3d.reduce((a,r)=>a+r.Clicks, 0);
-            var lpv3d = recs3d.reduce((a,r)=>a+r.LPV, 0);
-            var atc3d = recs3d.reduce((a,r)=>a+r.ATC, 0);
-            var conv3d = recs3d.reduce((a,r)=>a+r.Conversions, 0);
+            var spend3d = recs3d.reduce((a, r) => a + r.Spend, 0);
+            var rev3d = recs3d.reduce((a, r) => a + r.Revenue, 0);
+            var clicks3d = recs3d.reduce((a, r) => a + r.Clicks, 0);
+            var lpv3d = recs3d.reduce((a, r) => a + r.LPV, 0);
+            var atc3d = recs3d.reduce((a, r) => a + r.ATC, 0);
+            var conv3d = recs3d.reduce((a, r) => a + r.Conversions, 0);
 
             var roas3d = spend3d > 0 ? (rev3d / spend3d) : 0;
             var lpvRate3d = clicks3d > 0 ? (lpv3d / clicks3d) * 100 : 0;
@@ -2877,9 +3203,9 @@
             var alertsCount = 0;
 
             var targetROAS = THRESHOLDS.ROAS;
-            var targetLPV = 65; 
-            var targetATC = 7;  
-            var targetCVR = 15; 
+            var targetLPV = 65;
+            var targetATC = 7;
+            var targetCVR = 15;
 
             if (lpvRate3d < targetLPV) {
                 html += `<div style="display:flex; align-items:flex-start; gap:8px;">
@@ -2947,7 +3273,7 @@
         function renderOverviewCharts() {
             var byDate = {};
             FILTERED_RECORDS.forEach(r => {
-                if(!byDate[r.DateStr]) byDate[r.DateStr] = { spend: 0, revenue: 0, conv: 0 };
+                if (!byDate[r.DateStr]) byDate[r.DateStr] = { spend: 0, revenue: 0, conv: 0 };
                 byDate[r.DateStr].spend += r.Spend;
                 byDate[r.DateStr].revenue += r.Revenue;
                 byDate[r.DateStr].conv += r.Conversions || 0;
@@ -2959,7 +3285,7 @@
             var aovArr = sortedDates.map(d => byDate[d].conv > 0 ? (byDate[d].revenue / byDate[d].conv) : 0);
             var shortDates = sortedDates.map(d => d.slice(5));
 
-            if(_charts.trend) _charts.trend.destroy();
+            if (_charts.trend) _charts.trend.destroy();
             var ctx = document.getElementById('chart-spend-revenue').getContext('2d');
             _charts.trend = new Chart(ctx, {
                 type: 'line',
@@ -2975,13 +3301,13 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: { 
+                        y: {
                             type: 'linear',
                             position: 'left',
-                            grid: { color: 'rgba(255,255,255,0.03)' }, 
-                            ticks: { color: '#94a3b8' } 
+                            grid: { color: 'rgba(255,255,255,0.03)' },
+                            ticks: { color: '#94a3b8' }
                         },
-                        y1: { 
+                        y1: {
                             type: 'linear',
                             position: 'right',
                             grid: { drawOnChartArea: false },
@@ -2992,7 +3318,7 @@
                 }
             });
 
-            if(_charts.cacAov) _charts.cacAov.destroy();
+            if (_charts.cacAov) _charts.cacAov.destroy();
             var ctxCacAov = document.getElementById('chart-cac-aov').getContext('2d');
             _charts.cacAov = new Chart(ctxCacAov, {
                 type: 'line',
@@ -3049,7 +3375,7 @@
                 };
             });
 
-            if(_charts.platformFormat) _charts.platformFormat.destroy();
+            if (_charts.platformFormat) _charts.platformFormat.destroy();
             var ctxPF = document.getElementById('chart-platform-format').getContext('2d');
             _charts.platformFormat = new Chart(ctxPF, {
                 type: 'bar',
@@ -3087,7 +3413,7 @@
             var map = {};
             records.forEach(r => {
                 var k = r[key] || 'Unknown';
-                if(!map[k]) map[k] = { name: k, spend: 0, rev: 0, conv: 0, clicks: 0, lpv: 0, atc: 0, impr: 0, ads: new Set() };
+                if (!map[k]) map[k] = { name: k, spend: 0, rev: 0, conv: 0, clicks: 0, lpv: 0, atc: 0, impr: 0, ads: new Set() };
                 map[k].spend += r.Spend;
                 map[k].rev += r.Revenue;
                 map[k].conv += r.Conversions;
@@ -3111,8 +3437,8 @@
         // 2. Meta Ads Tab
         function renderMetaAdsTab() {
             var metaRecs = FILTERED_RECORDS.filter(r => r.Platform === 'Meta');
-            
-            var camps = aggregateBy(metaRecs, 'Campaign').sort((a,b)=>b.spend - a.spend);
+
+            var camps = aggregateBy(metaRecs, 'Campaign').sort((a, b) => b.spend - a.spend);
             var tbodyCamp = document.getElementById('tbl-meta-campaigns');
             tbodyCamp.innerHTML = camps.map(c => `
                 <tr>
@@ -3121,7 +3447,7 @@
                     <td>${getActionBadge(c.spend, c.roas, 'Meta')}</td>
                     <td data-sort="${c.spend}">${fmtINR(c.spend)}</td>
                     <td data-sort="${c.rev}">${fmtINR(c.rev)}</td>
-                    <td data-sort="${c.roas}" style="font-weight:700; color:${c.roas>=THRESHOLDS.ROAS?'var(--success)':'var(--danger)'}">${c.roas.toFixed(2)}x</td>
+                    <td data-sort="${c.roas}" style="font-weight:700; color:${c.roas >= THRESHOLDS.ROAS ? 'var(--success)' : 'var(--danger)'}">${c.roas.toFixed(2)}x</td>
                     <td data-sort="${c.cpm}">${fmtINR(c.cpm)}</td>
                     <td data-sort="${c.clicks}">${c.clicks.toLocaleString()}</td>
                     <td data-sort="${c.lpv}">${c.lpv.toLocaleString()}</td>
@@ -3131,14 +3457,14 @@
                 </tr>
             `).join('');
 
-            var adsets = aggregateBy(metaRecs, 'Adset').sort((a,b)=>b.spend - a.spend);
+            var adsets = aggregateBy(metaRecs, 'Adset').sort((a, b) => b.spend - a.spend);
             var tbodyAdset = document.getElementById('tbl-meta-adsets');
             tbodyAdset.innerHTML = adsets.map(a => `
                 <tr>
                     <td style="font-weight:700; color:#fff;">${a.name}</td>
                     <td>${getActionBadge(a.spend, a.roas, 'Meta')}</td>
                     <td data-sort="${a.spend}">${fmtINR(a.spend)}</td>
-                    <td data-sort="${a.roas}" style="font-weight:700; color:${a.roas>=THRESHOLDS.ROAS?'var(--success)':'var(--danger)'}">${a.roas.toFixed(2)}x</td>
+                    <td data-sort="${a.roas}" style="font-weight:700; color:${a.roas >= THRESHOLDS.ROAS ? 'var(--success)' : 'var(--danger)'}">${a.roas.toFixed(2)}x</td>
                     <td data-sort="${a.clicks}">${a.clicks}</td>
                     <td data-sort="${a.lpv}">${a.lpv}</td>
                     <td data-sort="${a.atc}">${a.atc}</td>
@@ -3155,7 +3481,7 @@
             var keywordQ = document.getElementById('google-keyword-search').value.toLowerCase().trim();
 
             var googleRecs = FILTERED_RECORDS.filter(r => r.Platform === 'Google');
-            
+
             // Filter by Campaign Type Heuristics
             var typeFiltered = googleRecs.filter(r => {
                 var cName = r.Campaign.toLowerCase();
@@ -3171,7 +3497,7 @@
             typeFiltered.forEach(r => {
                 var kw = r.Keyword || (r.Campaign.includes('PMax') ? '[PMax Target Product]' : '[Dynamic Targeting]');
                 var match = r.Match_Type || (r.Campaign.includes('PMax') ? 'PMax' : 'Broad');
-                
+
                 var key = `${kw}||${match}||${r.Campaign}`;
                 if (!kwMap[key]) kwMap[key] = { kw: kw, match: match, campaign: r.Campaign, spend: 0, conv: 0, clicks: 0, lpv: 0, atc: 0, rev: 0 };
                 kwMap[key].spend += r.Spend;
@@ -3187,7 +3513,7 @@
 
             var kwList = Object.values(kwMap).filter(k => {
                 return keywordQ === '' || k.kw.toLowerCase().includes(keywordQ) || k.campaign.toLowerCase().includes(keywordQ);
-            }).sort((a,b)=>b.spend - a.spend);
+            }).sort((a, b) => b.spend - a.spend);
 
             tbodyKw.innerHTML = kwList.map(k => {
                 var cpa = k.conv > 0 ? (k.spend / k.conv) : 0;
@@ -3204,7 +3530,7 @@
                         <td data-sort="${k.spend}">${fmtINR(k.spend)}</td>
                         <td data-sort="${k.conv}">${k.conv}</td>
                         <td data-sort="${cpa}">${fmtINR(cpa)}</td>
-                        <td data-sort="${roas}" style="font-weight:700; color:${roas>=THRESHOLDS.ROAS?'var(--success)':'var(--danger)'}">${roas.toFixed(2)}x</td>
+                        <td data-sort="${roas}" style="font-weight:700; color:${roas >= THRESHOLDS.ROAS ? 'var(--success)' : 'var(--danger)'}">${roas.toFixed(2)}x</td>
                         <td data-sort="${k.clicks}">${k.clicks}</td>
                         <td data-sort="${k.lpv}">${k.lpv}</td>
                         <td data-sort="${lpvRate}">${lpvRate.toFixed(1)}%</td>
@@ -3218,7 +3544,7 @@
             }
 
             // Google Campaigns
-            var camps = aggregateBy(typeFiltered, 'Campaign').sort((a,b)=>b.spend - a.spend);
+            var camps = aggregateBy(typeFiltered, 'Campaign').sort((a, b) => b.spend - a.spend);
             var tbodyCamp = document.getElementById('tbl-google-campaigns');
             tbodyCamp.innerHTML = camps.map(c => {
                 var type = c.name.toLowerCase().includes('pmax') ? 'PMax' : (c.name.toLowerCase().includes('shopping') ? 'Shopping' : 'Search');
@@ -3296,7 +3622,7 @@
                     cumulativeRevenue += c.revenue[m];
                     ltv[m] = c.size > 0 ? (cumulativeRevenue / c.size) : 0;
                 }
-                
+
                 var retention = [0, 0, 0, 0];
                 for (var m = 0; m < 4; m++) {
                     retention[m] = c.size > 0 ? ((c.activeCount[m] / c.size) * 100) : 0;
@@ -3371,14 +3697,14 @@
 
             var byDate = {};
             records.forEach(r => {
-                if(!byDate[r.DateStr]) byDate[r.DateStr] = { date: r.DateStr, spend: 0, rev: 0, conv: 0, clicks: 0 };
+                if (!byDate[r.DateStr]) byDate[r.DateStr] = { date: r.DateStr, spend: 0, rev: 0, conv: 0, clicks: 0 };
                 byDate[r.DateStr].spend += r.Spend;
                 byDate[r.DateStr].rev += r.Revenue;
                 byDate[r.DateStr].conv += r.Conversions;
                 byDate[r.DateStr].clicks += r.Clicks;
             });
 
-            var sorted = Object.values(byDate).sort((a,b)=>b.date.localeCompare(a.date));
+            var sorted = Object.values(byDate).sort((a, b) => b.date.localeCompare(a.date));
             var tbody = document.getElementById(`tbl-ledger-${ledgerType}`);
             tbody.innerHTML = sorted.map(d => {
                 var roas = d.spend > 0 ? (d.rev / d.spend) : 0;
@@ -3392,15 +3718,15 @@
                         <td data-sort="${d.conv}">${d.conv} sales</td>
                         <td data-sort="${cac}">${fmtINR(cac)}</td>
                         <td data-sort="${aov}">${fmtINR(aov)}</td>
-                        <td data-sort="${roas}" style="font-weight:600; color:${roas>=THRESHOLDS.ROAS?'var(--success)':'var(--danger)'}">${roas.toFixed(2)}x</td>
+                        <td data-sort="${roas}" style="font-weight:600; color:${roas >= THRESHOLDS.ROAS ? 'var(--success)' : 'var(--danger)'}">${roas.toFixed(2)}x</td>
                         <td data-sort="${d.rev}">${fmtINR(d.rev)}</td>
                     </tr>
                 `;
             }).join('');
 
             // Projections pacing scorecards
-            var totalSp = records.reduce((a,r)=>a+r.Spend, 0);
-            var totalRev = records.reduce((a,r)=>a+r.Revenue, 0);
+            var totalSp = records.reduce((a, r) => a + r.Spend, 0);
+            var totalRev = records.reduce((a, r) => a + r.Revenue, 0);
             var activeDays = Object.keys(byDate).length || 1;
 
             var dailySpRate = totalSp / activeDays;
@@ -3411,7 +3737,7 @@
             var projSpend = dailySpRate * daysInMonth;
             var projRev = dailyRevRate * daysInMonth;
             var budgetLimit = THRESHOLDS.BUDGET;
-            
+
             // Adjust budget cap limits based on platforms
             if (ledgerType === 'meta') budgetLimit = THRESHOLDS.BUDGET * 0.6; // Meta spends ~60%
             else if (ledgerType === 'google') budgetLimit = THRESHOLDS.BUDGET * 0.4; // Google spends ~4%
@@ -3511,7 +3837,7 @@
                     dAov: cA - pA,
                     dRev: c.curR - c.prevR
                 };
-            }).sort((a,b)=>Math.abs(b.dRev) - Math.abs(a.dRev)).slice(0, 10);
+            }).sort((a, b) => Math.abs(b.dRev) - Math.abs(a.dRev)).slice(0, 10);
 
             return {
                 prevRev: prevRev, curRev: curRev, dRev: dRev,
@@ -3527,7 +3853,7 @@
             if (PREVIOUS_PERIOD_RECORDS.length === 0) {
                 document.getElementById('rcAiSummary').innerHTML = 'Please select a comparison window chip (e.g. Last 7 Days, Last 30 Days) to enable AI baseline comparisons.';
                 document.getElementById('rcDeepDiveTbody').innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Select baseline window.</td></tr>';
-                if(_charts.waterfall) _charts.waterfall.destroy();
+                if (_charts.waterfall) _charts.waterfall.destroy();
                 return;
             }
 
@@ -3535,15 +3861,15 @@
 
             var pct = rc.prevRev > 0 ? ((rc.dRev / rc.prevRev) * 100) : 0;
             var dir = rc.dRev >= 0 ? 'increased' : 'dropped';
-            
+
             var biggest = 'Traffic';
             var maxV = rc.impactTfc;
-            if(Math.abs(rc.impactCvr) > Math.abs(maxV)) { biggest = 'Conversion Rate'; maxV = rc.impactCvr; }
-            if(Math.abs(rc.impactAov) > Math.abs(maxV)) { biggest = 'Average Order Value'; maxV = rc.impactAov; }
+            if (Math.abs(rc.impactCvr) > Math.abs(maxV)) { biggest = 'Conversion Rate'; maxV = rc.impactCvr; }
+            if (Math.abs(rc.impactAov) > Math.abs(maxV)) { biggest = 'Average Order Value'; maxV = rc.impactAov; }
 
             var sumText = `Revenue <strong>${dir} by ${fmtINR(Math.abs(rc.dRev))}</strong> (${pct.toFixed(1)}%). `;
             sumText += `The primary mathematical driver of this change was a shift in <strong>${biggest}</strong> (impact: ${fmtINR(Math.abs(maxV))}). `;
-            if(rc.drivers[0]) {
+            if (rc.drivers[0]) {
                 sumText += `Attribution details isolate the leading campaign driver as <strong>"${rc.drivers[0].campaign}"</strong>.`;
             }
 
@@ -3553,10 +3879,10 @@
             document.getElementById('rcDeepDiveTbody').innerHTML = rc.drivers.map(d => `
                 <tr>
                     <td style="font-weight:700; color:#fff; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${d.campaign}">${d.campaign}</td>
-                    <td style="color:${d.dTfc>=0?'var(--success)':'var(--danger)'}">${d.dTfc>0?'+':''}${Math.round(d.dTfc).toLocaleString()}</td>
-                    <td style="color:${d.dCvr>=0?'var(--success)':'var(--danger)'}">${d.dCvr>0?'+':''}${(d.dCvr*100).toFixed(2)}%</td>
-                    <td style="color:${d.dAov>=0?'var(--success)':'var(--danger)'}">${d.dAov>0?'+':''}${fmtINR(d.dAov)}</td>
-                    <td style="font-weight:700; color:${d.dRev>=0?'var(--success)':'var(--danger)'}">${d.dRev>0?'+':''}${fmtINR(d.dRev)}</td>
+                    <td style="color:${d.dTfc >= 0 ? 'var(--success)' : 'var(--danger)'}">${d.dTfc > 0 ? '+' : ''}${Math.round(d.dTfc).toLocaleString()}</td>
+                    <td style="color:${d.dCvr >= 0 ? 'var(--success)' : 'var(--danger)'}">${d.dCvr > 0 ? '+' : ''}${(d.dCvr * 100).toFixed(2)}%</td>
+                    <td style="color:${d.dAov >= 0 ? 'var(--success)' : 'var(--danger)'}">${d.dAov > 0 ? '+' : ''}${fmtINR(d.dAov)}</td>
+                    <td style="font-weight:700; color:${d.dRev >= 0 ? 'var(--success)' : 'var(--danger)'}">${d.dRev > 0 ? '+' : ''}${fmtINR(d.dRev)}</td>
                 </tr>
             `).join('');
 
@@ -3685,9 +4011,9 @@
 
         // 7. Creative Optimizer Tab
         function renderOptimizerTab() {
-            var totalSp = FILTERED_RECORDS.reduce((a,r)=>a+r.Spend, 0);
+            var totalSp = FILTERED_RECORDS.reduce((a, r) => a + r.Spend, 0);
 
-            var narratives = aggregateBy(FILTERED_RECORDS, 'Narrative').sort((a,b)=>b.spend - a.spend);
+            var narratives = aggregateBy(FILTERED_RECORDS, 'Narrative').sort((a, b) => b.spend - a.spend);
             document.getElementById('tbl-opt-narrative').innerHTML = narratives.map(n => {
                 var pct = totalSp > 0 ? (n.spend / totalSp * 100) : 0;
                 return `
@@ -3695,7 +4021,7 @@
                         <td><span class="badge badge-blue">${n.name}</span></td>
                         <td data-sort="${n.spend}">${fmtINR(n.spend)}</td>
                         <td data-sort="${n.rev}">${fmtINR(n.rev)}</td>
-                        <td data-sort="${n.roas}" style="font-weight:700; color:${n.roas>=THRESHOLDS.ROAS?'var(--success)':'var(--danger)'}">${n.roas.toFixed(2)}x</td>
+                        <td data-sort="${n.roas}" style="font-weight:700; color:${n.roas >= THRESHOLDS.ROAS ? 'var(--success)' : 'var(--danger)'}">${n.roas.toFixed(2)}x</td>
                         <td data-sort="${n.conv}">${n.conv}</td>
                         <td data-sort="${pct}">
                             ${pct.toFixed(1)}%
@@ -3705,7 +4031,7 @@
                 `;
             }).join('');
 
-            var languages = aggregateBy(FILTERED_RECORDS, 'Language').sort((a,b)=>b.spend - a.spend);
+            var languages = aggregateBy(FILTERED_RECORDS, 'Language').sort((a, b) => b.spend - a.spend);
             document.getElementById('tbl-opt-language').innerHTML = languages.map(l => `
                 <tr>
                     <td style="font-weight:700; color:#fff;">${l.name}</td>
@@ -3717,12 +4043,12 @@
                 </tr>
             `).join('');
 
-            var influencers = aggregateBy(FILTERED_RECORDS, 'Influencer').sort((a,b)=>b.spend - a.spend);
+            var influencers = aggregateBy(FILTERED_RECORDS, 'Influencer').sort((a, b) => b.spend - a.spend);
             document.getElementById('tbl-opt-influencers').innerHTML = influencers.map(i => `
                 <tr>
                     <td style="font-weight:700; color:#fff;">${i.name}</td>
                     <td data-sort="${i.spend}">${fmtINR(i.spend)}</td>
-                    <td data-sort="${i.roas}" style="font-weight:700; color:${i.roas>=THRESHOLDS.ROAS?'var(--success)':'var(--danger)'}">${i.roas.toFixed(2)}x</td>
+                    <td data-sort="${i.roas}" style="font-weight:700; color:${i.roas >= THRESHOLDS.ROAS ? 'var(--success)' : 'var(--danger)'}">${i.roas.toFixed(2)}x</td>
                     <td data-sort="${i.conv}">${i.conv}</td>
                     <td data-sort="${i.adsCount}">${i.adsCount} ads active</td>
                 </tr>
@@ -3741,7 +4067,7 @@
         function sendAgentMessage() {
             var input = document.getElementById('chat-input-text');
             var q = input.value.trim();
-            if(!q) return;
+            if (!q) return;
 
             appendMsg(q, 'user');
             input.value = '';
@@ -3767,8 +4093,8 @@
             var low = q.toLowerCase();
             var resp = "Auditing locally compiled matrices: ";
 
-            var spend = FILTERED_RECORDS.reduce((a,r)=>a+r.Spend, 0);
-            var rev = FILTERED_RECORDS.reduce((a,r)=>a+r.Revenue, 0);
+            var spend = FILTERED_RECORDS.reduce((a, r) => a + r.Spend, 0);
+            var rev = FILTERED_RECORDS.reduce((a, r) => a + r.Revenue, 0);
             var roas = spend > 0 ? (rev / spend) : 0;
 
             if (low.includes('scale') || low.includes('winner')) {
@@ -3817,10 +4143,10 @@
             box.appendChild(think);
             box.scrollTop = box.scrollHeight;
 
-            var spend = FILTERED_RECORDS.reduce((a,r)=>a+r.Spend, 0);
-            var rev = FILTERED_RECORDS.reduce((a,r)=>a+r.Revenue, 0);
+            var spend = FILTERED_RECORDS.reduce((a, r) => a + r.Spend, 0);
+            var rev = FILTERED_RECORDS.reduce((a, r) => a + r.Revenue, 0);
             var roas = spend > 0 ? (rev / spend) : 0;
-            var conv = FILTERED_RECORDS.reduce((a,r)=>a+r.Conversions, 0);
+            var conv = FILTERED_RECORDS.reduce((a, r) => a + r.Conversions, 0);
             var cac = conv > 0 ? (spend / conv) : 0;
 
             var prompt = `
@@ -3839,30 +4165,30 @@
             `;
 
             var url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
-            
+
             fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
             })
-            .then(res => {
-                if(!res.ok) throw new Error("API request failed. Check key validity.");
-                return res.json();
-            })
-            .then(data => {
-                var el = document.getElementById('thinking-indicator');
-                if(el) el.remove();
-                
-                var ans = data.candidates[0].content.parts[0].text;
-                appendMsg(ans, 'agent');
-                showToast('Audit complete!', '🤖');
-            })
-            .catch(err => {
-                var el = document.getElementById('thinking-indicator');
-                if(el) el.remove();
-                appendMsg(`❌ API Connection Failed: ${err.message}. Falling back to local rules...`, 'system');
-                triggerHeuristicAgent(q);
-            });
+                .then(res => {
+                    if (!res.ok) throw new Error("API request failed. Check key validity.");
+                    return res.json();
+                })
+                .then(data => {
+                    var el = document.getElementById('thinking-indicator');
+                    if (el) el.remove();
+
+                    var ans = data.candidates[0].content.parts[0].text;
+                    appendMsg(ans, 'agent');
+                    showToast('Audit complete!', '🤖');
+                })
+                .catch(err => {
+                    var el = document.getElementById('thinking-indicator');
+                    if (el) el.remove();
+                    appendMsg(`❌ API Connection Failed: ${err.message}. Falling back to local rules...`, 'system');
+                    triggerHeuristicAgent(q);
+                });
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -3894,15 +4220,15 @@
         }
 
         function gvizToCSV(json) {
-            if(!json || !json.table) return '';
+            if (!json || !json.table) return '';
             var cols = json.table.cols.map(c => c ? c.label || c.id || '' : '');
             var rows = json.table.rows.map(r => {
-                if(!r || !r.c) return '';
+                if (!r || !r.c) return '';
                 return r.c.map(cell => {
-                    if(!cell) return '';
-                    if(cell.v && typeof cell.v === 'string' && cell.v.startsWith('Date(')) {
+                    if (!cell) return '';
+                    if (cell.v && typeof cell.v === 'string' && cell.v.startsWith('Date(')) {
                         var m = cell.v.match(/Date\((\d+),(\d+),(\d+)\)/);
-                        if (m) return `${m[1]}-${String(parseInt(m[2]) + 1).padStart(2,'0')}-${String(m[3]).padStart(2,'0')}`;
+                        if (m) return `${m[1]}-${String(parseInt(m[2]) + 1).padStart(2, '0')}-${String(m[3]).padStart(2, '0')}`;
                     }
                     return cell.f || cell.v || '';
                 }).join('\t');
@@ -3926,63 +4252,63 @@
             document.getElementById('loaderMsg').innerText = "Connecting to Google Sheet...";
 
             Promise.all([
-                fetchSheetDataJSONP('META_DATA', '_gvizMeta', sheetId).catch(()=>null),
-                fetchSheetDataJSONP('GOOGLE_DATA', '_gvizGoogle', sheetId).catch(()=>null),
-                fetchSheetDataJSONP('SALES_DATA', '_gvizSales', sheetId).catch(()=>null),
-                fetchSheetDataJSONP('PRODUCT_MASTER', '_gvizProd', sheetId).catch(()=>null),
-                fetchSheetDataJSONP('CONFIG', '_gvizCfg', sheetId).catch(()=>null)
+                fetchSheetDataJSONP('META_DATA', '_gvizMeta', sheetId).catch(() => null),
+                fetchSheetDataJSONP('GOOGLE_DATA', '_gvizGoogle', sheetId).catch(() => null),
+                fetchSheetDataJSONP('SALES_DATA', '_gvizSales', sheetId).catch(() => null),
+                fetchSheetDataJSONP('PRODUCT_MASTER', '_gvizProd', sheetId).catch(() => null),
+                fetchSheetDataJSONP('CONFIG', '_gvizCfg', sheetId).catch(() => null)
             ])
-            .then(([meta, google, sales, prod, cfg]) => {
-                var count = 0;
-                if(meta) { document.getElementById('txt-meta').value = gvizToCSV(meta); count++; }
-                if(google) { document.getElementById('txt-google').value = gvizToCSV(google); count++; }
-                if(sales) { document.getElementById('txt-sales').value = gvizToCSV(sales); count++; }
-                if(prod) { document.getElementById('txt-product').value = gvizToCSV(prod); count++; }
-                if(cfg) { document.getElementById('txt-config').value = gvizToCSV(cfg); count++; }
+                .then(([meta, google, sales, prod, cfg]) => {
+                    var count = 0;
+                    if (meta) { document.getElementById('txt-meta').value = gvizToCSV(meta); count++; }
+                    if (google) { document.getElementById('txt-google').value = gvizToCSV(google); count++; }
+                    if (sales) { document.getElementById('txt-sales').value = gvizToCSV(sales); count++; }
+                    if (prod) { document.getElementById('txt-product').value = gvizToCSV(prod); count++; }
+                    if (cfg) { document.getElementById('txt-config').value = gvizToCSV(cfg); count++; }
 
-                document.getElementById('loader').style.display = 'none';
-                if(count > 0) {
-                    document.getElementById('status-sheet-dot').className = 'status-dot connected';
-                    document.getElementById('status-sheet-text').innerText = 'CONNECTED';
-                    document.getElementById('status-sheet-text').style.color = 'var(--success)';
-                    showToast('Successfully synced Google Sheet tables!', '🚀');
-                    saveImportedData();
-                    // Discover GIDs for direct tab linking
-                    discoverSheetGids(sheetId);
-                } else {
-                    alert("Sheet connection failed. Please confirm spreadsheet is shared as: Anyone with the link -> Viewer");
-                }
-            })
-            .catch(err => {
-                document.getElementById('loader').style.display = 'none';
-                alert("Sync error: " + err.message);
-            });
+                    document.getElementById('loader').style.display = 'none';
+                    if (count > 0) {
+                        document.getElementById('status-sheet-dot').className = 'status-dot connected';
+                        document.getElementById('status-sheet-text').innerText = 'CONNECTED';
+                        document.getElementById('status-sheet-text').style.color = 'var(--success)';
+                        showToast('Successfully synced Google Sheet tables!', '🚀');
+                        saveImportedData();
+                        // Discover GIDs for direct tab linking
+                        discoverSheetGids(sheetId);
+                    } else {
+                        alert("Sheet connection failed. Please confirm spreadsheet is shared as: Anyone with the link -> Viewer");
+                    }
+                })
+                .catch(err => {
+                    document.getElementById('loader').style.display = 'none';
+                    alert("Sync error: " + err.message);
+                });
         }
 
         // Discover GIDs for each named tab to enable deep-links
         function discoverSheetGids(sheetId) {
             var url = 'https://spreadsheets.google.com/feeds/worksheets/' + sheetId + '/public/basic?alt=json';
             fetch(url)
-            .then(r => r.json())
-            .then(data => {
-                var entries = data.feed && data.feed.entry ? data.feed.entry : [];
-                entries.forEach(entry => {
-                    var title = entry.title && entry.title.$t ? entry.title.$t.trim() : '';
-                    // GID is in the self link: .../worksheets/SHEETID/public/basic/GID
-                    var links = entry.link || [];
-                    var selfLink = links.find(l => l.rel === 'self');
-                    if(selfLink && selfLink.href) {
-                        var parts = selfLink.href.split('/');
-                        var gid = parts[parts.length - 1];
-                        if(title && gid) {
-                            localStorage.setItem('gid_' + title, gid);
+                .then(r => r.json())
+                .then(data => {
+                    var entries = data.feed && data.feed.entry ? data.feed.entry : [];
+                    entries.forEach(entry => {
+                        var title = entry.title && entry.title.$t ? entry.title.$t.trim() : '';
+                        // GID is in the self link: .../worksheets/SHEETID/public/basic/GID
+                        var links = entry.link || [];
+                        var selfLink = links.find(l => l.rel === 'self');
+                        if (selfLink && selfLink.href) {
+                            var parts = selfLink.href.split('/');
+                            var gid = parts[parts.length - 1];
+                            if (title && gid) {
+                                localStorage.setItem('gid_' + title, gid);
+                            }
                         }
-                    }
+                    });
+                })
+                .catch(() => {
+                    // Silent fail - GID discovery is optional
                 });
-            })
-            .catch(() => {
-                // Silent fail - GID discovery is optional
-            });
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -3996,11 +4322,11 @@
             document.getElementById('loaderMsg').innerText = "Reading Excel Workbook...";
 
             var reader = new FileReader();
-            reader.onload = function(evt) {
+            reader.onload = function (evt) {
                 try {
                     var data = new Uint8Array(evt.target.result);
-                    var workbook = XLSX.read(data, {type: 'array'});
-                    
+                    var workbook = XLSX.read(data, { type: 'array' });
+
                     var sheetMap = {
                         'META_DATA': 'txt-meta',
                         'GOOGLE_DATA': 'txt-google',
@@ -4014,7 +4340,7 @@
                         var ws = workbook.Sheets[sheetName];
                         if (ws) {
                             var csv = XLSX.utils.sheet_to_csv(ws);
-                            if(csv && csv.trim()) {
+                            if (csv && csv.trim()) {
                                 document.getElementById(sheetMap[sheetName]).value = csv;
                                 parsedCount++;
                             }
@@ -4071,10 +4397,10 @@
             // Generate SALES_DATA
             var salesCSV = "Order ID,Customer ID,Order Date,Revenue,Product,Platform,Cohort Month\n";
             var salesDates = new Date(baseDate);
-            salesCSV += `O1001,C5001,${salesDates.toISOString().slice(0,10)},799,Hair Growth Serum,Meta,2026-05\n`;
-            salesCSV += `O1002,C5002,${salesDates.toISOString().slice(0,10)},499,5% AHA BHA Exfoliating Body Wash,Meta,2026-05\n`;
+            salesCSV += `O1001,C5001,${salesDates.toISOString().slice(0, 10)},799,Hair Growth Serum,Meta,2026-05\n`;
+            salesCSV += `O1002,C5002,${salesDates.toISOString().slice(0, 10)},499,5% AHA BHA Exfoliating Body Wash,Meta,2026-05\n`;
             salesDates.setDate(salesDates.getDate() + 15);
-            salesCSV += `O1003,C5001,${salesDates.toISOString().slice(0,10)},799,Hair Growth Serum,Meta,2026-05\n`; // Repeat purchase!
+            salesCSV += `O1003,C5001,${salesDates.toISOString().slice(0, 10)},799,Hair Growth Serum,Meta,2026-05\n`; // Repeat purchase!
             document.getElementById('txt-sales').value = salesCSV;
 
             // Generate PRODUCT_MASTER
@@ -4116,7 +4442,7 @@
 
         function updateBadge(id, txt) {
             var el = document.getElementById(id);
-            if(txt && txt.trim().length > 10) {
+            if (txt && txt.trim().length > 10) {
                 var lines = txt.trim().split('\n').length - 1;
                 el.innerText = `🟢 ${lines} rows`;
                 el.style.backgroundColor = 'var(--success-glow)';
@@ -4129,7 +4455,7 @@
         }
 
         function resetCacheData() {
-            if(confirm("Confirm deleting all loaded local dashboard cache?")) {
+            if (confirm("Confirm deleting all loaded local dashboard cache?")) {
                 localStorage.clear();
                 location.reload();
             }
@@ -4153,10 +4479,10 @@
                     const tbody = table.querySelector('tbody');
                     const trs = Array.from(tbody.querySelectorAll('tr'));
                     const colIdx = Array.from(th.parentNode.children).indexOf(th);
-                    
+
                     const isAsc = th.classList.contains('sort-asc');
                     table.querySelectorAll('th').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
-                    
+
                     if (isAsc) th.classList.add('sort-desc');
                     else th.classList.add('sort-asc');
                     const mult = isAsc ? -1 : 1;
@@ -4164,8 +4490,8 @@
                     trs.sort((a, b) => {
                         const cellA = a.children[colIdx];
                         const cellB = b.children[colIdx];
-                        if(!cellA || !cellB) return 0;
-                        
+                        if (!cellA || !cellB) return 0;
+
                         let valA = cellA.getAttribute('data-sort');
                         let valB = cellB.getAttribute('data-sort');
 
@@ -4245,7 +4571,7 @@
             if (stored) {
                 try {
                     COMPETITOR_DB = JSON.parse(stored);
-                } catch(e) {
+                } catch (e) {
                     COMPETITOR_DB = DEFAULT_COMPETITORS;
                 }
             } else {
@@ -4299,7 +4625,7 @@
 
             COMPETITOR_DB.push(newAd);
             localStorage.setItem('d2c_competitors', JSON.stringify(COMPETITOR_DB));
-            
+
             // Clear inputs
             document.getElementById('comp-log-brand').value = '';
             document.getElementById('comp-log-copy').value = '';
@@ -4361,7 +4687,7 @@
                 counts[n] = (counts[n] || 0) + 1;
             });
 
-            var sortedNarratives = Object.keys(counts).sort((a,b) => counts[b] - counts[a]);
+            var sortedNarratives = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
             var chartData = sortedNarratives.map(n => counts[n]);
 
             var ctxEl = document.getElementById('chart-competitor-narratives');
@@ -4411,7 +4737,7 @@
                 '"': '&quot;',
                 "'": '&#039;'
             };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+            return text.replace(/[&<>"']/g, function (m) { return map[m]; });
         }
 
         // ═══════════════════════════════════════════════════════════
@@ -4424,10 +4750,10 @@
             document.getElementById('txt-sales').value = localStorage.getItem('d2c_sales_data') || '';
             document.getElementById('txt-product').value = localStorage.getItem('d2c_product_master') || '';
             document.getElementById('txt-config').value = localStorage.getItem('d2c_config') || '';
-            
+
             // Restore api key
             var key = localStorage.getItem('d2c_gemini_api_key') || '';
-            if(key) document.getElementById('api-key').value = key;
+            if (key) document.getElementById('api-key').value = key;
 
             // Restore sheet url
             var sheetUrl = localStorage.getItem('sheet_url') || 'https://docs.google.com/spreadsheets/d/1R0NdZMUHHdxrA5U0yr9h_k59BvrlkYJAtdKaORXFWjs/edit';
@@ -4447,7 +4773,7 @@
             updateBadge('badge-product-status', document.getElementById('txt-product').value);
             updateBadge('badge-config-status', document.getElementById('txt-config').value);
 
-            if(document.getElementById('txt-meta').value || document.getElementById('txt-google').value) {
+            if (document.getElementById('txt-meta').value || document.getElementById('txt-google').value) {
                 runCalculations();
             } else {
                 // If completely empty, load mock data for demonstration instant WOW
@@ -4455,7 +4781,7 @@
             }
 
             makeTablesSortable();
-            
+
             // Check for walkthrough query param to run automated scrolling showcase
             if (new URLSearchParams(window.location.search).get('walkthrough') === 'true') {
                 runAutomatedWalkthrough();
@@ -4465,24 +4791,24 @@
         async function runAutomatedWalkthrough() {
             const sleep = ms => new Promise(r => setTimeout(r, ms));
             const scrollContainer = document.querySelector('main');
-            
+
             async function smoothScroll(targetScrollTop, duration) {
                 const start = scrollContainer.scrollTop;
                 const change = targetScrollTop - start;
                 const startTime = performance.now();
-                
+
                 return new Promise(resolve => {
                     function animateScroll(currentTime) {
                         const elapsed = currentTime - startTime;
                         const progress = Math.min(elapsed / duration, 1);
-                        
+
                         // Ease-in-out quadratic
-                        const ease = progress < 0.5 
-                            ? 2 * progress * progress 
+                        const ease = progress < 0.5
+                            ? 2 * progress * progress
                             : -1 + (4 - 2 * progress) * progress;
-                            
+
                         scrollContainer.scrollTop = start + change * ease;
-                        
+
                         if (elapsed < duration) {
                             requestAnimationFrame(animateScroll);
                         } else {
@@ -4493,11 +4819,11 @@
                     requestAnimationFrame(animateScroll);
                 });
             }
-            
+
             try {
                 // Wait for initial load and data render
                 await sleep(3500);
-                
+
                 // 1. Scroll Overview tab down to bottom
                 await smoothScroll(600, 3500);
                 await sleep(1500);
@@ -4505,7 +4831,7 @@
                 await sleep(1500);
                 await smoothScroll(0, 2500);
                 await sleep(1000);
-                
+
                 // Tabs walkthrough sequence
                 const steps = [
                     { tab: 'metaads', scroll: 600, duration: 3000 },
@@ -4520,7 +4846,7 @@
                     { tab: 'chat', scroll: 300, duration: 2000 },
                     { tab: 'datasync', scroll: 300, duration: 2000 }
                 ];
-                
+
                 for (const step of steps) {
                     const btn = document.querySelector(`[onclick*="switchTab('${step.tab}')"]`);
                     if (btn) {
@@ -4534,7 +4860,7 @@
                         }
                     }
                 }
-                
+
                 // Return to first tab
                 const homeBtn = document.querySelector("[onclick*=\"switchTab('overview')\"]");
                 if (homeBtn) homeBtn.click();
@@ -4545,4 +4871,5 @@
         }
     </script>
 </body>
+
 </html>
