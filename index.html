@@ -1703,8 +1703,8 @@
                                         <tr>
                                             <th>Campaign Name</th>
                                             <th>Spend</th>
-                                            <th>ROAS</th>
                                             <th>Purchases</th>
+                                            <th>ROAS</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbl-perf-meta-camp-top"></tbody>
@@ -1722,8 +1722,8 @@
                                         <tr>
                                             <th>Campaign Name</th>
                                             <th>Spend</th>
-                                            <th>ROAS</th>
                                             <th>Purchases</th>
+                                            <th>ROAS</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbl-perf-meta-camp-worst"></tbody>
@@ -1735,7 +1735,7 @@
                     <div
                         style="font-size:10px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">
                         Ad Set Level</div>
-                    <div class="grid-2col" style="gap:15px;">
+                    <div class="grid-2col" style="gap:15px; margin-bottom:15px;">
                         <div
                             style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
                             <h4
@@ -1747,8 +1747,8 @@
                                         <tr>
                                             <th>Ad Set Name</th>
                                             <th>Spend</th>
-                                            <th>ROAS</th>
                                             <th>Purchases</th>
+                                            <th>ROAS</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbl-perf-meta-adset-top"></tbody>
@@ -1766,11 +1766,57 @@
                                         <tr>
                                             <th>Ad Set Name</th>
                                             <th>Spend</th>
-                                            <th>ROAS</th>
                                             <th>Purchases</th>
+                                            <th>ROAS</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbl-perf-meta-adset-worst"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        style="font-size:10px; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase; font-weight:800; letter-spacing:0.5px;">
+                        Ad Creative Level (Clean View)</div>
+                    <div class="grid-2col" style="gap:15px;">
+                        <div
+                            style="background:rgba(16,185,129,0.02); border:1px solid rgba(16,185,129,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--success); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🏆 Top Meta Ad Creatives</h4>
+                            <div class="table-wrap">
+                                <table style="font-size:11px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Creative</th>
+                                            <th>Product</th>
+                                            <th>Spend</th>
+                                            <th>Purchases</th>
+                                            <th>ROAS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbl-perf-meta-ad-top"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div
+                            style="background:rgba(244,63,94,0.02); border:1px solid rgba(244,63,94,0.12); border-radius:8px; padding:12px;">
+                            <h4
+                                style="color:var(--danger); margin-top:0; margin-bottom:8px; font-size:12px; font-family:var(--font-mono);">
+                                🛑 Worst Meta Ad Creatives</h4>
+                            <div class="table-wrap">
+                                <table style="font-size:11px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Creative</th>
+                                            <th>Product</th>
+                                            <th>Spend</th>
+                                            <th>Purchases</th>
+                                            <th>ROAS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbl-perf-meta-ad-worst"></tbody>
                                 </table>
                             </div>
                         </div>
@@ -1794,8 +1840,8 @@
                                         <tr>
                                             <th>Campaign Name</th>
                                             <th>Spend</th>
-                                            <th>ROAS</th>
                                             <th>Purchases</th>
+                                            <th>ROAS</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbl-perf-google-camp-top"></tbody>
@@ -1813,8 +1859,8 @@
                                         <tr>
                                             <th>Campaign Name</th>
                                             <th>Spend</th>
-                                            <th>ROAS</th>
                                             <th>Purchases</th>
+                                            <th>ROAS</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbl-perf-google-camp-worst"></tbody>
@@ -1838,8 +1884,8 @@
                                         <tr>
                                             <th>Keyword / Query</th>
                                             <th>Spend</th>
-                                            <th>ROAS</th>
                                             <th>Purchases</th>
+                                            <th>ROAS</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbl-perf-google-kw-top"></tbody>
@@ -1857,8 +1903,8 @@
                                         <tr>
                                             <th>Keyword / Query</th>
                                             <th>Spend</th>
-                                            <th>ROAS</th>
                                             <th>Purchases</th>
+                                            <th>ROAS</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbl-perf-google-kw-worst"></tbody>
@@ -2237,6 +2283,28 @@
                             </tr>
                         </thead>
                         <tbody id="tbl-opt-influencers">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 15px;">
+                <h3>🏆 Ad Creative Optimization (Clean View)</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Creative</th>
+                                <th>Product</th>
+                                <th>Narrative</th>
+                                <th>Format</th>
+                                <th>Spend</th>
+                                <th>ROAS</th>
+                                <th>Recommendation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl-opt-creatives-clean">
                             <!-- Injected via JS -->
                         </tbody>
                     </table>
@@ -2814,41 +2882,117 @@
             return num;
         }
 
+        function mapProduct(p) {
+            if (!p) return 'Other Product';
+            var l = p.toLowerCase();
+            if (l.includes('serum')) return 'Hair Growth Serum';
+            if (l.includes('bodywash') || l.includes('body wash') || l.includes('exfoliat')) return '5% AHA BHA Exfoliating Body Wash';
+            if (l.includes('gummies')) return 'Biotin Hair Gummies';
+            if (l.includes('underarm') || l.includes('rollon') || l.includes('roll on')) return 'Underarm Roll On';
+            return p.trim();
+        }
+
+        function mapNarrative(n) {
+            if (!n) return 'Brand Story';
+            var l = n.toLowerCase();
+            if (l.includes('offer') || l.includes('discount') || l.includes('sale') || l.includes('price')) return 'Offer-led';
+            if (l.includes('feature') || l.includes('benefit') || l.includes('quality') || l.includes('ingredient')) return 'Feature-led';
+            if (l.includes('proof') || l.includes('review') || l.includes('trust') || l.includes('ugc') || l.includes('testimonial')) return 'Social Proof/UGC';
+            if (l.includes('story') || l.includes('founder') || l.includes('brand')) return 'Brand Story';
+            return n.trim();
+        }
+
+        function mapCreatorType(c) {
+            if (!c) return 'Internal UGC';
+            var l = c.toLowerCase();
+            if (l.includes('influencer') || l.includes('creator') || l.includes('collab') || l.includes('ugc')) return 'Influencer';
+            return 'Internal UGC';
+        }
+
+        function mapFormat(f) {
+            if (!f) return 'Video Ad';
+            var l = f.toLowerCase();
+            if (l.includes('reel')) return 'Reel';
+            if (l.includes('static') || l.includes('image') || l.includes('photo')) return 'Static Creative';
+            if (l.includes('carousel')) return 'Carousel';
+            if (l.includes('video')) return 'Video Ad';
+            return 'Video Ad';
+        }
+
+        function mapLanguage(lang) {
+            if (!lang) return 'English';
+            var l = lang.toLowerCase();
+            if (l.includes('hinglish')) return 'Hinglish';
+            if (l.includes('hindi')) return 'Hindi';
+            if (l.includes('english') || l.includes('eng')) return 'English';
+            if (l.includes('tamil')) return 'Tamil';
+            if (l.includes('telugu')) return 'Telugu';
+            if (l.includes('bengali')) return 'Bengali';
+            return 'English';
+        }
+
+        function parseNomenclature(str) {
+            if (!str) return null;
+            var parts = str.split('|').map(p => p.trim());
+            if (parts.length >= 4) {
+                var productRaw = parts[0];
+                var narrativeRaw = parts[1];
+                var creatorTypeRaw = parts[2];
+                var cleanName = parts[3];
+                var adTypeRaw = parts[4] || '';
+                var languageRaw = parts[5] || '';
+
+                return {
+                    product: mapProduct(productRaw),
+                    narrative: mapNarrative(narrativeRaw),
+                    adType: mapCreatorType(creatorTypeRaw),
+                    cleanName: cleanName,
+                    format: mapFormat(adTypeRaw || cleanName),
+                    language: mapLanguage(languageRaw || cleanName)
+                };
+            }
+            return null;
+        }
+
         function autoTagMetadataJS(campaign, adSet, adName) {
+            // Check structured nomenclature in Ad Name, then Ad Set, then Campaign
+            var parsed = parseNomenclature(adName);
+            if (!parsed) parsed = parseNomenclature(adSet);
+            if (!parsed) parsed = parseNomenclature(campaign);
+
+            if (parsed) {
+                return {
+                    product: parsed.product,
+                    typeOfAd: parsed.format,
+                    adType: parsed.adType,
+                    narrative: parsed.narrative,
+                    language: parsed.language,
+                    creator: parsed.adType === 'Influencer' ? 'Influencer Creator' : 'In-House',
+                    cleanAdName: parsed.cleanName
+                };
+            }
+
+            // Fallback: Optional keyword matching on combined text
             var combined = (campaign + ' | ' + adSet + ' | ' + adName).toLowerCase();
+            var product = mapProduct(combined);
+            var typeOfAd = mapFormat(combined);
+            var adType = mapCreatorType(combined);
+            var narrative = mapNarrative(combined);
+            var language = mapLanguage(combined);
+            var creator = adType === 'Influencer' ? 'Influencer Creator' : 'In-House';
 
-            var product = 'Other Product';
-            if (combined.indexOf('serum') !== -1) product = 'Hair Growth Serum';
-            else if (combined.indexOf('bodywash') !== -1 || combined.indexOf('body wash') !== -1) product = '5% AHA BHA Exfoliating Body Wash';
-            else if (combined.indexOf('gummies') !== -1) product = 'Biotin Hair Gummies';
-            else if (combined.indexOf('underarm') !== -1) product = 'Underarm Roll On';
+            // Extract clean name if UGC structure exists but shorter
+            var cleanAdName = adName || 'Generic Creative';
 
-            var typeOfAd = 'Video Ad';
-            if (combined.indexOf('static') !== -1 || combined.indexOf('image') !== -1) typeOfAd = 'Static Creative';
-            else if (combined.indexOf('carousel') !== -1) typeOfAd = 'Carousel';
-            else if (combined.indexOf('reel') !== -1) typeOfAd = 'Reel';
-
-            var adType = 'Internal UGC';
-            if (combined.indexOf('influencer') !== -1 || combined.indexOf('infl') !== -1 || combined.indexOf('collab') !== -1) {
-                adType = 'Influencer';
-            }
-
-            var narrative = 'Brand Story';
-            if (combined.indexOf('discount') !== -1 || combined.indexOf('sale') !== -1 || combined.indexOf('offer') !== -1) {
-                narrative = 'Offer-led';
-            } else if (combined.indexOf('benefit') !== -1 || combined.indexOf('quality') !== -1) {
-                narrative = 'Feature-led';
-            } else if (combined.indexOf('review') !== -1 || combined.indexOf('trust') !== -1) {
-                narrative = 'Social Proof/UGC';
-            }
-
-            var language = 'English';
-            if (combined.indexOf('hinglish') !== -1) language = 'Hinglish';
-            else if (combined.indexOf('hindi') !== -1) language = 'Hindi';
-
-            var creator = combined.indexOf('influencer') !== -1 ? 'Influencer Creator' : 'In-House';
-
-            return { product: product, typeOfAd: typeOfAd, adType: adType, narrative: narrative, language: language, creator: creator };
+            return {
+                product: product,
+                typeOfAd: typeOfAd,
+                adType: adType,
+                narrative: narrative,
+                language: language,
+                creator: creator,
+                cleanAdName: cleanAdName
+            };
         }
 
         function parseGridToObjects(grid, platform) {
@@ -2934,6 +3078,7 @@
                     Campaign: camp,
                     Adset: adset,
                     Ad_Name: adName,
+                    Clean_Ad_Name: tags.cleanAdName,
                     Keyword: iKw !== -1 ? String(row[iKw]) : '',
                     Match_Type: iMatch !== -1 ? String(row[iMatch]) : '',
                     Spend: spend,
@@ -3280,6 +3425,13 @@
             document.getElementById('tbl-perf-meta-adset-top').innerHTML = renderPerfRows(topMetaAdsets, 'Adset');
             document.getElementById('tbl-perf-meta-adset-worst').innerHTML = renderPerfRows(worstMetaAdsets, 'Adset');
 
+            // Ad Creative Level (Clean View)
+            var metaAds = aggregateCreatives(metaRecs);
+            var topMetaAds = metaAds.filter(a => a.spend >= minSpendThreshold).sort((a, b) => b.roas - a.roas).slice(0, 5);
+            var worstMetaAds = metaAds.filter(a => a.spend >= minSpendThreshold).sort((a, b) => a.roas - b.roas).slice(0, 5);
+            document.getElementById('tbl-perf-meta-ad-top').innerHTML = renderPerfRows(topMetaAds, 'Ad');
+            document.getElementById('tbl-perf-meta-ad-worst').innerHTML = renderPerfRows(worstMetaAds, 'Ad');
+
             // 3. Google Ads
             var googleRecs = FILTERED_RECORDS.filter(r => r.Platform === 'Google');
             var googleCamps = aggregateBy(googleRecs, 'Campaign');
@@ -3308,16 +3460,30 @@
 
         function renderPerfRows(items, type) {
             if (items.length === 0) {
-                return `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding: 8px;">No items matching threshold.</td></tr>`;
+                var colSpan = type === 'Ad' ? 5 : 4;
+                return `<tr><td colspan="${colSpan}" style="text-align:center; color:var(--text-muted); padding: 8px;">No items matching threshold.</td></tr>`;
             }
-            return items.map(item => `
-                <tr>
-                    <td style="font-weight:700; color:#fff; max-width:185px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${item.name}">${item.name}</td>
-                    <td>${fmtINR(item.spend)}</td>
-                    <td>${type === 'Product' ? fmtINR(item.rev) : (item.conv + ' sales')}</td>
-                    <td style="font-weight:700; color:${item.roas >= THRESHOLDS.ROAS ? 'var(--success)' : 'var(--danger)'}">${item.roas.toFixed(2)}x</td>
-                </tr>
-            `).join('');
+            return items.map(item => {
+                if (type === 'Ad') {
+                    return `
+                        <tr>
+                            <td style="font-weight:700; color:#fff; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${item.name}">${item.name}</td>
+                            <td style="color:var(--text-secondary); max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${item.product}">${item.product}</td>
+                            <td>${fmtINR(item.spend)}</td>
+                            <td>${item.conv} sales</td>
+                            <td style="font-weight:700; color:${item.roas >= THRESHOLDS.ROAS ? 'var(--success)' : 'var(--danger)'}">${item.roas.toFixed(2)}x</td>
+                        </tr>
+                    `;
+                }
+                return `
+                    <tr>
+                        <td style="font-weight:700; color:#fff; max-width:185px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${item.name}">${item.name}</td>
+                        <td>${fmtINR(item.spend)}</td>
+                        <td>${type === 'Product' ? fmtINR(item.rev) : (item.conv + ' sales')}</td>
+                        <td style="font-weight:700; color:${item.roas >= THRESHOLDS.ROAS ? 'var(--success)' : 'var(--danger)'}">${item.roas.toFixed(2)}x</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // Funnel 3 Days trend optimization calculator
@@ -3577,6 +3743,42 @@
                 m.ctr = m.impr > 0 ? (m.clicks / m.impr) * 100 : 0;
                 m.cpm = m.impr > 0 ? (m.spend / m.impr) * 1000 : 0;
                 m.adsCount = m.ads.size;
+                return m;
+            });
+        }
+
+        function aggregateCreatives(records) {
+            var map = {};
+            records.forEach(r => {
+                var k = r.Clean_Ad_Name || r.Ad_Name || 'Unknown Creative';
+                if (!map[k]) {
+                    map[k] = {
+                        name: k,
+                        spend: 0,
+                        rev: 0,
+                        conv: 0,
+                        clicks: 0,
+                        lpv: 0,
+                        atc: 0,
+                        impr: 0,
+                        product: r.Product || 'Other Product',
+                        narrative: r.Narrative || 'Brand Story',
+                        format: r.AdType || 'Video Ad',
+                        language: r.Language || 'English',
+                        source: r.Source || 'Internal UGC'
+                    };
+                }
+                map[k].spend += r.Spend;
+                map[k].rev += r.Revenue;
+                map[k].conv += r.Conversions;
+                map[k].clicks += r.Clicks;
+                map[k].lpv += r.LPV;
+                map[k].atc += r.ATC;
+                map[k].impr += r.Impressions;
+            });
+            return Object.values(map).map(m => {
+                m.roas = m.spend > 0 ? (m.rev / m.spend) : 0;
+                m.cac = m.conv > 0 ? (m.spend / m.conv) : 0;
                 return m;
             });
         }
@@ -4200,6 +4402,42 @@
                     <td data-sort="${i.adsCount}">${i.adsCount} ads active</td>
                 </tr>
             `).join('');
+
+            var metaRecs = FILTERED_RECORDS.filter(r => r.Platform === 'Meta');
+            var creatives = aggregateCreatives(metaRecs).sort((a, b) => b.spend - a.spend);
+            
+            document.getElementById('tbl-opt-creatives-clean').innerHTML = creatives.map(c => {
+                var recommendation = '';
+                if (c.roas >= THRESHOLDS.ROAS) {
+                    recommendation = `<span class="badge badge-green">🚀 Scale</span>`;
+                } else {
+                    recommendation = `<span class="badge badge-red">🛑 Pause</span>`;
+                }
+
+                var narrBadgeClass = 'badge-blue';
+                var nName = c.narrative.toLowerCase();
+                if (nName.includes('offer')) narrBadgeClass = 'badge-yellow';
+                else if (nName.includes('feature')) narrBadgeClass = 'badge-cyan';
+                else if (nName.includes('proof') || nName.includes('ugc') || nName.includes('testimonial')) narrBadgeClass = 'badge-purple';
+
+                var formatBadgeClass = 'badge-cyan';
+                var fName = c.format.toLowerCase();
+                if (fName.includes('reel')) formatBadgeClass = 'badge-green';
+                else if (fName.includes('static') || fName.includes('image')) formatBadgeClass = 'badge-blue';
+                else if (fName.includes('carousel')) formatBadgeClass = 'badge-purple';
+
+                return `
+                    <tr>
+                        <td style="font-weight:700; color:#fff;" title="${c.name}">${c.name}</td>
+                        <td>${c.product}</td>
+                        <td><span class="badge ${narrBadgeClass}">${c.narrative}</span></td>
+                        <td><span class="badge ${formatBadgeClass}">${c.format}</span></td>
+                        <td data-sort="${c.spend}">${fmtINR(c.spend)}</td>
+                        <td data-sort="${c.roas}" style="font-weight:700; color:${c.roas >= THRESHOLDS.ROAS ? 'var(--success)' : 'var(--danger)'}">${c.roas.toFixed(2)}x</td>
+                        <td>${recommendation}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // ═══════════════════════════════════════════════════════════

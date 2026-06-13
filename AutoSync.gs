@@ -91,6 +91,8 @@ function fetchMetaAdsData(cfg) {
     var lpv = row.landing_page_views || 0;
     var v3s = getActionValue(row.video_thruplay_watched_actions, null, true) || 0;
 
+    var info = parseNomenclatureMeta(row.campaign_name || '', row.adset_name || '', row.ad_name || '');
+
     rows.push([
       row.date_start,                          // Day
       row.account_name || '',                  // Account Name
@@ -114,14 +116,12 @@ function fetchMetaAdsData(cfg) {
       '',  // Website URL (not in API insights, fill via ad creative separately)
       row.adset_id || '', // Ad set ID
       row.ad_id || '',    // Ad ID
-      // Product, Ad Type, Type of Ad, Influencer Name, Narrative, Language
-      // → auto-parsed from campaign name via nomenclature in parseProductFromName()
-      parseProductFromName(row.campaign_name),   // Product
-      parseAdTypeFromName(row.ad_name),          // Ad Type
-      parseFormatFromName(row.ad_name),          // Type of Ad
-      parseInfluencerFromName(row.ad_name),      // Influencer Name
-      parseNarrativeFromName(row.ad_name),       // Narrative
-      parseLanguageFromName(row.ad_name)         // Language
+      info.product,       // Product
+      info.creatorType,   // Ad Type
+      info.format,        // Type of Ad
+      info.influencer,    // Influencer Name
+      info.narrative,     // Narrative
+      info.language       // Language
     ]);
   });
 
@@ -301,48 +301,142 @@ function loadSyncConfig(ss) {
   return cfg;
 }
 
-// ─── HELPER: PARSE PRODUCT FROM CAMPAIGN NAME ────────────
-// Reads "Bodywash 375ml | TOF | Lookalike | 20240901" → "Bodywash 375ml"
+// ─── HELPER: PARSE METADATA FROM CAMPAIGN/ADSET/AD NAME ────
+function parseNomenclatureMeta(campaign, adset, adname) {
+  // Try structured nomenclature in Ad Name first, then Ad Set, then Campaign Name
+  var parsed = parseStructuredNomenclature(adname);
+  if (!parsed) parsed = parseStructuredNomenclature(adset);
+  if (!parsed) parsed = parseStructuredNomenclature(campaign);
+
+  if (parsed) {
+    return {
+      product: parsed.product,
+      creatorType: parsed.adType, // "Internal UGC" or "Influencer"
+      format: parsed.format, // "Reel", "Static", "Carousel"
+      influencer: parsed.adType === 'Influencer' ? parsed.cleanName : '',
+      narrative: parsed.narrative,
+      language: parsed.language,
+      cleanAdName: parsed.cleanName
+    };
+  }
+
+  // Fallback: keyword search
+  var combined = (campaign + ' | ' + adset + ' | ' + adname).toLowerCase();
+  
+  // Product mapping
+  var product = 'Other Product';
+  if (combined.indexOf('serum') !== -1) product = 'Hair Growth Serum';
+  else if (combined.indexOf('bodywash') !== -1 || combined.indexOf('body wash') !== -1) product = '5% AHA BHA Exfoliating Body Wash';
+  else if (combined.indexOf('gummies') !== -1) product = 'Biotin Hair Gummies';
+  else if (combined.indexOf('underarm') !== -1) product = 'Underarm Roll On';
+
+  // Format / Type of Ad mapping
+  var format = 'Video Ad';
+  if (combined.indexOf('static') !== -1 || combined.indexOf('image') !== -1) format = 'Static Creative';
+  else if (combined.indexOf('carousel') !== -1) format = 'Carousel';
+  else if (combined.indexOf('reel') !== -1) format = 'Reel';
+
+  // Creator type
+  var creatorType = 'Internal UGC';
+  if (combined.indexOf('influencer') !== -1 || combined.indexOf('infl') !== -1 || combined.indexOf('collab') !== -1) {
+    creatorType = 'Influencer';
+  }
+
+  // Narrative
+  var narrative = 'Brand Story';
+  if (combined.indexOf('discount') !== -1 || combined.indexOf('sale') !== -1 || combined.indexOf('offer') !== -1) {
+    narrative = 'Offer-led';
+  } else if (combined.indexOf('benefit') !== -1 || combined.indexOf('quality') !== -1) {
+    narrative = 'Feature-led';
+  } else if (combined.indexOf('review') !== -1 || combined.indexOf('trust') !== -1) {
+    narrative = 'Social Proof/UGC';
+  }
+
+  // Language
+  var language = 'English';
+  if (combined.indexOf('hinglish') !== -1) language = 'Hinglish';
+  else if (combined.indexOf('hindi') !== -1) language = 'Hindi';
+
+  // Influencer name if influencer
+  var influencer = '';
+  if (creatorType === 'Influencer') {
+    var parts = adname.split('|');
+    if (parts.length >= 3) {
+      influencer = parts[2].trim().replace('UGC_', '');
+    } else {
+      influencer = 'Influencer Creator';
+    }
+  }
+
+  return {
+    product: product,
+    creatorType: creatorType,
+    format: format,
+    influencer: influencer,
+    narrative: narrative,
+    language: language,
+    cleanAdName: adname || 'Generic Creative'
+  };
+}
+
+function parseStructuredNomenclature(str) {
+  if (!str) return null;
+  var parts = str.split('|').map(function(p) { return p.trim(); });
+  if (parts.length >= 4) {
+    var productRaw = parts[0];
+    var narrativeRaw = parts[1];
+    var creatorTypeRaw = parts[2];
+    var cleanName = parts[3];
+    var adTypeRaw = parts[4] || '';
+    var languageRaw = parts[5] || '';
+
+    // Standard mappings
+    var product = 'Other Product';
+    var pL = productRaw.toLowerCase();
+    if (pL.indexOf('serum') !== -1) product = 'Hair Growth Serum';
+    else if (pL.indexOf('bodywash') !== -1 || pL.indexOf('body wash') !== -1) product = '5% AHA BHA Exfoliating Body Wash';
+    else if (pL.indexOf('gummies') !== -1) product = 'Biotin Hair Gummies';
+    else if (pL.indexOf('underarm') !== -1) product = 'Underarm Roll On';
+    else product = productRaw;
+
+    var narrative = 'Brand Story';
+    var nL = narrativeRaw.toLowerCase();
+    if (nL.indexOf('offer') !== -1 || nL.indexOf('discount') !== -1 || nL.indexOf('sale') !== -1) narrative = 'Offer-led';
+    else if (nL.indexOf('feature') !== -1 || nL.indexOf('benefit') !== -1) narrative = 'Feature-led';
+    else if (nL.indexOf('proof') !== -1 || nL.indexOf('review') !== -1 || nL.indexOf('trust') !== -1) narrative = 'Social Proof/UGC';
+    else narrative = narrativeRaw;
+
+    var adType = 'Internal UGC';
+    var cL = creatorTypeRaw.toLowerCase();
+    if (cL.indexOf('influencer') !== -1 || cL.indexOf('creator') !== -1 || cL.indexOf('collab') !== -1) adType = 'Influencer';
+
+    var format = 'Video Ad';
+    var fL = (adTypeRaw || cleanName).toLowerCase();
+    if (fL.indexOf('reel') !== -1) format = 'Reel';
+    else if (fL.indexOf('static') !== -1 || fL.indexOf('image') !== -1) format = 'Static Creative';
+    else if (fL.indexOf('carousel') !== -1) format = 'Carousel';
+
+    var language = 'English';
+    var lL = (languageRaw || cleanName).toLowerCase();
+    if (lL.indexOf('hinglish') !== -1) language = 'Hinglish';
+    else if (lL.indexOf('hindi') !== -1) language = 'Hindi';
+
+    return {
+      product: product,
+      narrative: narrative,
+      adType: adType,
+      cleanName: cleanName,
+      format: format,
+      language: language
+    };
+  }
+  return null;
+}
+
+// Keep old signature placeholders for backwards compatibility in other spreadsheets
 function parseProductFromName(name) {
-  if (!name) return '';
-  var parts = name.split('|');
-  return parts[0] ? parts[0].trim() : '';
-}
-function parseAdTypeFromName(name) {
-  if (!name) return '';
-  var parts = name.split('|');
-  return parts[0] ? parts[0].trim() : ''; // Format
-}
-function parseFormatFromName(name) {
-  if (!name) return '';
-  var n = name.toLowerCase();
-  if (n.indexOf('reel') > -1 || n.indexOf('video') > -1) return 'Reel';
-  if (n.indexOf('static') > -1 || n.indexOf('image') > -1) return 'Static';
-  if (n.indexOf('carousel') > -1) return 'Carousel';
-  return 'Static';
-}
-function parseInfluencerFromName(name) {
-  if (!name) return '';
-  var parts = name.split('|');
-  // Convention: "Reel | Pain_Point | UGC_InfluencerName | v1"
-  if (parts.length >= 3) return parts[2].trim().replace('UGC_', '');
-  return '';
-}
-function parseNarrativeFromName(name) {
-  if (!name) return '';
-  var parts = name.split('|');
-  if (parts.length >= 2) return parts[1].trim().replace(/_/g, ' ');
-  return '';
-}
-function parseLanguageFromName(name) {
-  if (!name) return '';
-  var n = name.toLowerCase();
-  if (n.indexOf('hindi') > -1) return 'Hindi';
-  if (n.indexOf('english') > -1 || n.indexOf('eng') > -1) return 'English';
-  if (n.indexOf('tamil') > -1) return 'Tamil';
-  if (n.indexOf('telugu') > -1) return 'Telugu';
-  if (n.indexOf('bengali') > -1) return 'Bengali';
-  return 'English'; // default
+  var info = parseNomenclatureMeta('', '', name || '');
+  return info.product;
 }
 
 // ─── HELPER: GET ACTION VALUE FROM META ACTIONS ARRAY ────
@@ -494,6 +588,7 @@ function fetchMetaAdsDataForDate(cfg, dateStr) {
   var json = JSON.parse(response.getContentText());
   if (json.error) throw new Error(json.error.message);
   return (json.data || []).map(function(row) {
+    var info = parseNomenclatureMeta(row.campaign_name || '', row.adset_name || '', row.ad_name || '');
     return [
       row.date_start, row.account_name || '', row.campaign_name || '',
       row.adset_name || '', row.ad_name || '', 'INR',
@@ -503,7 +598,7 @@ function fetchMetaAdsDataForDate(cfg, dateStr) {
       getActionValue(row.actions, 'purchase'),
       getActionValue(row.action_values, 'purchase'),
       0, 0, 0, 0, 0, 0, '', row.adset_id || '', row.ad_id || '',
-      parseProductFromName(row.campaign_name), '', '', '', '', ''
+      info.product, info.creatorType, info.format, info.influencer, info.narrative, info.language
     ];
   });
 }
